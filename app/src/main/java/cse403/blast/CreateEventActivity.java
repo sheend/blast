@@ -21,13 +21,14 @@ public class CreateEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent createEventIntent = getIntent();
-        
+
+
         EditText newText = (EditText) findViewById(R.id.testedittext);
         newText.setText(createEventIntent.getStringExtra("string"));
 
         Button button = (Button) findViewById(R.id.testbutton);
         button.setText("Blast It!");
-
+        //((EditText)(findViewById(R.id.testedittext))).setText("Blast It!");
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

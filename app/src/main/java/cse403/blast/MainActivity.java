@@ -13,6 +13,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -43,6 +50,31 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        // Setting up the list view with everything
+        List<String> events = new ArrayList<String>();
+        events.add("Karaoke on the Ave");
+        events.add("Bubble Tea Run");
+        ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
+
+        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, events);
+        mainListView.setAdapter(stringArrayAdapter);
+
+        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                String textAtPosition = (String) parent.getItemAtPosition(position);
+
+                Toast.makeText(MainActivity.this, textAtPosition, Toast.LENGTH_SHORT).show();
+
+                // Creating a detail activity
+                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                detailIntent.putExtra("name", textAtPosition);
+                startActivity(detailIntent);
+            }
+        });
     }
 
     @Override
