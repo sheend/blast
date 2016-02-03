@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 public class CreateEventActivity extends AppCompatActivity {
 
+    private final String TAG = "CreateEventActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

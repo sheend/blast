@@ -13,6 +13,8 @@ import org.w3c.dom.Text;
 
 public class DetailActivity extends AppCompatActivity {
 
+    private final String TAG = "DetailActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

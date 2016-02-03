@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,8 +25,20 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private final String TAG = "MainActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        // Redirecting to Login if neccesary
+        // TODO: replace with real login stuff (ParseUser.getCurrentUser() == null)
+        if (false) {
+            Log.i(TAG, "NO USER");
+            Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(loginPage);
+            finish();
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -66,7 +79,6 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 String textAtPosition = (String) parent.getItemAtPosition(position);
-
                 Toast.makeText(MainActivity.this, textAtPosition, Toast.LENGTH_SHORT).show();
 
                 // Creating a detail activity
@@ -75,6 +87,7 @@ public class MainActivity extends AppCompatActivity
                 startActivity(detailIntent);
             }
         });
+
     }
 
     @Override
