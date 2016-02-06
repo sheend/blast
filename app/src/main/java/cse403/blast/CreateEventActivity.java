@@ -27,20 +27,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         EditText newText = (EditText) findViewById(R.id.testedittext);
         newText.setText(createEventIntent.getStringExtra("string"));
-
-        Button button = (Button) findViewById(R.id.testbutton);
-        button.setText("Blast It!");
-        //((EditText)(findViewById(R.id.testedittext))).setText("Blast It!");
-
-
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }
