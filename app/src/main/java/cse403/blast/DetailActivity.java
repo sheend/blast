@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+/**
+ * The Detail Activity displays the information of the Event in more detail.
+ */
 public class DetailActivity extends AppCompatActivity {
 
     private final String TAG = "DetailActivity";
@@ -27,15 +30,19 @@ public class DetailActivity extends AppCompatActivity {
 
         Intent detailIntent = getIntent();
 
+        // displays the name, time, description, and attendees
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText(getIntent().getStringExtra("name"));
 
+        // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
-        time.setText("@" + getIntent().getStringExtra("time"));
+        time.setText(getIntent().getStringExtra("time"));
 
         TextView desc = (TextView) findViewById(R.id.detail_desc);
         desc.setText(getIntent().getStringExtra("desc"));
 
+        // TODO: Display the list of attendees by their Facebook profile picture after
+        // TODO: integrating with Facebook
         TextView attendees = (TextView) findViewById(R.id.detail_attendees);
         attendees.setText(getIntent().getStringExtra("attendees"));
 
@@ -44,13 +51,13 @@ public class DetailActivity extends AppCompatActivity {
         // TODO: and display appropriate text and connect to appropriate onclick
         boolean isOwner = false;
         boolean isAttendee = false;
-        if (!isOwner) {
-            if (!isAttendee) {
+        if (!isOwner) { // Not the event creator
+            if (!isAttendee) { // User will attend the event
                 button.setText("Let's Have a Blast! :)");
-            } else {
+            } else { // user will not attend the event
                 button.setText("Leave Blast :(");
             }
-        } else {
+        } else { // The event creator
             button.setText("Cancel Blast :(");
         }
 

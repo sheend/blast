@@ -26,6 +26,12 @@ import java.util.List;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
+
+/**
+ * The Main page of the app, displaying the list of "Blasts" (or events) near you.
+ * In the Main Activity, the user has the option to view each event in more detail, access
+ * the left drawer, or create a new Blast.
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -34,7 +40,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Redirecting to Login if neccesary
+        // Redirecting to Login if necessary
         // TODO: replace with real login stuff (ParseUser.getCurrentUser() == null)
         if (false) {
             Log.i(TAG, "NO USER");
@@ -48,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // the Button that allows the user to create a new Event
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -59,6 +66,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // The left drawer, which allows the user to view the Events that he/she made, or the Events that
+        // he/she is attending.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -71,6 +80,7 @@ public class MainActivity extends AppCompatActivity
         // Setting up the list view with everything
         // TODO: Eventually we will have to use Data Manager to populate Events list
         List<Event> events = new ArrayList<Event>();
+        // hardcoded the userID, event title, description, # of attendees, and time
         events.add(new Event(new User("1234"), "Karaoke on the Ave", "Sing the night away!", 10, new Date(1)));
         events.add(new Event(new User("5678"), "Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1)));
         ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
@@ -87,6 +97,9 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
 
                 // Creating a detail activity
+                // TODO: remove toString() after Data Manager is set up
+                // TODO: Attendees - eventually get the list of attendees once Facebook integration is set up. but for now,
+                // TODO: it returns an empty list
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
                 detailIntent.putExtra("name", eventAtPosition.getTitle());
                 detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
