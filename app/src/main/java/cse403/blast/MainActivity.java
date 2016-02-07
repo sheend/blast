@@ -20,7 +20,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import cse403.blast.Model.Event;
+import cse403.blast.Model.User;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -49,7 +53,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent createEventIntent = new Intent(MainActivity.this, CreateEventActivity.class);
-                //createEventIntent.putExtra("string", "all the new fields!"); //TODO: less generic
+                createEventIntent.putExtra("string", "all the new fields!"); //TODO: less generic
                 startActivity(createEventIntent);
 
             }
@@ -65,12 +69,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Setting up the list view with everything
-        List<String> events = new ArrayList<String>();
-        events.add("Karaoke on the Ave");
-        events.add("Bubble Tea Run");
+        // TODO: Eventually we will have to use Data Manager to populate Events list
+        List<Event> events = new ArrayList<Event>();
+        events.add(new Event(new User("1234"), "Karaoke on the Ave", "Sing the night away!", 10, new Date(1)));
+        events.add(new Event(new User("5678"), "Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1)));
         ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
-        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
                 android.R.layout.simple_list_item_1, events);
         mainListView.setAdapter(stringArrayAdapter);
 
@@ -78,12 +83,16 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String textAtPosition = (String) parent.getItemAtPosition(position);
-                Toast.makeText(MainActivity.this, textAtPosition, Toast.LENGTH_SHORT).show();
+                Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+                Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
 
                 // Creating a detail activity
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-                detailIntent.putExtra("name", textAtPosition);
+                detailIntent.putExtra("name", eventAtPosition.getTitle());
+                detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
+                detailIntent.putExtra("desc", eventAtPosition.getDesc());
+                detailIntent.putExtra("attendees", eventAtPosition.getAttendees().toString());
+
                 startActivity(detailIntent);
             }
         });
