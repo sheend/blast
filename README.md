@@ -22,3 +22,4 @@ Java style guidelines: https://google.github.io/styleguide/javaguide.html </br>
 Android style guidelines: http://developer.android.com/design/index.html </br>
 - Activities names based on the general function i.e. `CreateEventActivity.java`
 - Connected layout files have the same basic name i.e. `activity_create_event.xml` and `content_create_event.xml`
+- JavaDocs style comments for method headers, in-line comments for novel additions
