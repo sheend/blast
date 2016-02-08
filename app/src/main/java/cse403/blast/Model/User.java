@@ -1,5 +1,6 @@
 package cse403.blast.Model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +11,7 @@ import java.util.Set;
  * Mutable class representing a user.
  * Can modify events user is attending/add to events created.
  */
-public class User {
+public class User implements Serializable {
     private String facebookID;
     private Set<Event> eventsCreated;
     private Set<Event> eventsAttending;

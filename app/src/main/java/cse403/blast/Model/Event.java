@@ -41,6 +41,10 @@ public class Event {
         attendees = new HashSet<User>();
     }
 
+    public String toString() {
+        return title;
+    }
+
     // Mutators
 
     /**
