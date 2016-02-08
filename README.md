@@ -1,5 +1,9 @@
+Product website: http://blastcse.github.io/ </br>
+Developer website: http://mkhuat.github.io/blast-dev/
+
+
 #Developer Documentation
-Install Android Studio and run the following from the root directory</br>
+Install Android Studio and run the following from the desired directory</br>
 - To work on the latest stable release</br>
 ```
 git clone https://github.com/sheend/blast.git
@@ -9,6 +13,7 @@ git clone https://github.com/sheend/blast.git
 git clone https://github.com/sheend/blast.git
 git checkout develop
 ```
+All project files are now ready to be opened in Android Studio
 
 #Directory Breakdown
 Inside `app/src/main`
@@ -23,3 +28,6 @@ Android style guidelines: http://developer.android.com/design/index.html </br>
 - Activities names based on the general function i.e. `CreateEventActivity.java`
 - Connected layout files have the same basic name i.e. `activity_create_event.xml` and `content_create_event.xml`
 - JavaDocs style comments for method headers, in-line comments for novel additions
+
+#Bug Tracking
+Compiled list of bugs and to-do tickets: https://github.com/sheend/blast/issues
