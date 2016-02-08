@@ -19,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -81,8 +82,16 @@ public class MainActivity extends AppCompatActivity
         // TODO: Eventually we will have to use Data Manager to populate Events list
         List<Event> events = new ArrayList<Event>();
         // hardcoded the userID, event title, description, # of attendees, and time
-        events.add(new Event(new User("1234"), "Karaoke on the Ave", "Sing the night away!", 10, new Date(1)));
-        events.add(new Event(new User("5678"), "Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1)));
+        User user1 = new User("Grace");
+        User user2 = new User("Michelle");
+        Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", 10, new Date(1));
+        event1.addAttendee(new User("Sheen"));
+        event1.addAttendee(new User("Carson"));
+        Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1));
+        event2.addAttendee(new User("Melissa"));
+        event2.addAttendee(new User("Kristi"));
+        events.add(event1);
+        events.add(event2);
         ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
         ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
@@ -104,7 +113,7 @@ public class MainActivity extends AppCompatActivity
                 detailIntent.putExtra("name", eventAtPosition.getTitle());
                 detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
                 detailIntent.putExtra("desc", eventAtPosition.getDesc());
-                detailIntent.putExtra("attendees", eventAtPosition.getAttendees().toString());
+                detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
 
                 startActivity(detailIntent);
             }

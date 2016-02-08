@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
@@ -13,47 +13,67 @@
     tools:context="cse403.blast.DetailActivity"
     tools:showIn="@layout/activity_detail">
 
-    <TextView
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:id="@+id/detail_time"/>
+        android:id="@+id/info" >
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:gravity="center"
-        android:background="#d3d3d3"
-        android:layout_marginBottom="10dp"
-        android:id="@+id/detail_desc"
-        />
+        <TextView
+            android:id="@+id/detail_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="30dp"
+            />
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:id="@+id/detail_location"
-        android:background="#d3d3d3"
-        />
+        <TextView
+            android:id="@+id/detail_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:textSize="20sp"
+            />
+        <TextView
+            android:id="@+id/detail_location_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginTop="10dp"
-        android:background="#d3d3d3"
-        android:id="@+id/detail_attendees"/>
+        <ImageView
+            android:id="@+id/detail_location"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:background="#d3d3d3"
+            android:layout_marginBottom="30dp"
+            />
 
-    <RelativeLayout
+        <TextView
+            android:id="@+id/detail_attendees"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="30dp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:layout_below="@+id/info"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:id="@+id/button_layout">
+
         <Button
             android:layout_width="match_parent"
-            android:layout_height="50dp"
+            android:layout_height="70dp"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textAllCaps="true"
+            android:typeface="sans"
             android:id="@+id/button"/>
-
-    </RelativeLayout>
-</LinearLayout>
+    </LinearLayout>
+</RelativeLayout>
 
