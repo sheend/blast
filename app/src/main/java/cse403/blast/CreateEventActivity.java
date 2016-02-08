@@ -66,6 +66,7 @@ public class CreateEventActivity extends AppCompatActivity {
         });
         
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Log.i(TAG, "Done creating page");
     }
 
     // DIALOG METHODS
@@ -80,17 +81,6 @@ public class CreateEventActivity extends AppCompatActivity {
         DatePickerFragment newFragment = DatePickerFragment.newInstance(
                 new Date(Calendar.getInstance().getTimeInMillis()), dateSetListener);
         newFragment.show(getSupportFragmentManager(), "datePicker");
-    }
-
-    /**
-     * Displays the time picker
-     *
-     * @param v The View to display to
-     */
-    private void showTimePickerDialog(View v) {
-        TimePickerFragment newFragment = TimePickerFragment.newInstance(
-                new Date(Calendar.getInstance().getTimeInMillis()), getTimeSetListener());
-        newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
     /**
@@ -109,14 +99,14 @@ public class CreateEventActivity extends AppCompatActivity {
     };
 
     /**
-     * Gets the time picker
+     * Displays the time picker
      *
-     * @return DialogFragment
+     * @param v The View to display to
      */
-    private DialogFragment getTimePickerDialog() {
-        DialogFragment newFragment = TimePickerFragment.newInstance(
-                new Date(Calendar.getInstance().getTimeInMillis()), getTimeSetListener());
-        return newFragment;
+    private void showTimePickerDialog(View v) {
+        TimePickerFragment newFragment = TimePickerFragment.newInstance(
+                new Date(Calendar.getInstance().getTimeInMillis()), timeSetListener);
+        newFragment.show(getSupportFragmentManager(), "timePicker");
     }
 
     /**
@@ -125,15 +115,23 @@ public class CreateEventActivity extends AppCompatActivity {
      * @return TimePickerDialog.OnTimeSetListener
      */
     // TODO: Format time to not be in military
-    private TimePickerDialog.OnTimeSetListener getTimeSetListener() {
-        return new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                EditText tackTime = (EditText) findViewById(R.id.time);
-                tackTime.setText("" + hourOfDay + ":" + minute);
-            }
-        };
+    private TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
+        @Override
+        public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+            EditText tackTime = (EditText) findViewById(R.id.time);
+            tackTime.setText("" + hourOfDay + ":" + minute);
+        }
+    };
+
+
+    /**
+     * Gets the time picker
+     * This helps make the user interaction simpler by directly opening time after date
+     * @return DialogFragment
+     */
+    private DialogFragment getTimePickerDialog() {
+        DialogFragment newFragment = TimePickerFragment.newInstance(
+                new Date(Calendar.getInstance().getTimeInMillis()), timeSetListener);
+        return newFragment;
     }
-
-
 }

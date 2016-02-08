@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent createEventIntent = new Intent(MainActivity.this, CreateEventActivity.class);
-                createEventIntent.putExtra("string", "all the new fields!"); //TODO: less generic
                 startActivity(createEventIntent);
 
             }
