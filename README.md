@@ -36,7 +36,12 @@ Compiled list of bugs, along with open tickets to work on: [Github Issue Tracker
 Once a ticket has been completed, any team member can close the issue </br>
 
 #Unit Testing
-Tests are located in `app/src/androidTest/java/cse403/blast/ApplicationTest.java`
+Tests are located in `app/src/androidTest/java/cse403/blast`
+To run a unit test in Android Studio:
+- Click on Build Variants on the bottom left corner
+- Select `Unit Tests` as a Test Artifact
+- Navigate to a test file i.e. `ExampleUnitTest.java`
+- Right click on the class name and click 'Run ExampleUnitTest'
 
 #Automated Testing
 We have set up Jenkins to build the project daily: [Jenkins dashboard](http://10.89.170.125:8080)
