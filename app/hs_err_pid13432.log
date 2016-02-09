@@ -1,0 +1,150 @@
+#
+# There is insufficient memory for the Java Runtime Environment to continue.
+# Native memory allocation (malloc) failed to allocate 1048576 bytes for AllocateHeap
+# Possible reasons:
+#   The system is out of physical RAM or swap space
+#   In 32 bit mode, the process size limit was hit
+# Possible solutions:
+#   Reduce memory load on the system
+#   Increase physical memory or swap space
+#   Check if swap backing store is full
+#   Use 64 bit Java on a 64 bit OS
+#   Decrease Java heap size (-Xmx/-Xms)
+#   Decrease number of Java threads
+#   Decrease Java thread stack sizes (-Xss)
+#   Set larger code cache with -XX:ReservedCodeCacheSize=
+# This output file may be truncated or incomplete.
+#
+#  Out of Memory Error (memory/allocation.inline.hpp:60), pid=13432, tid=13856
+#
+# JRE version: 7.0_25-b17
+# Java VM: Java HotSpot(TM) 64-Bit Server VM (23.25-b01 mixed mode windows-amd64 compressed oops)
+# Failed to write core dump. Minidumps are not enabled by default on client versions of Windows
+#
+
+---------------  T H R E A D  ---------------
+
+Current thread (0x00000000026ae800):  JavaThread "Unknown thread" [_thread_in_vm, id=13856, stack(0x00000000026b0000,0x00000000027b0000)]
+
+Stack: [0x00000000026b0000,0x00000000027b0000]
+
+---------------  P R O C E S S  ---------------
+
+Java Threads: ( => current thread )
+
+Other Threads:
+
+=>0x00000000026ae800 (exited) JavaThread "Unknown thread" [_thread_in_vm, id=13856, stack(0x00000000026b0000,0x00000000027b0000)]
+
+VM state:not at safepoint (normal execution)
+
+VM Mutex/Monitor currently owned by a thread: None
+
+Heap
+ PSYoungGen      total 18560K, used 318K [0x00000000eaab0000, 0x00000000ebf60000, 0x0000000100000000)
+  eden space 15936K, 2% used [0x00000000eaab0000,0x00000000eaaffb50,0x00000000eba40000)
+  from space 2624K, 0% used [0x00000000ebcd0000,0x00000000ebcd0000,0x00000000ebf60000)
+  to   space 2624K, 0% used [0x00000000eba40000,0x00000000eba40000,0x00000000ebcd0000)
+ ParOldGen       total 42432K, used 0K [0x00000000c0000000, 0x00000000c2970000, 0x00000000eaab0000)
+  object space 42432K, 0% used [0x00000000c0000000,0x00000000c0000000,0x00000000c2970000)
+ PSPermGen       total 21248K, used 709K [0x00000000bae00000, 0x00000000bc2c0000, 0x00000000c0000000)
+  object space 21248K, 3% used [0x00000000bae00000,0x00000000baeb1418,0x00000000bc2c0000)
+
+Card table byte_map: [0x00000000058e0000,0x0000000005b10000] byte_map_base: 0x0000000005309000
+
+Polling page: 0x0000000000be0000
+
+Code Cache  [0x00000000028e0000, 0x0000000002b50000, 0x00000000058e0000)
+ total_blobs=39 nmethods=0 adapters=20 free_code_cache=48889Kb largest_free_block=50062848
+
+Compilation events (0 events):
+No events
+
+GC Heap History (0 events):
+No events
+
+Deoptimization events (0 events):
+No events
+
+Internal exceptions (0 events):
+No events
+
+Events (10 events):
+Event: 0.278 loading class 0x00000000027f59f0
+Event: 0.279 loading class 0x00000000027f59f0 done
+Event: 0.279 loading class 0x00000000027f5660
+Event: 0.279 loading class 0x00000000027f5660 done
+Event: 0.279 loading class 0x00000000027f58d0
+Event: 0.280 loading class 0x00000000027f58d0 done
+Event: 0.283 loading class 0x000000000281f170
+Event: 0.283 loading class 0x000000000281f170 done
+Event: 0.283 loading class 0x000000000281edb0
+Event: 0.283 loading class 0x000000000281edb0 done
+
+
+Dynamic libraries:
+0x00007ff79d220000 - 0x00007ff79d253000 	C:\Program Files\Java\jdk1.7.0_25\bin\java.exe
+0x00007ff89e8f0000 - 0x00007ff89ea9c000 	C:\WINDOWS\SYSTEM32\ntdll.dll
+0x00007ff89cd40000 - 0x00007ff89ce7e000 	C:\WINDOWS\system32\KERNEL32.DLL
+0x00007ff89bb60000 - 0x00007ff89bc75000 	C:\WINDOWS\system32\KERNELBASE.dll
+0x00007ff89a5e0000 - 0x00007ff89a66e000 	C:\WINDOWS\system32\apphelp.dll
+0x00007ff898270000 - 0x00007ff8982c3000 	C:\WINDOWS\AppPatch\AppPatch64\AcGenral.DLL
+0x00007ff89c160000 - 0x00007ff89c20a000 	C:\WINDOWS\system32\msvcrt.dll
+0x00007ff89b8e0000 - 0x00007ff89b90e000 	C:\WINDOWS\SYSTEM32\SspiCli.dll
+0x00007ff89c100000 - 0x00007ff89c154000 	C:\WINDOWS\system32\SHLWAPI.dll
+0x00007ff89ce80000 - 0x00007ff89cff7000 	C:\WINDOWS\system32\USER32.dll
+0x00007ff89e750000 - 0x00007ff89e8e4000 	C:\WINDOWS\system32\ole32.dll
+0x00007ff89d1e0000 - 0x00007ff89e70b000 	C:\WINDOWS\system32\SHELL32.dll
+0x00007ff89afa0000 - 0x00007ff89afc1000 	C:\WINDOWS\SYSTEM32\USERENV.dll
+0x00007ff89c7e0000 - 0x00007ff89c88a000 	C:\WINDOWS\system32\ADVAPI32.dll
+0x00007ff894c60000 - 0x00007ff894c7e000 	C:\WINDOWS\SYSTEM32\MPR.dll
+0x00007ff89c970000 - 0x00007ff89cab1000 	C:\WINDOWS\system32\RPCRT4.dll
+0x00007ff89c630000 - 0x00007ff89c689000 	C:\WINDOWS\SYSTEM32\sechost.dll
+0x00007ff89c2d0000 - 0x00007ff89c4e1000 	C:\WINDOWS\SYSTEM32\combase.dll
+0x00007ff89c690000 - 0x00007ff89c7e0000 	C:\WINDOWS\system32\GDI32.dll
+0x00007ff89ba40000 - 0x00007ff89ba55000 	C:\WINDOWS\SYSTEM32\profapi.dll
+0x00007ff89a270000 - 0x00007ff89a322000 	C:\WINDOWS\SYSTEM32\SHCORE.dll
+0x00007ff89e710000 - 0x00007ff89e746000 	C:\WINDOWS\system32\IMM32.DLL
+0x00007ff89bf80000 - 0x00007ff89c0d2000 	C:\WINDOWS\system32\MSCTF.dll
+0x0000000057560000 - 0x00000000575e7000 	C:\WINDOWS\System32\SYSFER.DLL
+0x00007ff899df0000 - 0x00007ff89a06b000 	C:\WINDOWS\WinSxS\amd64_microsoft.windows.common-controls_6595b64144ccf1df_6.0.9600.18006_none_623f33d3ecbe86e8\COMCTL32.dll
+0x0000000052c40000 - 0x0000000052d11000 	C:\Program Files\Java\jdk1.7.0_25\jre\bin\msvcr100.dll
+0x0000000053090000 - 0x000000005379f000 	C:\Program Files\Java\jdk1.7.0_25\jre\bin\server\jvm.dll
+0x00007ff893a50000 - 0x00007ff893a59000 	C:\WINDOWS\SYSTEM32\WSOCK32.dll
+0x00007ff893af0000 - 0x00007ff893b12000 	C:\WINDOWS\SYSTEM32\WINMM.dll
+0x00007ff89c620000 - 0x00007ff89c627000 	C:\WINDOWS\system32\PSAPI.DLL
+0x00007ff89cce0000 - 0x00007ff89cd3a000 	C:\WINDOWS\system32\WS2_32.dll
+0x00007ff893ac0000 - 0x00007ff893aea000 	C:\WINDOWS\SYSTEM32\WINMMBASE.dll
+0x00007ff89c890000 - 0x00007ff89c899000 	C:\WINDOWS\system32\NSI.dll
+0x00007ff89bb10000 - 0x00007ff89bb5f000 	C:\WINDOWS\SYSTEM32\cfgmgr32.dll
+0x00007ff89a830000 - 0x00007ff89a858000 	C:\WINDOWS\SYSTEM32\DEVOBJ.dll
+0x00000000551b0000 - 0x00000000551bf000 	C:\Program Files\Java\jdk1.7.0_25\jre\bin\verify.dll
+0x0000000053060000 - 0x0000000053088000 	C:\Program Files\Java\jdk1.7.0_25\jre\bin\java.dll
+0x0000000053040000 - 0x0000000053055000 	C:\Program Files\Java\jdk1.7.0_25\jre\bin\zip.dll
+
+VM Arguments:
+jvm_args: -Djava.awt.headless=true -Xmx1024M -Dfile.encoding=windows-1252 -Duser.country=US -Duser.language=en -Duser.variant 
+java_command: com.android.dx.command.Main --dex --output C:\Users\Melissa.idea-PC\Documents\blast\app\build\intermediates\pre-dexed\debug\internal_impl-22.2.1_1ce771849dea5b5348ae2796f601c030d0b6bf18.jar C:\Users\Melissa.idea-PC\Documents\blast\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.1\jars\libs\internal_impl-22.2.1.jar
+Launcher Type: SUN_STANDARD
+
+Environment Variables:
+PATH=C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x86;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x64;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files (x86)\Windows Live\Shared;C:\sqlite;C:\sqlite;C:\Program Files\7-Zip;C:\Program Files (x86)\Skype\Phone\;C:\Program Files (x86)\Intel\iCLS Client\;C:\Program Files\Intel\iCLS Client\;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\IPT;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x86;C:\Program Files (x86)\Intel\OpenCL SDK\2.0\bin\x64;C:\Program Files (x86)\Common Files\Acronis\SnapAPI\;C:\Program Files (x86)\Windows Live\Shared
+USERNAME=Melissa
+OS=Windows_NT
+PROCESSOR_IDENTIFIER=Intel64 Family 6 Model 58 Stepping 9, GenuineIntel
+
+
+
+---------------  S Y S T E M  ---------------
+
+OS: Windows 8 , 64 bit Build 9200 
+
+CPU:total 4 (2 cores per cpu, 2 threads per core) family 6 model 58 stepping 9, cmov, cx8, fxsr, mmx, sse, sse2, sse3, ssse3, sse4.1, sse4.2, popcnt, avx, ht, tsc, tscinvbit, tscinv
+
+Memory: 4k page, physical 4070680k(208392k free), swap 7216408k(72544k free)
+
+vm_info: Java HotSpot(TM) 64-Bit Server VM (23.25-b01) for windows-amd64 JRE (1.7.0_25-b17), built on Jun 21 2013 12:58:32 by "java_re" with unknown MS VC++:1600
+
+time: Fri Feb 05 16:20:47 2016
+elapsed time: 0 seconds
+
