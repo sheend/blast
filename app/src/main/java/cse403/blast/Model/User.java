@@ -1,5 +1,6 @@
 package cse403.blast.Model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,7 +11,14 @@ import java.util.Set;
  * Mutable class representing a user.
  * Can modify events user is attending/add to events created.
  */
-public class User {
+public class User implements Serializable {
+    /*
+     Rep invariant:
+      facebookID != null && facebookID != ""
+      eventsCreated != null && eventsCreated.size() >= 0
+      eventsAttending != null && eventsAttending.size() >= 0
+     */
+
     private String facebookID;
     private Set<Event> eventsCreated;
     private Set<Event> eventsAttending;
@@ -80,5 +88,14 @@ public class User {
      */
     public Set<Event> getEventsAttending() {
         return Collections.unmodifiableSet(eventsAttending);
+    }
+
+    /**
+     * Checks that the rep invariant hasn't been broken.
+     */
+    private void checkRep() {
+        assert(facebookID != null && facebookID != ""); // every user is a facebook user
+        assert(eventsCreated != null && eventsCreated.size() >= 0);
+        assert(eventsAttending != null && eventsAttending.size() >= 0);
     }
 }

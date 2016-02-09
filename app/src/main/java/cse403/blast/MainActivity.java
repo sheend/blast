@@ -19,9 +19,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import cse403.blast.Model.Event;
+import cse403.blast.Model.User;
+
+
+/**
+ * The Main page of the app, displaying the list of "Blasts" (or events) near you.
+ * In the Main Activity, the user has the option to view each event in more detail, access
+ * the left drawer, or create a new Blast.
+ */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -30,7 +41,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // Redirecting to Login if neccesary
+        // Redirecting to Login if necessary
         // TODO: replace with real login stuff (ParseUser.getCurrentUser() == null)
         if (false) {
             Log.i(TAG, "NO USER");
@@ -44,17 +55,19 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // the Button that allows the user to create a new Event
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent createEventIntent = new Intent(MainActivity.this, CreateEventActivity.class);
-                createEventIntent.putExtra("string", "all the new fields!"); //TODO: less generic
                 startActivity(createEventIntent);
 
             }
         });
 
+        // The left drawer, which allows the user to view the Events that he/she made, or the Events that
+        // he/she is attending.
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -65,12 +78,22 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         // Setting up the list view with everything
-        List<String> events = new ArrayList<String>();
-        events.add("Karaoke on the Ave");
-        events.add("Bubble Tea Run");
+        // TODO: Eventually we will have to use Data Manager to populate Events list
+        List<Event> events = new ArrayList<Event>();
+        // hardcoded the userID, event title, description, # of attendees, and time
+        User user1 = new User("Grace");
+        User user2 = new User("Michelle");
+        Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", 10, new Date(1));
+        event1.addAttendee(new User("Sheen"));
+        event1.addAttendee(new User("Carson"));
+        Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1));
+        event2.addAttendee(new User("Melissa"));
+        event2.addAttendee(new User("Kristi"));
+        events.add(event1);
+        events.add(event2);
         ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
-        ArrayAdapter<String> stringArrayAdapter = new ArrayAdapter<String>(this,
+        ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
                 android.R.layout.simple_list_item_1, events);
         mainListView.setAdapter(stringArrayAdapter);
 
@@ -78,12 +101,19 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                String textAtPosition = (String) parent.getItemAtPosition(position);
-                Toast.makeText(MainActivity.this, textAtPosition, Toast.LENGTH_SHORT).show();
+                Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+                Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
 
                 // Creating a detail activity
+                // TODO: remove toString() after Data Manager is set up
+                // TODO: Attendees - eventually get the list of attendees once Facebook integration is set up. but for now,
+                // TODO: it returns an empty list
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-                detailIntent.putExtra("name", textAtPosition);
+                detailIntent.putExtra("name", eventAtPosition.getTitle());
+                detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
+                detailIntent.putExtra("desc", eventAtPosition.getDesc());
+                detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
+
                 startActivity(detailIntent);
             }
         });

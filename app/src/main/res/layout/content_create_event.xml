@@ -13,25 +13,49 @@
     tools:context="cse403.blast.CreateEventActivity"
     tools:showIn="@layout/activity_create_event">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200px"
+        android:background="#d3d3d3"/>
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/testedittext"/>
+        android:id="@+id/title"
+        android:hint="Title"/>
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/testedittext2"/>
+        android:id="@+id/description"
+        android:hint="Description"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/date"
+            android:hint="Date"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/time"
+            android:hint="Time"
+            android:layout_toRightOf="@+id/date"/>
+    </RelativeLayout>
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/testedittext3"/>
+        android:id="@+id/location"
+        android:hint="Location"/>
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/testedittext4"/>
+        android:id="@+id/limit"
+        android:hint="Limit"/>
     <Button
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/testbutton"/>
+        android:layout_height="wrap_content"
+        android:id="@+id/submit_button"
+        android:text="Blast It!"/>
 
 </LinearLayout>

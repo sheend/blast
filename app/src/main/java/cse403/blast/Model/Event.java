@@ -14,6 +14,17 @@ import java.util.HashSet;
  *
  */
 public class Event {
+    /*
+    Rep invariant:
+    owner != null
+    title != null && title != ""
+    desc != null
+    limit >= 1
+    eventTime != null && (eventTime - creationTime) < 43200000
+    creationTime != null
+    attendees.size() >= 1
+     */
+
     private User owner;
     private String title;
     private String desc;
@@ -39,6 +50,11 @@ public class Event {
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
         attendees = new HashSet<User>();
+        checkRep();
+    }
+
+    public String toString() {
+        return title;
     }
 
     // Mutators
@@ -49,7 +65,9 @@ public class Event {
      * @return  true if successfully added, false otherwise
      */
     public boolean addAttendee(User attendee) {
-        return attendees.remove(attendee);
+        boolean added = attendees.add(attendee);
+        checkRep();
+        return added;
     }
 
     /**
@@ -58,7 +76,9 @@ public class Event {
      * @return  true if successfully removed, false otherwise
      */
     public boolean removeAttendee(User attendee) {
-        return attendees.remove(attendee);
+        boolean removed = attendees.remove(attendee);
+        checkRep();
+        return removed;
     }
 
     // Getters
@@ -131,6 +151,7 @@ public class Event {
         if (newTime.getTime() - creationTime.getTime() < 43200000         // must be within 12 hours of creation time
                 && newTime.getTime() - new Date().getTime() >= 3600000) { // new time must be at least 1 after current time
             this.eventTime = newTime;
+            checkRep();
             return true;
         }
         return false;
@@ -142,6 +163,7 @@ public class Event {
      */
     public void changeDesc(String newDesc) {
         desc = newDesc;
+        checkRep();
     }
 
     /**
@@ -154,6 +176,20 @@ public class Event {
             return false;
         }
         limit = newLimit;
+        checkRep();
         return true;
+    }
+
+    /**
+     * Check that the representation invariant has not been broken.
+     */
+    private void checkRep() {
+        assert(owner != null);
+        assert(title != null && title != "");
+        assert(desc != null); // desc can be an empty String, just not null
+        assert(limit >= 1); // must have at least one other attendee (not including owner)
+        assert(eventTime != null && (eventTime.getTime() - creationTime.getTime()) < 43200000);
+        assert(creationTime != null);
+        assert(attendees.size() >= 1); // owner counts as one attendee
     }
 }
