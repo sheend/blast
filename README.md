@@ -52,12 +52,12 @@ We have set up Jenkins to build the project daily: [Jenkins dashboard](http://10
 - To configure Jenkins's settings, from the dashboard go to Manage Jenkins -> Configure System and find `Gradle version 2.11-rc-3` and `JDK version 7u80`
 
 #New Release
-For each milestone release, we will merge all branches to the master and then build that for the user. We will also tag the master branch with the following tags so all versions can be reverted to, if necessary.</br>
+For each milestone release, we will merge all branches to the master and then build that for the user. We will also tag the master branch with the following tags so all versions can be reverted to, if necessary. These tags are the primary method of documenting releases. After every release, we will make a new `APK` that can be downloaded by a user for the latest stable version of the app. The new version will be visible to the world on the master branch, and we will double check by building the repository in a new directory to make sure everything work fine. </br>
 - Zero Feature: `v0.0`
 - Beta: `v1.0`
 - Feature Complete: `v1.5`
 - Final: `v2.0` </br>
 
-In order to do a testing release, push to the Git `develop` branch. At the end of each day, we will run and test the code currently on `develop`, and then accordingly assign tickets and issue bug reports. This way the software can be tested without potentially breaking the publically released version.
+In order to do a testing release, push to the Git `develop` branch. At the end of each day, we will run and test the code currently on `develop`, and then accordingly assign tickets and issue bug reports. This way the software can be tested without potentially breaking the publically released version.</br></br>
 
 #####Welcome to the team :punch:
