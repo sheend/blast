@@ -12,6 +12,13 @@ import java.util.Set;
  * Can modify events user is attending/add to events created.
  */
 public class User implements Serializable {
+    /*
+     Rep invariant:
+      facebookID != null && facebookID != ""
+      eventsCreated != null && eventsCreated.size() >= 0
+      eventsAttending != null && eventsAttending.size() >= 0
+     */
+
     private String facebookID;
     private Set<Event> eventsCreated;
     private Set<Event> eventsAttending;
@@ -81,5 +88,14 @@ public class User implements Serializable {
      */
     public Set<Event> getEventsAttending() {
         return Collections.unmodifiableSet(eventsAttending);
+    }
+
+    /**
+     * Checks that the rep invariant hasn't been broken.
+     */
+    private void checkRep() {
+        assert(facebookID != null && facebookID != ""); // every user is a facebook user
+        assert(eventsCreated != null && eventsCreated.size() >= 0);
+        assert(eventsAttending != null && eventsAttending.size() >= 0);
     }
 }
