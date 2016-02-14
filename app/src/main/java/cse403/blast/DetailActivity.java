@@ -15,6 +15,7 @@ import org.w3c.dom.Text;
 import java.io.Serializable;
 import java.util.Set;
 
+import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
 /**
@@ -23,6 +24,9 @@ import cse403.blast.Model.User;
 public class DetailActivity extends AppCompatActivity {
 
     private final String TAG = "DetailActivity";
+    //Check ticket for details
+    //private Event event = (Event) getIntent().getSerializableExtra("event");
+    private User currentUser = new User("Grace");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,43 +41,68 @@ public class DetailActivity extends AppCompatActivity {
 
         // displays the name, time, description, and attendees
         TextView title = (TextView) findViewById(R.id.detail_title);
-        title.setText(getIntent().getStringExtra("name"));
+        title.setText(detailIntent.getStringExtra("name"));
 
         // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
-        time.setText("@ " + getIntent().getStringExtra("time"));
+        time.setText("@ " + detailIntent.getStringExtra("time"));
 
         TextView desc = (TextView) findViewById(R.id.detail_desc);
-        desc.setText("What: " + getIntent().getStringExtra("desc"));
+        desc.setText("What: " + detailIntent.getStringExtra("desc"));
 
         // TODO: Display the list of attendees by their Facebook profile picture after
         // TODO: integrating with Facebook
         TextView attendees = (TextView) findViewById(R.id.detail_attendees);
-        Set<User> users = (Set<User>) getIntent().getSerializableExtra("attendees");
+        Set<User> users = (Set<User>) detailIntent.getSerializableExtra("attendees");
         String list = "";
         for (User user: users) {
             list += user.getFacebookID()+ ", ";
         }
         attendees.setText("Who: " + list);
 
+        // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location_label);
         locationLabel.setText("Where: ");
 
-        Button button = (Button) findViewById(R.id.button);
         // TODO: get current user's status (new viewer, current attendee, or owner)
         // TODO: and display appropriate text and connect to appropriate onclick
-        boolean isOwner = false;
-        boolean isAttendee = false;
-        if (!isOwner) { // Not the event creator
-            if (!isAttendee) { // User will attend the event
-                button.setText("Let's Have a Blast! :)");
-            } else { // user will not attend the event
-                button.setText("Leave Blast :(");
-            }
-        } else { // The event creator
-            button.setText("Cancel Blast :(");
+        Button button = (Button) findViewById(R.id.button);
+/*        if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
+            button.setText("Edit Blast");
+            // Go to creation page
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent createIntent = new Intent(DetailActivity.this, CreateEventActivity.class);
+                    createIntent.putExtra("edit", true);
+                    createIntent.putExtra("event", event);
+                    startActivity(createIntent);
+                }
+            });
+        } else if (event.getAttendees().contains(currentUser)) { // user is an attendee, have option to leave
+            button.setText("Leave Blast :(");
+            // Go back to main page
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
+                    currentUser.leaveEvent(event);
+                    startActivity(mainIntent);
+                }
+            });
+        } else { // user could potentially attend
+            button.setText("Have a Blast! :)");
+            // Go back to main page
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
+                    currentUser.attendEvent(event);
+                    startActivity(mainIntent);
+                }
+            });
         }
-
+    */
     }
 
 }

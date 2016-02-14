@@ -33,6 +33,33 @@ public class User implements Serializable {
         eventsAttending = new HashSet<Event>();
     }
 
+    /**
+     * Determines whether two Users are equal, or are the same person.
+     * @param o other user to compare to
+     * @return true if their facebookId's are exactly the same, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof User)) {
+            return false;
+        }
+        return this.facebookID.equals(((User) o).facebookID);
+    }
+
+    /**
+     * Produces a unique hashcode per user
+     * @return a unique hashcode for user
+     */
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        for (int i = 0; i < facebookID.length(); i++) {
+            hash = hash * 31 + facebookID.charAt(i);
+        }
+        return hash;
+    }
+
+
     // Mutators
 
     /**

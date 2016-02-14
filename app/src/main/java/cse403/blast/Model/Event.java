@@ -1,5 +1,6 @@
 package cse403.blast.Model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -13,7 +14,7 @@ import java.util.HashSet;
  * These changes are also restricted by certain limitations.
  *
  */
-public class Event {
+public class Event implements Serializable {
     /*
     Rep invariant:
     owner != null

@@ -145,11 +145,13 @@ public class MainActivity extends AppCompatActivity
         Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", 10, new Date(1));
         event1.addAttendee(new User("Sheen"));
         event1.addAttendee(new User("Carson"));
+        user1.addCreatedEvent(event1);
         Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1));
         event2.addAttendee(new User("Melissa"));
         event2.addAttendee(new User("Kristi"));
         events.add(event1);
         events.add(event2);
+        user2.addCreatedEvent(event2);
         ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
         ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
@@ -172,7 +174,7 @@ public class MainActivity extends AppCompatActivity
                 detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
                 detailIntent.putExtra("desc", eventAtPosition.getDesc());
                 detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
-
+                detailIntent.putExtra("event", eventAtPosition);
                 startActivity(detailIntent);
             }
         });
