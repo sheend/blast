@@ -42,9 +42,8 @@ public class Event implements Serializable {
      * @param limit limit of people for event
      * @param eventTime time event will occur
      */
-    public Event(User owner, String title, String desc, int limit, Date eventTime) {
+    protected Event(User owner, String title, String desc, int limit, Date eventTime) {
         this.owner = owner;
-        owner.addCreatedEvent(this); // add this event to owner's list of created events
         this.title = title;
         this.desc = desc;
         this.limit = limit;
@@ -52,10 +51,40 @@ public class Event implements Serializable {
         this.creationTime = new Date(); // initialize to current time
         attendees = new HashSet<User>();
         checkRep();
+        attendees.add(owner);
     }
 
+    /**
+     * Sets an event's toString to be its title
+     * @return this's title
+     */
     public String toString() {
         return title;
+    }
+
+    /**
+     * Determines if two events are equal (if title, desc, and eventTime are the same)
+     * @param o event to compare to
+     * @return true if both events have the same title, desc, and event time, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Event)) {
+            return false;
+        }
+        Event e = (Event) o;
+        return this.title.equals(e.title)
+                && this.desc.equals(e.desc)
+                && this.eventTime.equals(e.eventTime);
+    }
+
+    /**
+     * Computes a unique hashcode for this
+     * @return unique hashcode for this
+     */
+    @Override
+    public int hashCode() {
+        return title.hashCode() * desc.hashCode() * eventTime.hashCode();
     }
 
     // Mutators
@@ -82,7 +111,7 @@ public class Event implements Serializable {
         return removed;
     }
 
-    // Getters
+    //Getters
 
     /**
      * Return owner of event

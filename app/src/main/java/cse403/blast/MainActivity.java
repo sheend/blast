@@ -138,22 +138,23 @@ public class MainActivity extends AppCompatActivity
 
     private void populateListView() {
         // TODO: Eventually we will have to use Data Manager to populate Events list
+        // TODO: currently, hardcoded
         List<Event> events = new ArrayList<Event>();
-        // hardcoded the userID, event title, description, # of attendees, and time
-        User user1 = new User("Grace");
-        User user2 = new User("Michelle");
-        Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", 10, new Date(1));
-        event1.addAttendee(new User("Sheen"));
-        event1.addAttendee(new User("Carson"));
-        user1.addCreatedEvent(event1);
-        Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1));
-        event2.addAttendee(new User("Melissa"));
-        event2.addAttendee(new User("Kristi"));
+        User grace = new User("Grace");
+        User michelle = new User("Michelle");
+        User sheen = new User("Sheen");
+        Event event1 = grace.createEvent("Karaoke on the Ave", "Sing the night away!", 10, new Date(1)); // test edit button for owner
+        event1.addAttendee(sheen);
+        Event event2 = michelle.createEvent("Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1)); // test join button for stranger
+        event2.addAttendee(sheen);
+        Event event3 = michelle.createEvent("Dance Party", "Put your dancin' shoes on", 100, new Date(1)); // test leave button for attendee
+        event3.addAttendee(grace);
         events.add(event1);
         events.add(event2);
-        user2.addCreatedEvent(event2);
+        events.add(event3);
         ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
+        // Set up main activity list view
         ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
                 android.R.layout.simple_list_item_1, events);
         mainListView.setAdapter(stringArrayAdapter);
@@ -165,10 +166,7 @@ public class MainActivity extends AppCompatActivity
                 Event eventAtPosition = (Event) parent.getItemAtPosition(position);
                 Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
 
-                // Creating a detail activity
-                // TODO: remove toString() after Data Manager is set up
-                // TODO: Attendees - eventually get the list of attendees once Facebook integration is set up. but for now,
-                // TODO: it returns an empty list
+                // Creating a detail activity. Only add event to intent since all the info needed is inside the Event class
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
                 detailIntent.putExtra("event", eventAtPosition);
                 startActivity(detailIntent);

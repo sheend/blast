@@ -25,7 +25,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private final String TAG = "DetailActivity";
     private Event event;
-    private User currentUser = new User("Grace");
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +37,8 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Grab associated event and display event title
+        // TODO: update currentUser with real current user, not hardcoded
+        currentUser = new User("Grace");
         Intent detailIntent = getIntent();
         event = (Event) detailIntent.getSerializableExtra("event");
         TextView title = (TextView) findViewById(R.id.detail_title);
@@ -55,6 +57,9 @@ public class DetailActivity extends AppCompatActivity {
         Set<User> users = event.getAttendees();
         String list = "";
         for (User user: users) {
+            if (event.getOwner().equals(user)) {
+                list += "(Creator) ";
+            }
             list += user.getFacebookID()+ ", ";
         }
         attendees.setText("Who: " + list);
@@ -63,8 +68,7 @@ public class DetailActivity extends AppCompatActivity {
         TextView locationLabel = (TextView) findViewById(R.id.detail_location_label);
         locationLabel.setText("Where: ");
 
-        // TODO: get current user's status (new viewer, current attendee, or owner)
-        // TODO: and display appropriate text and connect to appropriate onclick
+        // Set appropriate text and onclick's depending on user's status
         Button button = (Button) findViewById(R.id.button);
         if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
             button.setText("Edit Blast");
