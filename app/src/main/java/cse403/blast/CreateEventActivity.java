@@ -157,6 +157,7 @@ public class CreateEventActivity extends AppCompatActivity {
     /**
      * Gets the time picker
      * This helps make the user interaction simpler by directly opening time after date
+     *
      * @return DialogFragment
      */
     private DialogFragment getTimePickerDialog() {
@@ -179,12 +180,12 @@ public class CreateEventActivity extends AppCompatActivity {
 
     /**
      * Adds event to the Events firebase database containing information for:
-     *      unique date ID
-     *      event title
-     *      description
-     *      guest list limit
-     *      location
-     *      date
+     * unique date ID
+     * event title
+     * description
+     * guest list limit
+     * location
+     * date
      */
     public void addEvent() {
         // Get the reference to the root node in Firebase
@@ -205,8 +206,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Log.i("TestMyDate", userEnteredDate.toString());
 
         // Create event object using user-submitted data
-        Event userEvent = new Event(new User("1234"), userEnteredTitle,
-                userEnteredDesc, userEnteredLimit, userEnteredDate);
+        Event userEvent = new Event(new User("1234"), userEnteredTitle, userEnteredDesc, userEnteredLoc, userEnteredLimit, userEnteredDate);
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
@@ -217,5 +217,4 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // String eventId = newEventRef.getKey();
     }
-
 }

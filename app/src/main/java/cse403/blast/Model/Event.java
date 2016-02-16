@@ -5,6 +5,79 @@ import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
 
+
+//public class Event {
+//    private User owner;
+//    private String title;
+//    private String desc;
+//    private int limit;
+//    private Date eventTime;
+//    private Date creationTime;
+//    private Set<User> attendees;
+//
+//    public Event() {
+//    }
+//
+//    public Event(User owner, String title, String desc, int limit, Date eventTime, Date creationTime, Set<User> attendees) {
+//        this.owner = owner;
+//        this.title = title;
+//        this.desc = desc;
+//        this.limit = limit;
+//        this.eventTime = eventTime;
+//        this.creationTime = creationTime;
+//        this.attendees = attendees;
+//    }
+//
+//    public Event(User owner, String title, String desc, int limit, Date eventTime) {
+//        this.owner = owner;
+//        this.title = title;
+//        this.desc = desc;
+//        this.limit = limit;
+//        this.eventTime = eventTime;
+//        this.creationTime = new Date(); // initialize to current time
+//        attendees = new HashSet<User>();
+//        owner.addCreatedEvent(this); // add this event to owner's list of created events
+//    }
+//
+//    public User getOwner() {
+//        return owner;
+//    }
+//
+//    public String getTitle() {
+//        return title;
+//    }
+//
+//    public String getDesc() {
+//        return desc;
+//    }
+//
+//    public int getLimit() {
+//        return limit;
+//    }
+//
+//    public Date getEventTime() {
+//        return eventTime;
+//    }
+//
+//    public Date getCreationTime() {
+//        return creationTime;
+//    }
+//
+//    public Set<User> getAttendees() {
+//        return attendees;
+//    }
+//
+//    public boolean addAttendee(User attendee) {
+//        return attendees.remove(attendee);
+//    }
+//
+//    public boolean removeAttendee(User attendee) {
+//        return attendees.remove(attendee);
+//    }
+//}
+
+
+
 /**
  * Created by Sheen on 2/2/16.
  *
@@ -28,10 +101,22 @@ public class Event {
     private User owner;
     private String title;
     private String desc;
+    private String location;
     private int limit;
     private Date eventTime;
     private Date creationTime;
     private Set<User> attendees;
+
+    /**
+     * Empty constructor
+     */
+    public Event() {
+        this.creationTime = new Date(); // initialize to current time
+        this.attendees = new HashSet<User>();
+
+
+    }
+
 
     /** Constructs an event using the given attributes
      *
@@ -41,16 +126,18 @@ public class Event {
      * @param limit limit of people for event
      * @param eventTime time event will occur
      */
-    public Event(User owner, String title, String desc, int limit, Date eventTime) {
+    public Event(User owner, String title, String desc, String location, int limit, Date eventTime) {
         this.owner = owner;
-        owner.addCreatedEvent(this); // add this event to owner's list of created events
         this.title = title;
         this.desc = desc;
+        this.location = location;
         this.limit = limit;
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
-        attendees = new HashSet<User>();
-        checkRep();
+        this.attendees = new HashSet<User>();
+        // TODO: add the event to owner's list through client code
+        // TODO: cannot call method from constructor because of firebase parsing
+        // owner.addCreatedEvent(this); // add this event to owner's list of created events
     }
 
     public String toString() {
@@ -108,6 +195,12 @@ public class Event {
     }
 
     /**
+     * Return location of event
+     * @return  location of event
+     */
+    public String getLocation() { return location; }
+
+    /**
      * Return limit of event
      * @return limit of event
      */
@@ -136,7 +229,7 @@ public class Event {
      * @return  list of attendees
      */
     public Set<User> getAttendees() {
-        return Collections.unmodifiableSet(attendees);
+         return Collections.unmodifiableSet(attendees);
     }
 
     // Setters

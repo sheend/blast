@@ -19,11 +19,19 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import cse403.blast.Data.Constants;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
@@ -77,10 +85,78 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        // Setting up the list view with everything
-        populateListView();
+
+//        // hardcoded the userID, event title, description, # of attendees, and time
+//        User user1 = new User("Grace");
+//        User user2 = new User("Michelle");
+//        Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", "Star Karaoke", 10, new Date(1));
+//        user1.addCreatedEvent(event1);
+//        event1.addAttendee(new User("Sheen"));
+//        event1.addAttendee(new User("Carson"));
+//        Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", "Oasis", 5, new Date(1));
+//        user2.addCreatedEvent(event2);
+//        event2.addAttendee(new User("Melissa"));
+//        event2.addAttendee(new User("Kristi"));
+//        events.add(event1);
+//        events.add(event2);
+
+        Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Setting up the list view with everything
+                // TODO: Eventually we will have to use Data Manager to populate Events list
+                List<Event> events = new ArrayList<Event>();
+
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    Event eventToAdd = child.getValue(Event.class);
+                    events.add(eventToAdd);
+                }
+                Log.i("Log tag", "The data changed!");
+
+                listEvent(events);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
 
     }
+
+
+    public void listEvent(List<Event> events) {
+        ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
+
+        ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
+                android.R.layout.simple_list_item_1, events);
+        mainListView.setAdapter(stringArrayAdapter);
+
+        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+                Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
+
+                // Creating a detail activity
+                // TODO: remove toString() after Data Manager is set up
+                // TODO: Attendees - eventually get the list of attendees once Facebook integration is set up. but for now,
+                // TODO: it returns an empty list
+                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                detailIntent.putExtra("name", eventAtPosition.getTitle());
+                detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
+                detailIntent.putExtra("desc", eventAtPosition.getDesc());
+
+//                Set<User> exampleSet = new HashSet<User>();
+                detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
+                //detailIntent.putExtra("attendees", (Serializable) exampleSet);
+
+                startActivity(detailIntent);
+            }
+        });
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -134,47 +210,5 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private void populateListView() {
-        // TODO: Eventually we will have to use Data Manager to populate Events list
-        List<Event> events = new ArrayList<Event>();
-        // hardcoded the userID, event title, description, # of attendees, and time
-        User user1 = new User("Grace");
-        User user2 = new User("Michelle");
-        Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", 10, new Date(1));
-        event1.addAttendee(new User("Sheen"));
-        event1.addAttendee(new User("Carson"));
-        Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", 5, new Date(1));
-        event2.addAttendee(new User("Melissa"));
-        event2.addAttendee(new User("Kristi"));
-        events.add(event1);
-        events.add(event2);
-        ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
-
-        ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
-                android.R.layout.simple_list_item_1, events);
-        mainListView.setAdapter(stringArrayAdapter);
-
-        mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-                Event eventAtPosition = (Event) parent.getItemAtPosition(position);
-                Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
-
-                // Creating a detail activity
-                // TODO: remove toString() after Data Manager is set up
-                // TODO: Attendees - eventually get the list of attendees once Facebook integration is set up. but for now,
-                // TODO: it returns an empty list
-                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-                detailIntent.putExtra("name", eventAtPosition.getTitle());
-                detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
-                detailIntent.putExtra("desc", eventAtPosition.getDesc());
-                detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
-
-                startActivity(detailIntent);
-            }
-        });
     }
 }

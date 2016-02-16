@@ -23,6 +23,11 @@ public class User implements Serializable {
     private Set<Event> eventsCreated;
     private Set<Event> eventsAttending;
 
+
+    public User() {
+
+    }
+
     /**
      * Constructs a new user using their facebook id
      * @param facebookID    user's fb identification
