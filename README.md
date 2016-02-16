@@ -44,8 +44,7 @@ To run a unit test in Android Studio:
 - Right click on the class name and click 'Run ExampleUnitTest'
 
 #Automated Testing
-We have set up Jenkins to build the project daily: [Jenkins dashboard](http://10.89.170.125:8080)
-- **NOTE: the IP address is subject to change soon**
+We have set up Jenkins to build the project daily: [Jenkins dashboard](http://54.191.131.33:8080/)
 - It's automated to run every day at 12:00am and email the blast group if a build fails
 - To see build history, click the build history tab on the left side bar
 - To execute a build, go to the `Blast_App` job and click build now on the left side bar
