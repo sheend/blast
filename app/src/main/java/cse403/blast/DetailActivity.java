@@ -24,8 +24,7 @@ import cse403.blast.Model.User;
 public class DetailActivity extends AppCompatActivity {
 
     private final String TAG = "DetailActivity";
-    //Check ticket for details
-    //private Event event = (Event) getIntent().getSerializableExtra("event");
+    private Event event;
     private User currentUser = new User("Grace");
 
     @Override
@@ -37,23 +36,23 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Grab associated event and display event title
         Intent detailIntent = getIntent();
-
-        // displays the name, time, description, and attendees
+        event = (Event) detailIntent.getSerializableExtra("event");
         TextView title = (TextView) findViewById(R.id.detail_title);
-        title.setText(detailIntent.getStringExtra("name"));
+        title.setText(event.getTitle());
 
         // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
-        time.setText("@ " + detailIntent.getStringExtra("time"));
+        time.setText("@ " + event.getEventTime());
 
         TextView desc = (TextView) findViewById(R.id.detail_desc);
-        desc.setText("What: " + detailIntent.getStringExtra("desc"));
+        desc.setText("What: " + event.getDesc());
 
         // TODO: Display the list of attendees by their Facebook profile picture after
         // TODO: integrating with Facebook
         TextView attendees = (TextView) findViewById(R.id.detail_attendees);
-        Set<User> users = (Set<User>) detailIntent.getSerializableExtra("attendees");
+        Set<User> users = event.getAttendees();
         String list = "";
         for (User user: users) {
             list += user.getFacebookID()+ ", ";
@@ -67,7 +66,7 @@ public class DetailActivity extends AppCompatActivity {
         // TODO: get current user's status (new viewer, current attendee, or owner)
         // TODO: and display appropriate text and connect to appropriate onclick
         Button button = (Button) findViewById(R.id.button);
-/*        if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
+        if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
             button.setText("Edit Blast");
             // Go to creation page
             button.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +101,5 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
         }
-    */
     }
-
 }

@@ -170,10 +170,6 @@ public class MainActivity extends AppCompatActivity
                 // TODO: Attendees - eventually get the list of attendees once Facebook integration is set up. but for now,
                 // TODO: it returns an empty list
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-                detailIntent.putExtra("name", eventAtPosition.getTitle());
-                detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
-                detailIntent.putExtra("desc", eventAtPosition.getDesc());
-                detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
                 detailIntent.putExtra("event", eventAtPosition);
                 startActivity(detailIntent);
             }
