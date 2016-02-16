@@ -21,6 +21,7 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 import java.util.Date;
 
+import cse403.blast.Model.Event;
 import cse403.blast.Support.DatePickerFragment;
 import cse403.blast.Support.TimePickerFragment;
 
@@ -66,6 +67,34 @@ public class CreateEventActivity extends AppCompatActivity {
         });
         
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Toggle create event display between editing and creation
+        Button cancelButton = (Button) findViewById(R.id.cancel_button);
+        Button submitButton = (Button) findViewById(R.id.submit_button);
+        EditText title = (EditText) findViewById(R.id.title);
+        EditText desc = (EditText) findViewById(R.id.description);
+        EditText time = (EditText) findViewById(R.id.time);
+        EditText location = (EditText) findViewById(R.id.location);
+        EditText limit = (EditText) findViewById(R.id.limit);
+        // TODO: make this boolean work
+        if (createEventIntent.getBooleanExtra("edit", true)) {
+            Event event = (Event) createEventIntent.getSerializableExtra("event");
+            // TODO: prepopulate fields
+
+            // Disable and enable certain parts
+            title.setEnabled(false);
+            location.setEnabled(false);
+            cancelButton.setVisibility(View.VISIBLE);
+            cancelButton.setText("Cancel Blast :(");
+            submitButton.setText("Save Blast");
+
+        } else {
+            // enable non-editing fields
+            title.setEnabled(true);
+            location.setEnabled(true);
+            cancelButton.setVisibility(View.GONE);
+            submitButton.setText("Blast It!");
+        }
         Log.i(TAG, "Done creating page");
     }
 
