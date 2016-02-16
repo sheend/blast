@@ -76,6 +76,18 @@ public class CreateEventActivity extends AppCompatActivity {
         EditText time = (EditText) findViewById(R.id.time);
         EditText location = (EditText) findViewById(R.id.location);
         EditText limit = (EditText) findViewById(R.id.limit);
+
+        // sets up listener for verifying all event fields
+//        submitButton.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                // check that all fields have input in them
+//            }
+//        });
+
+        // set listeners for each text field to call their respective validation methods
+        // these listeners are called when the user toggles out of a field
+
         // TODO: make this boolean work
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
@@ -97,6 +109,14 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         Log.i(TAG, "Done creating page");
     }
+
+    // VALIDATION METHODS
+
+    // submit button final validation
+//    private Button.onClick
+    // this will call the create event component if validation passes
+
+    // individual field validation
 
     // DIALOG METHODS
 
