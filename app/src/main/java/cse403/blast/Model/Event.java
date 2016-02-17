@@ -274,7 +274,7 @@ public class Event implements Serializable {
         if (newTime.getTime() - creationTime.getTime() < 43200000         // must be within 12 hours of creation time
                 && newTime.getTime() - new Date().getTime() >= 3600000) { // new time must be at least 1 after current time
             this.eventTime = newTime;
-            checkRep();
+            //checkRep();
             return true;
         }
         return false;
@@ -286,7 +286,7 @@ public class Event implements Serializable {
      */
     public void changeDesc(String newDesc) {
         desc = newDesc;
-        checkRep();
+        //checkRep();
     }
 
     /**
@@ -299,7 +299,7 @@ public class Event implements Serializable {
             return false;
         }
         limit = newLimit;
-        checkRep();
+        //checkRep();
         return true;
     }
 

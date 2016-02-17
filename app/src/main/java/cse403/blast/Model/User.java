@@ -37,7 +37,6 @@ public class User implements Serializable {
         this.facebookID = facebookID;
         eventsCreated = new HashSet<Event>();
         eventsAttending = new HashSet<Event>();
-        checkRep();
     }
 
     /**
@@ -69,10 +68,9 @@ public class User implements Serializable {
     // TODO: is it ok to only allow creation of events through Users?
     // TODO: update database
     // TODO: why will this only work when eventsCreated.add(event) is in an assert?
-    public Event createEvent(String title, String desc, int limit, Date eventTime) {
-        Event event = new Event(this, title, desc, limit, eventTime);
+    public Event createEvent(String title, String desc, String loc, int limit, Date eventTime) {
+        Event event = new Event(this, title, desc, loc, limit, eventTime);
         assert(eventsCreated.add(event));
-        checkRep();
         return event;
     }
 
@@ -86,7 +84,6 @@ public class User implements Serializable {
     // TODO: indicate to attendees that event has been cancelled?
     public boolean cancelEvent(Event e) {
         boolean cancelled = eventsCreated.remove(e);
-        checkRep();
         return cancelled;
     }
 
@@ -103,7 +100,6 @@ public class User implements Serializable {
         }
         e.removeAttendee(this);
         boolean removed = eventsAttending.remove(e);
-        checkRep();
         return removed;
     }
 
@@ -119,7 +115,6 @@ public class User implements Serializable {
         }
         e.addAttendee(this);
         boolean added = eventsAttending.add(e);
-        checkRep();
         return added;
     }
 

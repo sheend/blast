@@ -111,6 +111,8 @@ public class CreateEventActivity extends AppCompatActivity {
         // set listeners for each text field to call their respective validation methods
         // these listeners are called when the user toggles out of a field
 
+        /*
+        TODO: Look at git ticket
         // TODO: make this boolean work
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
@@ -131,6 +133,7 @@ public class CreateEventActivity extends AppCompatActivity {
             submitButton.setText("Blast It!");
         }
         Log.i(TAG, "Done creating page");
+        */
 
         addButtonClickListener();
     }
