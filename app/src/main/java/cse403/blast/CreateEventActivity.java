@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.app.TimePickerDialog;
 import android.app.DatePickerDialog;
 import android.widget.TimePicker;
+import android.view.View.OnFocusChangeListener;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -39,8 +40,8 @@ import cse403.blast.Model.*;
  * user's "Blasts You Created" section of the main page's drawer.
  */
 public class CreateEventActivity extends AppCompatActivity {
-    private Button cancelButton;
     private Button submitButton;
+    private Button cancelButton;
     private EditText titleText;
     private EditText descText;
     private EditText dateText;
@@ -63,6 +64,9 @@ public class CreateEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent createEventIntent = getIntent();
+
+        submitButton = (Button) findViewById(R.id.submit_button);
+        addSubmitButtonClickListener();
 
         cancelButton = (Button) findViewById(R.id.cancel_button);
         titleText = (EditText) findViewById(R.id.title);
@@ -92,21 +96,11 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        submitButton = (Button) findViewById(R.id.submit_button);
-        addButtonClickListener();
+        // TODO implement this
+        // these listeners will be for validation of fields
+        addFieldValidationListeners();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // sets up listener for verifying all event fields
-//        submitButton.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                // check that all fields have input in them
-//            }
-//        });
-
-        // set listeners for each text field to call their respective validation methods
-        // these listeners are called when the user toggles out of a field
 
         /*
         TODO: Look at git ticket
@@ -135,11 +129,38 @@ public class CreateEventActivity extends AppCompatActivity {
 
     // VALIDATION METHODS
 
-    // submit button final validation
-//    private Button.onClick
-    // this will call the create event component if validation passes
+    private void addFieldValidationListeners() {
+        // will call all the methods listed in this section
+    }
 
-    // individual field validation
+    private boolean verify(View v) {
+        // TODO make switch statement to handle verifying each field
+        return true;
+    }
+
+    // demo field method
+    private void addTitleFocusListener() {
+        titleText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+
+                }
+            }
+        });
+    }
+
+    private void addSubmitButtonClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO call verify method, only continue if verify passes
+                Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
+                startActivity(mainActivityIntent);
+                addEvent();
+            }
+        });
+    }
 
     // DIALOG METHODS
 
@@ -200,7 +221,6 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     };
 
-
     /**
      * Gets the time picker
      * This helps make the user interaction simpler by directly opening time after date
@@ -211,17 +231,6 @@ public class CreateEventActivity extends AppCompatActivity {
         DialogFragment newFragment = TimePickerFragment.newInstance(
                 new Date(Calendar.getInstance().getTimeInMillis()), timeSetListener);
         return newFragment;
-    }
-
-    private void addButtonClickListener() {
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
-                startActivity(mainActivityIntent);
-                addEvent();
-            }
-        });
     }
 
     /**
