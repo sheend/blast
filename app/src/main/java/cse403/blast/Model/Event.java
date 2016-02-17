@@ -1,9 +1,83 @@
 package cse403.blast.Model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
+
+
+//public class Event {
+//    private User owner;
+//    private String title;
+//    private String desc;
+//    private int limit;
+//    private Date eventTime;
+//    private Date creationTime;
+//    private Set<User> attendees;
+//
+//    public Event() {
+//    }
+//
+//    public Event(User owner, String title, String desc, int limit, Date eventTime, Date creationTime, Set<User> attendees) {
+//        this.owner = owner;
+//        this.title = title;
+//        this.desc = desc;
+//        this.limit = limit;
+//        this.eventTime = eventTime;
+//        this.creationTime = creationTime;
+//        this.attendees = attendees;
+//    }
+//
+//    public Event(User owner, String title, String desc, int limit, Date eventTime) {
+//        this.owner = owner;
+//        this.title = title;
+//        this.desc = desc;
+//        this.limit = limit;
+//        this.eventTime = eventTime;
+//        this.creationTime = new Date(); // initialize to current time
+//        attendees = new HashSet<User>();
+//        owner.addCreatedEvent(this); // add this event to owner's list of created events
+//    }
+//
+//    public User getOwner() {
+//        return owner;
+//    }
+//
+//    public String getTitle() {
+//        return title;
+//    }
+//
+//    public String getDesc() {
+//        return desc;
+//    }
+//
+//    public int getLimit() {
+//        return limit;
+//    }
+//
+//    public Date getEventTime() {
+//        return eventTime;
+//    }
+//
+//    public Date getCreationTime() {
+//        return creationTime;
+//    }
+//
+//    public Set<User> getAttendees() {
+//        return attendees;
+//    }
+//
+//    public boolean addAttendee(User attendee) {
+//        return attendees.remove(attendee);
+//    }
+//
+//    public boolean removeAttendee(User attendee) {
+//        return attendees.remove(attendee);
+//    }
+//}
+
+
 
 /**
  * Created by Sheen on 2/2/16.
@@ -13,7 +87,7 @@ import java.util.HashSet;
  * These changes are also restricted by certain limitations.
  *
  */
-public class Event {
+public class Event implements Serializable {
     /*
     Rep invariant:
     owner != null
@@ -28,10 +102,22 @@ public class Event {
     private User owner;
     private String title;
     private String desc;
+    private String location;
     private int limit;
     private Date eventTime;
     private Date creationTime;
     private Set<User> attendees;
+
+    /**
+     * Empty constructor
+     */
+    public Event() {
+        this.creationTime = new Date(); // initialize to current time
+        this.attendees = new HashSet<User>();
+
+
+    }
+
 
     /** Constructs an event using the given attributes
      *
@@ -41,20 +127,51 @@ public class Event {
      * @param limit limit of people for event
      * @param eventTime time event will occur
      */
-    public Event(User owner, String title, String desc, int limit, Date eventTime) {
+    public Event(User owner, String title, String desc, String location, int limit, Date eventTime) {
         this.owner = owner;
-        owner.addCreatedEvent(this); // add this event to owner's list of created events
         this.title = title;
         this.desc = desc;
+        this.location = location;
         this.limit = limit;
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
-        attendees = new HashSet<User>();
-        checkRep();
+        this.attendees = new HashSet<User>();
+        // TODO: add the event to owner's list through client code
+        // TODO: cannot call method from constructor because of firebase parsing
+        // owner.addCreatedEvent(this); // add this event to owner's list of created events
     }
 
+    /**
+     * Sets an event's toString to be its title
+     * @return this's title
+     */
     public String toString() {
         return title;
+    }
+
+    /**
+     * Determines if two events are equal (if title, desc, and eventTime are the same)
+     * @param o event to compare to
+     * @return true if both events have the same title, desc, and event time, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Event)) {
+            return false;
+        }
+        Event e = (Event) o;
+        return this.title.equals(e.title)
+                && this.desc.equals(e.desc)
+                && this.eventTime.equals(e.eventTime);
+    }
+
+    /**
+     * Computes a unique hashcode for this
+     * @return unique hashcode for this
+     */
+    @Override
+    public int hashCode() {
+        return title.hashCode() * desc.hashCode() * eventTime.hashCode();
     }
 
     // Mutators
@@ -81,7 +198,7 @@ public class Event {
         return removed;
     }
 
-    // Getters
+    //Getters
 
     /**
      * Return owner of event
@@ -106,6 +223,12 @@ public class Event {
     public String getDesc() {
         return desc;
     }
+
+    /**
+     * Return location of event
+     * @return  location of event
+     */
+    public String getLocation() { return location; }
 
     /**
      * Return limit of event
@@ -136,7 +259,7 @@ public class Event {
      * @return  list of attendees
      */
     public Set<User> getAttendees() {
-        return Collections.unmodifiableSet(attendees);
+         return Collections.unmodifiableSet(attendees);
     }
 
     // Setters
@@ -151,7 +274,7 @@ public class Event {
         if (newTime.getTime() - creationTime.getTime() < 43200000         // must be within 12 hours of creation time
                 && newTime.getTime() - new Date().getTime() >= 3600000) { // new time must be at least 1 after current time
             this.eventTime = newTime;
-            checkRep();
+            //checkRep();
             return true;
         }
         return false;
@@ -163,7 +286,7 @@ public class Event {
      */
     public void changeDesc(String newDesc) {
         desc = newDesc;
-        checkRep();
+        //checkRep();
     }
 
     /**
@@ -176,7 +299,7 @@ public class Event {
             return false;
         }
         limit = newLimit;
-        checkRep();
+        //checkRep();
         return true;
     }
 
