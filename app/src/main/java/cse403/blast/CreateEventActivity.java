@@ -39,17 +39,19 @@ import cse403.blast.Model.*;
  * user's "Blasts You Created" section of the main page's drawer.
  */
 public class CreateEventActivity extends AppCompatActivity {
-    EditText titleText;
-    EditText descText;
-    EditText dateText;
-    EditText timeText;
-    EditText limitText;
-    EditText locText;
-    int userDay;
-    int userMonth;
-    int userYear;
-    int userHour;
-    int userMin;
+    private Button cancelButton;
+    private Button submitButton;
+    private EditText titleText;
+    private EditText descText;
+    private EditText dateText;
+    private EditText timeText;
+    private EditText locText;
+    private EditText limitText;
+    private int userDay;
+    private int userMonth;
+    private int userYear;
+    private int userHour;
+    private int userMin;
 
     private final String TAG = "CreateEventActivity";
 
@@ -62,10 +64,11 @@ public class CreateEventActivity extends AppCompatActivity {
 
         Intent createEventIntent = getIntent();
 
+        cancelButton = (Button) findViewById(R.id.cancel_button);
         titleText = (EditText) findViewById(R.id.title);
         descText = (EditText) findViewById(R.id.description);
-        limitText = (EditText) findViewById(R.id.limit);
         locText = (EditText) findViewById(R.id.location);
+        limitText = (EditText) findViewById(R.id.limit);
 
         // sets up the listener for displaying the date picker
         dateText = (EditText) findViewById(R.id.date);
@@ -89,16 +92,10 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        submitButton = (Button) findViewById(R.id.submit_button);
+        addButtonClickListener();
 
-        // Toggle create event display between editing and creation
-        Button cancelButton = (Button) findViewById(R.id.cancel_button);
-        Button submitButton = (Button) findViewById(R.id.submit_button);
-        EditText title = (EditText) findViewById(R.id.title);
-        EditText desc = (EditText) findViewById(R.id.description);
-        EditText time = (EditText) findViewById(R.id.time);
-        EditText location = (EditText) findViewById(R.id.location);
-        EditText limit = (EditText) findViewById(R.id.limit);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // sets up listener for verifying all event fields
 //        submitButton.setOnTouchListener(new View.OnTouchListener() {
@@ -119,23 +116,21 @@ public class CreateEventActivity extends AppCompatActivity {
             // TODO: prepopulate fields
 
             // Disable and enable certain parts
-            title.setEnabled(false);
-            location.setEnabled(false);
+            titleText.setEnabled(false);
+            locText.setEnabled(false);
             cancelButton.setVisibility(View.VISIBLE);
             cancelButton.setText("Cancel Blast :(");
             submitButton.setText("Save Blast");
 
         } else {
             // enable non-editing fields
-            title.setEnabled(true);
-            location.setEnabled(true);
+            titleText.setEnabled(true);
+            locText.setEnabled(true);
             cancelButton.setVisibility(View.GONE);
             submitButton.setText("Blast It!");
         }
         Log.i(TAG, "Done creating page");
         */
-
-        addButtonClickListener();
     }
 
     // VALIDATION METHODS
@@ -219,7 +214,6 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void addButtonClickListener() {
-        Button submitButton = (Button) findViewById(R.id.submit_button);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
