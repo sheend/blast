@@ -1,5 +1,6 @@
 package cse403.blast.Model;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -86,7 +87,7 @@ import java.util.HashSet;
  * These changes are also restricted by certain limitations.
  *
  */
-public class Event {
+public class Event implements Serializable {
     /*
     Rep invariant:
     owner != null
@@ -140,8 +141,37 @@ public class Event {
         // owner.addCreatedEvent(this); // add this event to owner's list of created events
     }
 
+    /**
+     * Sets an event's toString to be its title
+     * @return this's title
+     */
     public String toString() {
         return title;
+    }
+
+    /**
+     * Determines if two events are equal (if title, desc, and eventTime are the same)
+     * @param o event to compare to
+     * @return true if both events have the same title, desc, and event time, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Event)) {
+            return false;
+        }
+        Event e = (Event) o;
+        return this.title.equals(e.title)
+                && this.desc.equals(e.desc)
+                && this.eventTime.equals(e.eventTime);
+    }
+
+    /**
+     * Computes a unique hashcode for this
+     * @return unique hashcode for this
+     */
+    @Override
+    public int hashCode() {
+        return title.hashCode() * desc.hashCode() * eventTime.hashCode();
     }
 
     // Mutators
@@ -168,7 +198,7 @@ public class Event {
         return removed;
     }
 
-    // Getters
+    //Getters
 
     /**
      * Return owner of event
