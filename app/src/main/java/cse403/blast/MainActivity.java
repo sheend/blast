@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity
                 //detailIntent.putExtra("desc", eventAtPosition.getDesc());
 
 //                Set<User> exampleSet = new HashSet<User>();
-                detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
+                //detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
                 //detailIntent.putExtra("attendees", (Serializable) exampleSet);
 
                 startActivity(detailIntent);

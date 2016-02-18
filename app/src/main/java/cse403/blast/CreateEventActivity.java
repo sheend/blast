@@ -127,6 +127,7 @@ public class CreateEventActivity extends AppCompatActivity {
             title.setEnabled(true);
             location.setEnabled(true);
             cancelButton.setVisibility(View.GONE);
+            cancelButton.setEnabled(false);
             submitButton.setText("Blast It!");
         }
         Log.i(TAG, "Done creating page");
