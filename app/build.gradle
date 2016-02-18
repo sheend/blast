@@ -39,6 +39,7 @@ dependencies {
     compile 'com.android.support:design:22.2.1'
     compile 'com.firebase:firebase-client-android:2.5.0+'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
+    compile 'com.facebook.android:audience-network-sdk:4.6+'
 
     androidTestCompile 'com.android.support:support-annotations:22+'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
