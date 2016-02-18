@@ -1,5 +1,8 @@
 package cse403.blast;
 
+import cse403.blast.Model.Event;
+import cse403.blast.Model.User;
+
 import android.content.Intent;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -8,14 +11,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Date;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
@@ -26,41 +27,53 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class DetailActivityTest {
 
     @Rule
-    public final ActivityTestRule<DetailActivity> rule = new ActivityTestRule<>(DetailActivity.class);
+    public final ActivityTestRule<DetailActivity> rule = new ActivityTestRule<>(DetailActivity.class, true, false);
 
-    /*
-    // TODO: make fake intent to ensure components of page match the event given
     @Test
-    public void launchDetailPage() {
+    public void shouldLaunchDetailPage() {
+        Event e = new Event(new User("launchTest"), "launchTitle", "launchDesc", "launchLoc", 100, new Date(1));
+        launchActivity(e);
         onView(withId(R.id.detail_layout)).check(matches(isDisplayed()));
     }
 
+    // TODO: test location, limit, date is displayed correctly
     @Test
-    public void titleCorrect() {
-        Intent detailIntent = new Intent();
-        rule.launchActivity(detailIntent);
-        onView(withId(R.id.detail_title)).check(matches(withText("testTitle")));
-        onView(withId(R.id.detail_desc)).check(matches(withText("testDesc")));
-        onView(withId(R.id.detail_location)).check(matches(withText("testLocation")));
-        onView(withId(R.id.detail_time)).check(matches(withText("testTime")));
+    public void shouldDisplayCorrectInfo() {
+        Event e = new Event(new User("displayTest"), "displayTitle", "displayDesc", "displayLoc", 100, new Date(1));
+        launchActivity(e);
+        onView(withId(R.id.detail_title)).check(matches(withText("displayTitle")));
+        onView(withId(R.id.detail_desc)).check(matches(withText("What: displayDesc")));
     }
 
-    // TODO: when given user who is attendee, show "Leave Blast :("
     @Test
-    public void attendeeButtonDisplay() {
-
+    public void shouldDisplayLeaveIfAttendee() {
+        Event e = new Event(new User("attendeeTest"), "attendeeTitle", "attendeeDesc", "attendeeLoc", 100, new Date(1));
+        e.addAttendee(new User("Grace")); // Grace is hardcoded current user in DetailActivity
+        launchActivity(e);
+        onView(withId(R.id.detail_button)).check(matches(withText("Leave Blast :(")));
     }
 
-    // TODO: when given user who is owner, show "Edit Blast"
     @Test
-    public void ownerButtonDisplay() {
-
+    public void shouldDisplayEditIfOwner() {
+        Event e = new Event(new User("Grace"), "ownerTitle", "ownerDesc", "ownerLoc", 100, new Date(1)); // Grace is hardcoded current user
+        launchActivity(e);
+        onView(withId(R.id.detail_button)).check(matches(withText("Edit Blast")));
     }
 
-    // TODO: when given user who is neither, show "Have a Blast! :)"
     @Test
     public void strangerButtonDisplay() {
-
+        Event e = new Event(new User("strangerTest"), "strangerTitle", "strangerDesc", "strangerLoc", 100, new Date(1));
+        launchActivity(e);
+        onView(withId(R.id.detail_button)).check(matches(withText("Have a Blast! :)")));
     }
-    */
+
+    /**
+     * Create intent and launch activity with given e
+     * @param e event to include in intent when launching activity
+     */
+    private void launchActivity(Event e) {
+        Intent detailIntent = new Intent();
+        detailIntent.putExtra("event", e);
+        rule.launchActivity(detailIntent);
+    }
 }

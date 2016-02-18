@@ -69,7 +69,7 @@ public class DetailActivity extends AppCompatActivity {
         locationLabel.setText("Where: ");
 
         // Set appropriate text and onclick's depending on user's status
-        Button button = (Button) findViewById(R.id.button);
+        Button button = (Button) findViewById(R.id.detail_button);
         if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
             button.setText("Edit Blast");
             // Go to creation page

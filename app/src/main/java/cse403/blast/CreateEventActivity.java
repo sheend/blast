@@ -62,13 +62,13 @@ public class CreateEventActivity extends AppCompatActivity {
 
         Intent createEventIntent = getIntent();
 
-        titleText = (EditText) findViewById(R.id.title);
-        descText = (EditText) findViewById(R.id.description);
-        limitText = (EditText) findViewById(R.id.limit);
-        locText = (EditText) findViewById(R.id.location);
+        titleText = (EditText) findViewById(R.id.create_title);
+        descText = (EditText) findViewById(R.id.create_description);
+        limitText = (EditText) findViewById(R.id.create_limit);
+        locText = (EditText) findViewById(R.id.create_location);
 
         // sets up the listener for displaying the date picker
-        dateText = (EditText) findViewById(R.id.date);
+        dateText = (EditText) findViewById(R.id.create_date);
         dateText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -79,7 +79,7 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
         // sets up the listener for displaying the time picker
-        timeText = (EditText) findViewById(R.id.time);
+        timeText = (EditText) findViewById(R.id.create_time);
         timeText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -92,13 +92,13 @@ public class CreateEventActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Toggle create event display between editing and creation
-        Button cancelButton = (Button) findViewById(R.id.cancel_button);
-        Button submitButton = (Button) findViewById(R.id.submit_button);
-        EditText title = (EditText) findViewById(R.id.title);
-        EditText desc = (EditText) findViewById(R.id.description);
-        EditText time = (EditText) findViewById(R.id.time);
-        EditText location = (EditText) findViewById(R.id.location);
-        EditText limit = (EditText) findViewById(R.id.limit);
+        Button cancelButton = (Button) findViewById(R.id.create_cancel_button);
+        Button submitButton = (Button) findViewById(R.id.create_submit_button);
+        EditText title = (EditText) findViewById(R.id.create_title);
+        EditText desc = (EditText) findViewById(R.id.create_description);
+        EditText time = (EditText) findViewById(R.id.create_time);
+        EditText location = (EditText) findViewById(R.id.create_location);
+        EditText limit = (EditText) findViewById(R.id.create_limit);
 
         // sets up listener for verifying all event fields
 //        submitButton.setOnTouchListener(new View.OnTouchListener() {
@@ -163,7 +163,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            EditText tackDate = (EditText) findViewById(R.id.date);
+            EditText tackDate = (EditText) findViewById(R.id.create_date);
             tackDate.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
             Log.i("Tag", "set");
             // make the time picker display after choosing a date
@@ -194,7 +194,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            EditText tackTime = (EditText) findViewById(R.id.time);
+            EditText tackTime = (EditText) findViewById(R.id.create_time);
             tackTime.setText("" + hourOfDay + ":" + minute);
             userHour = hourOfDay;
             userMin = minute;
@@ -215,7 +215,7 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     private void addButtonClickListener() {
-        Button submitButton = (Button) findViewById(R.id.submit_button);
+        Button submitButton = (Button) findViewById(R.id.create_submit_button);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

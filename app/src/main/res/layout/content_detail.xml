@@ -18,7 +18,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/info" >
+        android:id="@+id/detail_info" >
 
         <TextView
             android:id="@+id/detail_time"
@@ -62,10 +62,10 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/info"
+        android:layout_below="@+id/detail_info"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:id="@+id/button_layout">
+        android:id="@+id/detail_button_layout">
 
         <Button
             android:layout_width="match_parent"
@@ -74,7 +74,7 @@
             android:textSize="20sp"
             android:textAllCaps="true"
             android:typeface="sans"
-            android:id="@+id/button"/>
+            android:id="@+id/detail_button"/>
     </LinearLayout>
 </RelativeLayout>
 

@@ -17,16 +17,17 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="200px"
-        android:background="#d3d3d3"/>
+        android:background="#d3d3d3"
+        android:id="@+id/create_image"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/title"
+        android:id="@+id/create_title"
         android:hint="Title"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/description"
+        android:id="@+id/create_description"
         android:hint="Description"/>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,32 +35,32 @@
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/date"
+            android:id="@+id/create_date"
             android:hint="Date"/>
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/time"
+            android:id="@+id/create_time"
             android:hint="Time"
-            android:layout_toRightOf="@+id/date"/>
+            android:layout_toRightOf="@+id/create_date"/>
     </RelativeLayout>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/location"
+        android:id="@+id/create_location"
         android:hint="Location"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/limit"
+        android:id="@+id/create_limit"
         android:hint="Limit"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/submit_button" />
+        android:id="@+id/create_submit_button" />
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/cancel_button" />
+        android:id="@+id/create_cancel_button" />
 
 </LinearLayout>

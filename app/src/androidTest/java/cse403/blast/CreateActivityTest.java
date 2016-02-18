@@ -1,26 +1,18 @@
 package cse403.blast;
 
 import android.content.Intent;
-import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-//import android.support.test.espresso.intent.rule.IntentsTestRule;
 
-import org.hamcrest.Matcher;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtraWithKey;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.intent.Intents.intended;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.toPackage;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent;
-import static android.support.test.espresso.intent.matcher.IntentMatchers.hasExtra;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
@@ -41,20 +33,26 @@ public class CreateActivityTest {
     // TODO: make sure specific text fields are disabled
     @Test
     public void buttonDisplayIfEdit() {
-        Intent createIntent = new Intent();
-        createIntent.putExtra("edit", true);
-        rule.launchActivity(createIntent);
-        onView(withId(R.id.submit_button)).check(matches(withText("Save Blast")));
-        onView(withId(R.id.cancel_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.cancel_button)).check(matches(withText("Cancel Blast :(")));
+        launchActivity(true);
+        onView(withId(R.id.create_submit_button)).check(matches(withText("Save Blast")));
+        onView(withId(R.id.create_cancel_button)).check(matches(isDisplayed()));
+        onView(withId(R.id.create_cancel_button)).check(matches(withText("Cancel Blast :(")));
     }
 
+    // TODO: check that cancel button is GONE
     @Test
     public void buttonDisplayIfNotEdit() {
+        launchActivity(false);
+        onView(withId(R.id.create_submit_button)).check(matches(withText("Blast It!")));
+    }
+
+    /**
+     * Create intent and launch activity with given boolean edit
+     * @param edit boolean to include in intent when launching activity
+     */
+    private void launchActivity(boolean edit) {
         Intent createIntent = new Intent();
-        createIntent.putExtra("edit", false);
+        createIntent.putExtra("edit", edit);
         rule.launchActivity(createIntent);
-        //onView(withId(R.id.cancel_button)).check(doesNotExist());
-        onView(withId(R.id.submit_button)).check(matches(withText("Blast It!")));
     }
 }
