@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity
 
         // Redirecting to Login if necessary
         // TODO: replace with real login stuff (ParseUser.getCurrentUser() == null)
-        if (false) {
+        if (true) {
             Log.i(TAG, "NO USER");
             Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginPage);
