@@ -11,7 +11,8 @@
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="cse403.blast.CreateEventActivity"
-    tools:showIn="@layout/activity_create_event">
+    tools:showIn="@layout/activity_create_event"
+    android:id="@+id/create_event_layout">
 
     <ImageView
         android:layout_width="match_parent"
