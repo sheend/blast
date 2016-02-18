@@ -23,6 +23,20 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class DetailActivityTest {
 
     @Rule
-    public final ActivityTestRule<MainActivity> main = new ActivityTestRule<>(MainActivity.class);
+    public final ActivityTestRule<DetailActivity> main = new ActivityTestRule<>(DetailActivity.class);
+
+    @Test
+    public void launchDetailPage() {
+        onView(withId(R.id.detail_layout)).check(matches(isDisplayed()));
+    }
+
+
+
+    // TODO: get intent and match with expected
+    @Test
+    public void intentCorrect() {
+    }
+
+    // TODO:
 
 }
