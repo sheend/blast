@@ -34,17 +34,19 @@ public class CreateActivityTest {
     @Test
     public void buttonDisplayIfEdit() {
         launchActivity(true);
-        onView(withId(R.id.create_submit_button)).check(matches(withText("Save Blast")));
+        onView(withId(R.id.create_submit_button)).check(matches(withText("save blast")));
         onView(withId(R.id.create_cancel_button)).check(matches(isDisplayed()));
-        onView(withId(R.id.create_cancel_button)).check(matches(withText("Cancel Blast :(")));
+        onView(withId(R.id.create_cancel_button)).check(matches(withText("cancel blast :(")));
     }
 
     // TODO: check that cancel button is GONE
     @Test
     public void buttonDisplayIfNotEdit() {
         launchActivity(false);
-        onView(withId(R.id.create_submit_button)).check(matches(withText("Blast It!")));
+        onView(withId(R.id.create_submit_button)).check(matches(withText("blast it!")));
     }
+
+    // TODO: verify user input
 
     /**
      * Create intent and launch activity with given boolean edit

@@ -42,7 +42,7 @@ public class DetailActivityTest {
         Event e = new Event(new User("displayTest"), "displayTitle", "displayDesc", "displayLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_title)).check(matches(withText("displayTitle")));
-        onView(withId(R.id.detail_desc)).check(matches(withText("What: displayDesc")));
+        onView(withId(R.id.detail_desc)).check(matches(withText("what: displayDesc")));
     }
 
     @Test
@@ -50,21 +50,21 @@ public class DetailActivityTest {
         Event e = new Event(new User("attendeeTest"), "attendeeTitle", "attendeeDesc", "attendeeLoc", 100, new Date(1));
         e.addAttendee(new User("Grace")); // Grace is hardcoded current user in DetailActivity
         launchActivity(e);
-        onView(withId(R.id.detail_button)).check(matches(withText("Leave Blast :(")));
+        onView(withId(R.id.detail_button)).check(matches(withText("leave blast :(")));
     }
 
     @Test
     public void shouldDisplayEditIfOwner() {
         Event e = new Event(new User("Grace"), "ownerTitle", "ownerDesc", "ownerLoc", 100, new Date(1)); // Grace is hardcoded current user
         launchActivity(e);
-        onView(withId(R.id.detail_button)).check(matches(withText("Edit Blast")));
+        onView(withId(R.id.detail_button)).check(matches(withText("edit blast")));
     }
 
     @Test
     public void strangerButtonDisplay() {
         Event e = new Event(new User("strangerTest"), "strangerTitle", "strangerDesc", "strangerLoc", 100, new Date(1));
         launchActivity(e);
-        onView(withId(R.id.detail_button)).check(matches(withText("Have a Blast! :)")));
+        onView(withId(R.id.detail_button)).check(matches(withText("have a blast! :)")));
     }
 
     /**
