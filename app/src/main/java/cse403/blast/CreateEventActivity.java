@@ -395,7 +395,8 @@ public class CreateEventActivity extends AppCompatActivity {
         Log.i("TestMyDate", userEnteredDate.toString());
 
         // Create event object using user-submitted data
-        Event userEvent = new Event(new User("1234"), userEnteredTitle, userEnteredDesc, userEnteredLoc, userEnteredLimit, userEnteredDate);
+        Event userEvent = new Event(new User("1234"), userEnteredTitle, userEnteredDesc,
+                userEnteredLoc, userEnteredLimit, userEnteredDate);
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
