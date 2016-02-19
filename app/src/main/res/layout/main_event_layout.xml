@@ -5,7 +5,10 @@
     android:layout_height="150dp"
     android:layout_gravity="bottom"
     android:id="@+id/event_layout"
-    android:padding="@dimen/activity_horizontal_margin">
+    android:paddingTop="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingLeft="60dp">
 
     <ImageView
         android:layout_width="match_parent"
@@ -16,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/event_title"
-        android:textSize="14pt"
+        android:textSize="12pt"
         android:gravity="left"
         android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
@@ -27,5 +30,9 @@
         android:id="@+id/event_subtitle"
         android:layout_below="@+id/event_title"
         android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>
