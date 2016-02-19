@@ -46,10 +46,10 @@ public class DetailActivity extends AppCompatActivity {
 
         // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
-        time.setText("@ " + event.getEventTime());
+        time.setText(getString(R.string.detail_time) + " " + event.getEventTime());
 
         TextView desc = (TextView) findViewById(R.id.detail_desc);
-        desc.setText("What: " + event.getDesc());
+        desc.setText(getString(R.string.detail_what) + " " + event.getDesc());
 
         // TODO: Display the list of attendees by their Facebook profile picture after
         // TODO: integrating with Facebook
@@ -62,16 +62,16 @@ public class DetailActivity extends AppCompatActivity {
             }
             list += user.getFacebookID()+ ", ";
         }
-        attendees.setText("Who: " + list);
+        attendees.setText(getString(R.string.detail_who) + " " + list);
 
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location_label);
-        locationLabel.setText("Where: ");
+        locationLabel.setText(getString(R.string.detail_where));
 
         // Set appropriate text and onclick's depending on user's status
         Button button = (Button) findViewById(R.id.detail_button);
         if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
-            button.setText("Edit Blast");
+            button.setText(getString(R.string.detail_edit));
             // Go to creation page
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -83,7 +83,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
         } else if (event.getAttendees().contains(currentUser)) { // user is an attendee, have option to leave
-            button.setText("Leave Blast :(");
+            button.setText(getString(R.string.detail_leave));
             // Go back to main page
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -94,7 +94,7 @@ public class DetailActivity extends AppCompatActivity {
                 }
             });
         } else { // user could potentially attend
-            button.setText("Have a Blast! :)");
+            button.setText(R.string.detail_join);
             // Go back to main page
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
