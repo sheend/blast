@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import cse403.blast.Data.Constants;
+import cse403.blast.Data.EventAdapter;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = "MainActivity";
+    private ListView mainListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,11 +129,10 @@ public class MainActivity extends AppCompatActivity
 
 
     public void listEvent(List<Event> events) {
-        ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
+        mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
-        ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
-                android.R.layout.simple_list_item_1, events);
-        mainListView.setAdapter(stringArrayAdapter);
+        EventAdapter adapter = new EventAdapter(this, events);
+        mainListView.setAdapter(adapter);
 
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -147,14 +148,9 @@ public class MainActivity extends AppCompatActivity
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
 
                 detailIntent.putExtra("event", eventAtPosition);
-                //detailIntent.putExtra("name", eventAtPosition.getTitle());
-                //detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
-                //detailIntent.putExtra("desc", eventAtPosition.getDesc());
 
 //                Set<User> exampleSet = new HashSet<User>();
-                //detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
-                //detailIntent.putExtra("attendees", (Serializable) exampleSet);
-
+                detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
                 startActivity(detailIntent);
             }
         });
@@ -200,7 +196,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        /*if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
@@ -208,10 +204,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
