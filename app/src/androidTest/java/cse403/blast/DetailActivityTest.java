@@ -36,13 +36,16 @@ public class DetailActivityTest {
         onView(withId(R.id.detail_layout)).check(matches(isDisplayed()));
     }
 
-    // TODO: test location, limit, date is displayed correctly
+    // TODO: test location is displayed correctly
+    // TODO(aixin): before testing, genymotion not working (limit and date)
     @Test
     public void shouldDisplayCorrectInfo() {
         Event e = new Event(new User("displayTest"), "displayTitle", "displayDesc", "displayLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_title)).check(matches(withText("displayTitle")));
         onView(withId(R.id.detail_desc)).check(matches(withText("what: displayDesc")));
+        onView(withId(R.id.create_limit)).check(matches(withText("100")));
+        onView(withId(R.id.detail_time)).check(matches(withText(new Date(1).toString())));
     }
 
     @Test

@@ -43,10 +43,10 @@ public class MainActivityTest {
         onView(withId(R.id.detail_layout)).check(matches(isDisplayed()));
     }
 
-    // TODO: where is the hamburger??
+    // TODO(cyndi): before testing, genymotion not working
     @Test
     public void goToDrawerOnClickHamburger() {
 //        onView(withId(R.id.nav_view)).perform(ViewActions.click());
-//        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
     }
 }
