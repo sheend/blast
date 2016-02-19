@@ -2,12 +2,13 @@ package cse403.blast.Data;
 
 import com.facebook.AccessToken;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by kevin on 2/18/16.
  */
-public class FacebookManager {
+public class FacebookManager implements Serializable {
     private AccessToken token;
     private Date expiration;
     private String userID;
