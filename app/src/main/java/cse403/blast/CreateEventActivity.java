@@ -65,15 +65,15 @@ public class CreateEventActivity extends AppCompatActivity {
 
         Intent createEventIntent = getIntent();
 
-        submitButton = (Button) findViewById(R.id.submit_button);
-        cancelButton = (Button) findViewById(R.id.cancel_button);
-        titleText = (EditText) findViewById(R.id.title);
-        descText = (EditText) findViewById(R.id.description);
-        locText = (EditText) findViewById(R.id.location);
-        limitText = (EditText) findViewById(R.id.limit);
+        submitButton = (Button) findViewById(R.id.create_submit_button);
+        cancelButton = (Button) findViewById(R.id.create_cancel_button);
+        titleText = (EditText) findViewById(R.id.create_title);
+        descText = (EditText) findViewById(R.id.create_description);
+        locText = (EditText) findViewById(R.id.create_location);
+        limitText = (EditText) findViewById(R.id.create_limit);
 
         // sets up the listener for displaying the date picker
-        dateText = (EditText) findViewById(R.id.date);
+        dateText = (EditText) findViewById(R.id.create_date);
         dateText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -84,7 +84,7 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
         // sets up the listener for displaying the time picker
-        timeText = (EditText) findViewById(R.id.time);
+        timeText = (EditText) findViewById(R.id.create_time);
         timeText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -107,15 +107,15 @@ public class CreateEventActivity extends AppCompatActivity {
             titleText.setEnabled(false);
             locText.setEnabled(false);
             cancelButton.setVisibility(View.VISIBLE);
-            cancelButton.setText("Cancel Blast :(");
-            submitButton.setText("Save Blast");
+            cancelButton.setText(getString(R.string.create_cancel_button));
+            submitButton.setText(getString(R.string.create_save_button));
 
         } else {
             // enable non-editing fields
             titleText.setEnabled(true);
             locText.setEnabled(true);
             cancelButton.setVisibility(View.GONE);
-            submitButton.setText("Blast It!");
+            submitButton.setText(getString(R.string.create_blast_button));
         }
         Log.i(TAG, "Done creating page");
     }
@@ -142,40 +142,40 @@ public class CreateEventActivity extends AppCompatActivity {
     private boolean verify(View v) {
         int id = v.getId();
         switch (id) {
-            case R.id.submit_button :   // checks that user has filled in all fields
+            case R.id.create_submit_button :   // checks that user has filled in all fields
                 return (!isEmpty(titleText) && !isEmpty(descText) && !isEmpty(dateText) &&
                         !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText));
-            case R.id.title :
+            case R.id.create_title :
                 if (isEmpty(titleText)) {
                     System.out.println("Title is empty");
                     return false;
                 }
                 return true;
-            case R.id.description :
+            case R.id.create_description :
                 if (isEmpty(descText)) {
                     System.out.println("Description is empty");
                     return false;
                 }
                 return true;
-            case R.id.date :
+            case R.id.create_date :
                 if (isEmpty(dateText)) {
                     System.out.println("Date is empty");
                     return false;
                 }
                 return true;
-            case R.id.time :
+            case R.id.create_time :
                 if (isEmpty(timeText)) {
                     System.out.println("Time is empty");
                     return false;
                 }
                 return true;
-            case R.id.location :
+            case R.id.create_location :
                 if (isEmpty(locText)) {
                     System.out.println("Location is empty");
                     return false;
                 }
                 return true;
-            case R.id.limit :   // check that limit is not empty and that it is an integer >= 1
+            case R.id.create_limit :   // check that limit is not empty and that it is an integer >= 1
                 if (isEmpty(limitText)) {
                     System.out.println("Limit is empty");
                     return false;
@@ -315,7 +315,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            EditText tackDate = (EditText) findViewById(R.id.date);
+            EditText tackDate = (EditText) findViewById(R.id.create_date);
             tackDate.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
             Log.i("Tag", "set");
             // make the time picker display after choosing a date
@@ -346,7 +346,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            EditText tackTime = (EditText) findViewById(R.id.time);
+            EditText tackTime = (EditText) findViewById(R.id.create_time);
             tackTime.setText("" + hourOfDay + ":" + minute);
             userHour = hourOfDay;
             userMin = minute;
