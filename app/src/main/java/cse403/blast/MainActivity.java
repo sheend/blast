@@ -69,6 +69,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent createEventIntent = new Intent(MainActivity.this, CreateEventActivity.class);
+                createEventIntent.putExtra("edit", false);
                 startActivity(createEventIntent);
 
             }
@@ -151,7 +152,7 @@ public class MainActivity extends AppCompatActivity
                 //detailIntent.putExtra("desc", eventAtPosition.getDesc());
 
 //                Set<User> exampleSet = new HashSet<User>();
-                detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
+                //detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
                 //detailIntent.putExtra("attendees", (Serializable) exampleSet);
 
                 startActivity(detailIntent);
