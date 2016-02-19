@@ -65,17 +65,17 @@ public class CreateEventActivity extends AppCompatActivity {
 
         Intent createEventIntent = getIntent();
 
-        submitButton = (Button) findViewById(R.id.submit_button);
+        submitButton = (Button) findViewById(R.id.create_submit_button);
         addSubmitButtonClickListener();
 
-        cancelButton = (Button) findViewById(R.id.cancel_button);
+        cancelButton = (Button) findViewById(R.id.create_cancel_button);
         titleText = (EditText) findViewById(R.id.title);
-        descText = (EditText) findViewById(R.id.description);
-        locText = (EditText) findViewById(R.id.location);
-        limitText = (EditText) findViewById(R.id.limit);
+        descText = (EditText) findViewById(R.id.create_description);
+        locText = (EditText) findViewById(R.id.create_location);
+        limitText = (EditText) findViewById(R.id.create_limit);
 
         // sets up the listener for displaying the date picker
-        dateText = (EditText) findViewById(R.id.date);
+        dateText = (EditText) findViewById(R.id.create_date);
         dateText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -86,7 +86,7 @@ public class CreateEventActivity extends AppCompatActivity {
         });
 
         // sets up the listener for displaying the time picker
-        timeText = (EditText) findViewById(R.id.time);
+        timeText = (EditText) findViewById(R.id.create_time);
         timeText.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -110,15 +110,15 @@ public class CreateEventActivity extends AppCompatActivity {
             titleText.setEnabled(false);
             locText.setEnabled(false);
             cancelButton.setVisibility(View.VISIBLE);
-            cancelButton.setText("Cancel Blast :(");
-            submitButton.setText("Save Blast");
+            cancelButton.setText(getString(R.string.create_cancel_button));
+            submitButton.setText(getString(R.string.create_save_button));
 
         } else {
             // enable non-editing fields
             titleText.setEnabled(true);
             locText.setEnabled(true);
             cancelButton.setVisibility(View.GONE);
-            submitButton.setText("Blast It!");
+            submitButton.setText(getString(R.string.create_blast_button));
         }
         Log.i(TAG, "Done creating page");
     }
@@ -179,7 +179,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-            EditText tackDate = (EditText) findViewById(R.id.date);
+            EditText tackDate = (EditText) findViewById(R.id.create_date);
             tackDate.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
             Log.i("Tag", "set");
             // make the time picker display after choosing a date
@@ -210,7 +210,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-            EditText tackTime = (EditText) findViewById(R.id.time);
+            EditText tackTime = (EditText) findViewById(R.id.create_time);
             tackTime.setText("" + hourOfDay + ":" + minute);
             userHour = hourOfDay;
             userMin = minute;

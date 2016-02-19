@@ -21,4 +21,18 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+
+    <!-- Strings related to CreateEventActivity -->
+    <string name="create_cancel_button">cancel blast :(</string>
+    <string name="create_save_button">save blast</string>
+    <string name="create_blast_button">blast it!</string>
+
+    <!-- Strings related to DetailActivity -->
+    <string name="detail_time">\@</string>
+    <string name="detail_who">who: </string>
+    <string name="detail_what">what: </string>
+    <string name="detail_where">where: </string>
+    <string name="detail_edit">edit blast</string>
+    <string name="detail_leave">leave blast :(</string>
+    <string name="detail_join">have a blast! :)</string>
 </resources>
