@@ -3,6 +3,7 @@ package cse403.blast;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.view.View;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -45,6 +46,7 @@ public class MainActivityTest {
     // TODO: where is the hamburger??
     @Test
     public void goToDrawerOnClickHamburger() {
+//        onView(withId(R.id.nav_view)).perform(ViewActions.click());
+//        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
     }
-    
 }
