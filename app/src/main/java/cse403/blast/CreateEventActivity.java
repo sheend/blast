@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.app.TimePickerDialog;
 import android.app.DatePickerDialog;
 import android.widget.TimePicker;
+import android.view.View.OnFocusChangeListener;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -39,17 +40,19 @@ import cse403.blast.Model.*;
  * user's "Blasts You Created" section of the main page's drawer.
  */
 public class CreateEventActivity extends AppCompatActivity {
-    EditText titleText;
-    EditText descText;
-    EditText dateText;
-    EditText timeText;
-    EditText limitText;
-    EditText locText;
-    int userDay;
-    int userMonth;
-    int userYear;
-    int userHour;
-    int userMin;
+    private Button submitButton;
+    private Button cancelButton;
+    private EditText titleText;
+    private EditText descText;
+    private EditText dateText;
+    private EditText timeText;
+    private EditText locText;
+    private EditText limitText;
+    private int userDay;
+    private int userMonth;
+    private int userYear;
+    private int userHour;
+    private int userMin;
 
     private final String TAG = "CreateEventActivity";
 
@@ -62,10 +65,12 @@ public class CreateEventActivity extends AppCompatActivity {
 
         Intent createEventIntent = getIntent();
 
+        submitButton = (Button) findViewById(R.id.create_submit_button);
+        cancelButton = (Button) findViewById(R.id.create_cancel_button);
         titleText = (EditText) findViewById(R.id.create_title);
         descText = (EditText) findViewById(R.id.create_description);
-        limitText = (EditText) findViewById(R.id.create_limit);
         locText = (EditText) findViewById(R.id.create_location);
+        limitText = (EditText) findViewById(R.id.create_limit);
 
         // sets up the listener for displaying the date picker
         dateText = (EditText) findViewById(R.id.create_date);
@@ -89,58 +94,205 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+        // adds validation listeners
+        addFieldValidationListeners();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        // Toggle create event display between editing and creation
-        Button cancelButton = (Button) findViewById(R.id.create_cancel_button);
-        Button submitButton = (Button) findViewById(R.id.create_submit_button);
-        EditText title = (EditText) findViewById(R.id.create_title);
-        EditText desc = (EditText) findViewById(R.id.create_description);
-        EditText time = (EditText) findViewById(R.id.create_time);
-        EditText location = (EditText) findViewById(R.id.create_location);
-        EditText limit = (EditText) findViewById(R.id.create_limit);
-
-        // sets up listener for verifying all event fields
-//        submitButton.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                // check that all fields have input in them
-//            }
-//        });
-
-        // set listeners for each text field to call their respective validation methods
-        // these listeners are called when the user toggles out of a field
 
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
             // TODO: prepopulate fields
 
             // Disable and enable certain parts
-            title.setEnabled(false);
-            location.setEnabled(false);
+            titleText.setEnabled(false);
+            locText.setEnabled(false);
             cancelButton.setVisibility(View.VISIBLE);
-            cancelButton.setText("Cancel Blast :(");
-            submitButton.setText("Save Blast");
+            cancelButton.setText(getString(R.string.create_cancel_button));
+            submitButton.setText(getString(R.string.create_save_button));
 
         } else {
             // enable non-editing fields
-            title.setEnabled(true);
-            location.setEnabled(true);
+            titleText.setEnabled(true);
+            locText.setEnabled(true);
             cancelButton.setVisibility(View.GONE);
-            cancelButton.setEnabled(false);
-            submitButton.setText("Blast It!");
+            submitButton.setText(getString(R.string.create_blast_button));
         }
         Log.i(TAG, "Done creating page");
-        addButtonClickListener();
     }
 
     // VALIDATION METHODS
 
-    // submit button final validation
-//    private Button.onClick
-    // this will call the create event component if validation passes
+    // sets up the listeners for all the fields
+    private void addFieldValidationListeners() {
+        addSubmitButtonClickListener();
+        addTitleFocusListener();
+        addDescriptionFocusListener();
+        addDateFocusListener();
+        addTimeFocusListener();
+        addLocationFocusListener();
+        addLimitFocusListener();
+    }
 
-    // individual field validation
+    /**
+     * Verifies field input based on the view's field id
+     *
+     * @param v The view that the field id comes from
+     * @return true if the field passes verification, false otherwise
+     */
+    private boolean verify(View v) {
+        int id = v.getId();
+        switch (id) {
+            case R.id.create_submit_button :   // checks that user has filled in all fields
+                return (!isEmpty(titleText) && !isEmpty(descText) && !isEmpty(dateText) &&
+                        !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText));
+            case R.id.create_title :
+                if (isEmpty(titleText)) {
+                    System.out.println("Title is empty");
+                    return false;
+                }
+                return true;
+            case R.id.create_description :
+                if (isEmpty(descText)) {
+                    System.out.println("Description is empty");
+                    return false;
+                }
+                return true;
+            case R.id.create_date :
+                if (isEmpty(dateText)) {
+                    System.out.println("Date is empty");
+                    return false;
+                }
+                return true;
+            case R.id.create_time :
+                if (isEmpty(timeText)) {
+                    System.out.println("Time is empty");
+                    return false;
+                }
+                return true;
+            case R.id.create_location :
+                if (isEmpty(locText)) {
+                    System.out.println("Location is empty");
+                    return false;
+                }
+                return true;
+            case R.id.create_limit :   // check that limit is not empty and that it is an integer >= 1
+                if (isEmpty(limitText)) {
+                    System.out.println("Limit is empty");
+                    return false;
+                } else {
+                    int userEnteredLimit = Integer.parseInt(limitText.getText().toString());
+                    if (userEnteredLimit < 1) {
+                        System.out.println("Limit is empty");
+                        return false;
+                    }
+                }
+                return true;
+            default :   // should not hit default case, so return false if we do
+                return false;
+        }
+    }
+
+    /**
+     * Checks if the user field has been filled in
+     *
+     * @param field The field to check
+     * @return true if the field is empty or just whitespace, false otherwise
+     */
+    private boolean isEmpty(EditText field) {
+        String text = field.getText().toString();
+        if (text == null) {
+            return true;
+        }
+        return text.trim().length() == 0;
+    }
+
+    // adds click listener to submitButton to trigger verification and add event to database
+    private void addSubmitButtonClickListener() {
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO display something helpful if verify fails
+                // succeeds if the user has filled in all fields
+                if (verify(v)) {
+                    Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
+                    startActivity(mainActivityIntent);
+                    addEvent();
+                }
+            }
+        });
+    }
+
+    // adds focus change listener to titleText to trigger verification
+    private void addTitleFocusListener() {
+        titleText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    verify(v);
+                }
+            }
+        });
+    }
+
+    // adds focus change listener to descText to trigger verification
+    private void addDescriptionFocusListener() {
+        descText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    verify(v);
+                }
+            }
+        });
+    }
+
+    // adds focus change listener to dateText to trigger verification
+    private void addDateFocusListener() {
+        dateText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    verify(v);
+                }
+            }
+        });
+    }
+
+    // adds focus change listener to timeText to trigger verification
+    private void addTimeFocusListener() {
+        timeText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    verify(v);
+                }
+            }
+        });
+    }
+
+    // adds focus change listener to locText to trigger verification
+    private void addLocationFocusListener() {
+        locText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    verify(v);
+                }
+            }
+        });
+    }
+
+    // adds focus change listener to limitText to trigger verification
+    private void addLimitFocusListener() {
+        limitText.setOnFocusChangeListener(new OnFocusChangeListener() {
+
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus) {
+                    verify(v);
+                }
+            }
+        });
+    }
 
     // DIALOG METHODS
 
@@ -201,7 +353,6 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     };
 
-
     /**
      * Gets the time picker
      * This helps make the user interaction simpler by directly opening time after date
@@ -214,17 +365,7 @@ public class CreateEventActivity extends AppCompatActivity {
         return newFragment;
     }
 
-    private void addButtonClickListener() {
-        Button submitButton = (Button) findViewById(R.id.create_submit_button);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
-                startActivity(mainActivityIntent);
-                addEvent();
-            }
-        });
-    }
+    // DATABASE METHODS
 
     /**
      * Adds event to the Events firebase database containing information for:
