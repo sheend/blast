@@ -18,7 +18,7 @@ public class DatabaseManagerTest {
     Date testDate = new Date();
 
     @Test(timeout = TIMEOUT)
-    public void testDbAddAndSucessfulFetchEvent(){
+    public void testDbAddAndSuccessfulFetchEvent(){
         //*************setup*************
         // Get the reference to the root node in Firebase
         Firebase ref = new Firebase(Constants.FIREBASE_URL);
@@ -35,7 +35,8 @@ public class DatabaseManagerTest {
         //*************testing*************
         // Grab ID for recently added event
         String eventId = newEventRef.getKey();
-        //find what it returns, fail or not based on val
+        //if null, data not found
+        assertNotNull(eventId);
 
         // Get the reference to the event node in Firebase
         Firebase eventsRef = new Firebase(Constants.FIREBASE_URL).child("events").child(eventId);
@@ -56,8 +57,6 @@ public class DatabaseManagerTest {
         assertEquals(eventToTest.getLocation(), "testLoc");
         assertEquals(eventToTest.getLimit(), 4321);
         assertEquals(eventToTest.getEventTime(), testDate);
-        //assertEquals(eventToTest.getCreationTime(), );
-        //assertEquals(eventToTest.getAttendees(), ):
         */
     }
 
