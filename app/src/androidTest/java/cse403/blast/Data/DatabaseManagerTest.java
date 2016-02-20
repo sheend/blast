@@ -20,7 +20,7 @@ import com.firebase.client.ValueEventListener;
 public class DatabaseManagerTest {
     private static final int TIMEOUT = 2000; // 2000ms
     Date testDate = new Date();
-    Event eventToTest;
+    Event eventToTest = new Event();
 
     // Get the reference to the root node in Firebase
     Firebase ref = new Firebase(Constants.FIREBASE_URL);

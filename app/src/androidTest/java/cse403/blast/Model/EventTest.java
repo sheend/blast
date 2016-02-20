@@ -15,7 +15,7 @@ public class EventTest {
 
     private static final int TIMEOUT = 2000; // 2000ms
     //test data
-    User testUser = new User();
+    User testUser = new User("testid");
     String testTitle = "title";
     String testDesc = "desc";
     String testLocation = "loc";
