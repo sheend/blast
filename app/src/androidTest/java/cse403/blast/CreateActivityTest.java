@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.action.ViewActions.clearText;
+import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -67,10 +69,37 @@ public class CreateActivityTest {
 
     @Test
     public void verifyUserInput() {
-//        onView(withId(R.id.create_event_layout)).check(matches(with))
-//                .check()
-//        !isEmpty(titleText) && !isEmpty(descText) && !isEmpty(dateText) &&
-//                !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText));
+//        onView(withId(R.id.create_title))
+//                .perform(ViewActions.click())
+//                .perform(typeText("test"));
+//
+//        onView(withId(R.id.create_description))
+//                .perform(ViewActions.click())
+//                .perform(typeText("description"));
+//
+//
+//        onView(withId(R.id.create_date))
+//                .perform(ViewActions.click())
+//                .perform(typeText("date"));
+//
+//
+//        onView(withId(R.id.create_time))
+//                .perform(ViewActions.click())
+//                .perform(typeText("time"));
+//
+//
+//        onView(withId(R.id.create_location))
+//                .perform(ViewActions.click())
+//                .perform(typeText("location"));
+//
+//
+//        onView(withId(R.id.create_limit))
+//                .perform(ViewActions.click())
+//                .perform(typeText("limit"));
+//
+//        onView(withId(R.id.create_submit_button))
+//                .perform(ViewActions.click())
+//                .check(matches(withId(R.id.main_blast_list_view)));
     }
 
     /**
