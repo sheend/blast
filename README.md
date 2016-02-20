@@ -4,8 +4,9 @@
 
 #Beta Updates
 [SRS](https://drive.google.com/file/d/0B3PwQkCDyLnwbWJ4SnRZYzhYVzg/view) and [SDS](https://drive.google.com/file/d/0B3PwQkCDyLnwYTZEZTVPOUV4UWs/view) documents have been updated! </br>
-We have two use cases functioning at this time: logging in with Facebook and creating and event. After logging in, the user is able to view all the events currently in the database. They can click on an event to view details, but they are not yet able to "attend" an event. They are able to create their own events though, which are sent to the database and thus displayed in their view.
-Because the app is still in development, users must use the test account oliver_efugadr_queen@tfbnw.net with password blast123 to sign in.
+We have two use cases functioning at this time: logging in with Facebook and creating and event. After logging in, the user is able to view all the events currently in the database. They can click on an event to view details, but they are not yet able to "attend" an event. They are able to create their own events though, which are sent to the database and thus displayed in their view. </br>
+Because the app is still in development, users must use the test account oliver_efugadr_queen@tfbnw.net with password blast123 to sign in. </br>
+Scroll down to the Design Patterns section to view the update to our Developer Documentation.
 
 #Developer Documentation
 Install Android Studio and run the following from the desired directory</br>
