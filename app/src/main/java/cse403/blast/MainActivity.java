@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Support.EventAdapter;
+import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
 
 
@@ -42,13 +44,14 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = "MainActivity";
     private ListView mainListView;
+    private FacebookManager fbManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FacebookManager fbManager = FacebookManager.getInstance();
 
         // Redirecting to Login if necessary
-        // TODO: replace with real login stuff (ParseUser.getCurrentUser() == null)
-        if (false) {
+        if (!fbManager.isValidSession()) {
             Log.i(TAG, "NO USER");
             Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginPage);
