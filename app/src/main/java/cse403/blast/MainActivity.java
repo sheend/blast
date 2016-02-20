@@ -82,22 +82,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-//        // hardcoded the userID, event title, description, # of attendees, and time
-//        User user1 = new User("Grace");
-//        User user2 = new User("Michelle");
-//        Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", "Star Karaoke", 10, new Date(1));
-//        user1.addCreatedEvent(event1);
-//        event1.addAttendee(new User("Sheen"));
-//        event1.addAttendee(new User("Carson"));
-//        Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", "Oasis", 5, new Date(1));
-//        user2.addCreatedEvent(event2);
-//        event2.addAttendee(new User("Melissa"));
-//        event2.addAttendee(new User("Kristi"));
-//        events.add(event1);
-//        events.add(event2);
-
+        
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -134,7 +119,6 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Event eventAtPosition = (Event) parent.getItemAtPosition(position);
-                Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
 
                 // Creating a detail activity
                 // TODO: remove toString() after Data Manager is set up
