@@ -67,39 +67,31 @@ public class CreateActivityTest {
         onView(withId(R.id.create_submit_button)).check(matches(withText("blast it!")));
     }
 
+    // TODO: test that verification of user input during creation works. Currently, typeText() is buggy.
     @Test
-    public void verifyUserInput() {
-//        onView(withId(R.id.create_title))
-//                .perform(ViewActions.click())
-//                .perform(typeText("test"));
-//
-//        onView(withId(R.id.create_description))
-//                .perform(ViewActions.click())
-//                .perform(typeText("description"));
-//
-//
-//        onView(withId(R.id.create_date))
-//                .perform(ViewActions.click())
-//                .perform(typeText("date"));
-//
-//
-//        onView(withId(R.id.create_time))
-//                .perform(ViewActions.click())
-//                .perform(typeText("time"));
-//
-//
-//        onView(withId(R.id.create_location))
-//                .perform(ViewActions.click())
-//                .perform(typeText("location"));
-//
-//
-//        onView(withId(R.id.create_limit))
-//                .perform(ViewActions.click())
-//                .perform(typeText("limit"));
-//
-//        onView(withId(R.id.create_submit_button))
-//                .perform(ViewActions.click())
-//                .check(matches(withId(R.id.main_blast_list_view)));
+    public void verifyCreatorInput() {
+//        onView(withId(R.id.create_title)).perform( ViewActions.click(), typeText("test"), ViewActions.closeSoftKeyboard());
+//        onView(withId(R.id.create_description)).perform(ViewActions.click(), typeText("description"));
+//        onView(withId(R.id.create_date)).perform(ViewActions.click(), typeText("date"));
+//        onView(withId(R.id.create_time)).perform(ViewActions.click(), typeText("time"));
+//        onView(withId(R.id.create_location)).perform(ViewActions.click(), typeText("location"));
+//        onView(withId(R.id.create_limit)).perform(ViewActions.click(), typeText("limit"));
+//        onView(withId(R.id.create_submit_button)).perform(ViewActions.click()).check(matches(withId(R.id.main_blast_list_view)));
+    }
+
+    // TODO: test that verification of user input during editing works.
+    public void verifyEditorInput() {
+
+    }
+
+    // TODO: test that invalid user input during creation/editing leads to UI message
+    public void shouldShowErrorOnInvalidUserInput() {
+
+    }
+
+    // TODO: test that if an event is updated, notifications are sent
+    public void shouldNotifyAttendeesIfEventUpdated() {
+
     }
 
     /**

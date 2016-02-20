@@ -43,10 +43,15 @@ public class MainActivityTest {
         onView(withId(R.id.detail_layout)).check(matches(isDisplayed()));
     }
 
-    // TODO: where is the hamburger?
+    // TODO: test if hamburger clicked, drawer opens. Currently, hamburger cannot be found.
     @Test
     public void goToDrawerOnClickHamburger() {
 //        onView(withId(R.id.nav_view)).perform(ViewActions.click());
 //        onView(withId(R.id.drawer_layout)).check(matches(isDisplayed()));
+    }
+
+    // TODO: test that an event disappears from main screen once time expires
+    @Test
+    public void shouldNotShowExpiredEvents() {
     }
 }
