@@ -1,5 +1,8 @@
 package cse403.blast.Model;
 
+import android.graphics.Color;
+
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
@@ -13,7 +16,7 @@ import java.util.HashSet;
  * These changes are also restricted by certain limitations.
  *
  */
-public class Event {
+public class Event implements Serializable {
     /*
     Rep invariant:
     owner != null
@@ -25,13 +28,30 @@ public class Event {
     attendees.size() >= 1
      */
 
+    public enum Category {
+        SOCIAL, FOOD, ACTIVE, ENTERTAINMENT, OTHER
+    }
+
     private User owner;
     private String title;
     private String desc;
+    private String location;
     private int limit;
+    private Category category;
     private Date eventTime;
     private Date creationTime;
     private Set<User> attendees;
+
+    /**
+     * Empty constructor
+     */
+    public Event() {
+        this.creationTime = new Date(); // initialize to current time
+        this.attendees = new HashSet<User>();
+        this.category = Category.ACTIVE; //TODO: change this
+
+    }
+
 
     /** Constructs an event using the given attributes
      *
@@ -41,20 +61,52 @@ public class Event {
      * @param limit limit of people for event
      * @param eventTime time event will occur
      */
-    public Event(User owner, String title, String desc, int limit, Date eventTime) {
+    public Event(User owner, String title, String desc, String location, int limit, Date eventTime) {
         this.owner = owner;
-        owner.addCreatedEvent(this); // add this event to owner's list of created events
         this.title = title;
         this.desc = desc;
+        this.location = location;
         this.limit = limit;
+        this.category = Category.ACTIVE; //TODO: Change this
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
-        attendees = new HashSet<User>();
-        checkRep();
+        this.attendees = new HashSet<User>();
+        // TODO: add the event to owner's list through client code
+        // TODO: cannot call method from constructor because of firebase parsing
+        // owner.addCreatedEvent(this); // add this event to owner's list of created events
     }
 
+    /**
+     * Sets an event's toString to be its title
+     * @return this's title
+     */
     public String toString() {
         return title;
+    }
+
+    /**
+     * Determines if two events are equal (if title, desc, and eventTime are the same)
+     * @param o event to compare to
+     * @return true if both events have the same title, desc, and event time, false otherwise
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Event)) {
+            return false;
+        }
+        Event e = (Event) o;
+        return this.title.equals(e.title)
+                && this.desc.equals(e.desc)
+                && this.eventTime.equals(e.eventTime);
+    }
+
+    /**
+     * Computes a unique hashcode for this
+     * @return unique hashcode for this
+     */
+    @Override
+    public int hashCode() {
+        return title.hashCode() * desc.hashCode() * eventTime.hashCode();
     }
 
     // Mutators
@@ -81,7 +133,7 @@ public class Event {
         return removed;
     }
 
-    // Getters
+    //Getters
 
     /**
      * Return owner of event
@@ -108,11 +160,47 @@ public class Event {
     }
 
     /**
+     * Return location of event
+     * @return  location of event
+     */
+    public String getLocation() { return location; }
+
+    /**
      * Return limit of event
      * @return limit of event
      */
     public int getLimit() {
         return limit;
+    }
+
+    /**
+     * Return category of event
+     * @return category (enum) of event
+     */
+    public Category getCategory() {
+        return (category == null) ? Category.ACTIVE : category; //TODO: backup plan
+    }
+
+    /**
+     * Return category of event
+     * @return category (enum) of event
+     * //TODO: Add colors to the categories/add pictures?
+     */
+    public int getCategoryColor() {
+        switch (getCategory()) {
+            case ACTIVE:
+                return Color.rgb(255, 26, 0);
+            case ENTERTAINMENT:
+                return Color.rgb(255,26,0);
+            case FOOD:
+                return Color.rgb(255, 26, 0);
+            case SOCIAL:
+                return Color.rgb(130,143,212); // light blue
+            case OTHER:
+                return Color.rgb(255,26,0);
+            default:
+                return Color.rgb(128,128,128);
+        }
     }
 
     /**
@@ -136,7 +224,7 @@ public class Event {
      * @return  list of attendees
      */
     public Set<User> getAttendees() {
-        return Collections.unmodifiableSet(attendees);
+         return Collections.unmodifiableSet(attendees);
     }
 
     // Setters
