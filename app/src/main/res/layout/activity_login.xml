@@ -24,18 +24,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="200dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Be spontaneous.\nGet Blastin'!"
+                android:textSize="30dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"/>
 
             <com.facebook.login.widget.LoginButton
                 android:id="@+id/login_button"
-                android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginBottom="30dp" />
 
             <TextView
@@ -46,6 +55,6 @@
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
                 android:textSize="16sp"/>
-        </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
 </LinearLayout>
