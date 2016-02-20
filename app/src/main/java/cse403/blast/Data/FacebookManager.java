@@ -6,17 +6,36 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
+ * FacebookManager is a Singleton object that stores basic session data
+ * To use it in an Activity, call FacebookManager.getInstance()
+ *
  * Created by kevin on 2/18/16.
  */
 public class FacebookManager implements Serializable {
+    private static FacebookManager fbInstance = null;
+
     private AccessToken token;
     private Date expiration;
     private String userID;
 
-    public FacebookManager() {
+    /**
+     * Basic constructor
+     */
+    private FacebookManager() {
         clearToken();
     }
 
+    /**
+     * Provides access to the FacebookManager
+     *
+     * @return FacebookManager instance
+     */
+    public static FacebookManager getInstance() {
+        if (fbInstance == null) {
+            fbInstance = new FacebookManager();
+        }
+        return fbInstance;
+    }
     /**
      * Sets the access token containing user info for the current session
      */
@@ -25,15 +44,16 @@ public class FacebookManager implements Serializable {
     }
 
     /**
-     * TODO:
+     * TODO: Actually validate session
      * Checks the current associated access token to validate the session
      * @return true if the current user info is correct and the session is valid, else false
      */
-    public boolean checkSession() {
-        if (token != null) {
+    public boolean isValidSession() {
+        return token != null;
+        /*if (token != null) {
             return !token.isExpired();
         }
-        return false;
+        return false;*/
     }
 
     /**

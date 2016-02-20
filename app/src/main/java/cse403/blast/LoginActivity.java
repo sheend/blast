@@ -43,10 +43,10 @@ public class LoginActivity extends FragmentActivity {
                 Log.i(TAG, "onSuccess");
                 AccessToken token = loginResult.getAccessToken();
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                Bundle b = new Bundle();
-                b.putParcelable("fb", token);
-                i.putExtras(b);
+                FacebookManager fbManager = FacebookManager.getInstance();
+                fbManager.setToken(token);
                 startActivity(i);
+                finish();
             }
 
             @Override

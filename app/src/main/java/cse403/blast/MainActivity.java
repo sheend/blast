@@ -51,20 +51,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FacebookManager fbManager = FacebookManager.getInstance();
 
         // Redirecting to Login if necessary
-        if (fbManager == null) {
-            Bundle b= this.getIntent().getExtras();
-            //check to see if we were passed a new access token
-            if (b == null) {
-                Log.i(TAG, "NO USER");
-                Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(loginPage);
-                finish();
-            } else {
-                fbManager = new FacebookManager();
-                fbManager.setToken((AccessToken) b.getParcelable("fb"));
-            }
+        if (!fbManager.isValidSession()) {
+            Log.i(TAG, "NO USER");
+            Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
+            startActivity(loginPage);
+            finish();
         }
 
         super.onCreate(savedInstanceState);
