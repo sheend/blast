@@ -18,6 +18,7 @@ import android.app.TimePickerDialog;
 import android.app.DatePickerDialog;
 import android.widget.TimePicker;
 import android.view.View.OnFocusChangeListener;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -147,42 +148,51 @@ public class CreateEventActivity extends AppCompatActivity {
                         !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText));
             case R.id.create_title :
                 if (isEmpty(titleText)) {
-                    System.out.println("Title is empty");
+                    notifyUser("Title is empty");
                     return false;
                 }
                 return true;
             case R.id.create_description :
                 if (isEmpty(descText)) {
-                    System.out.println("Description is empty");
+                    notifyUser("Description is empty");
                     return false;
                 }
                 return true;
             case R.id.create_date :
                 if (isEmpty(dateText)) {
-                    System.out.println("Date is empty");
+                    notifyUser("Date is empty");
                     return false;
                 }
                 return true;
             case R.id.create_time :
                 if (isEmpty(timeText)) {
-                    System.out.println("Time is empty");
+                    notifyUser("Time is empty");
                     return false;
                 }
                 return true;
             case R.id.create_location :
                 if (isEmpty(locText)) {
-                    System.out.println("Location is empty");
+                    notifyUser("Location is empty");
                     return false;
                 }
                 return true;
             case R.id.create_limit :   // check that limit is not empty and that it is an integer >= 1
                 if (isEmpty(limitText)) {
-                    System.out.println("Limit is empty");
+                    notifyUser("Limit is empty");
                     return false;
                 } else {
-                    int userEnteredLimit = Integer.parseInt(limitText.getText().toString());
+                    // check that input is a number
+                    String input = limitText.getText().toString();
+                    for (int i = 0; i < input.length(); i++) {
+                        if (!Character.isDigit(input.charAt(i))) {
+                            notifyUser("Limit needs to be a number");
+                            return false;
+                        }
+                    }
+                    // input is a number, check if number entered is valid
+                    int userEnteredLimit = Integer.parseInt(input);
                     if (userEnteredLimit < 1) {
-                        System.out.println("Limit is empty");
+                        notifyUser("Limit needs to be at least 1");
                         return false;
                     }
                 }
@@ -204,6 +214,15 @@ public class CreateEventActivity extends AppCompatActivity {
             return true;
         }
         return text.trim().length() == 0;
+    }
+
+    /**
+     * Displays a temporary message at the bottom of the screen
+     *
+     * @param message The message to be displayed
+     */
+    private void notifyUser(String message) {
+        Toast.makeText(CreateEventActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
     // adds click listener to submitButton to trigger verification and add event to database
