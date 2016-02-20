@@ -28,10 +28,10 @@
     <string name="create_blast_button">blast it!</string>
 
     <!-- Strings related to DetailActivity -->
-    <string name="detail_time">\@</string>
-    <string name="detail_who">who: </string>
-    <string name="detail_what">what: </string>
-    <string name="detail_where">where: </string>
+    <string name="detail_time">\@\u0020</string>
+    <string name="detail_who">who:\u0020</string>
+    <string name="detail_what">what:\u0020</string>
+    <string name="detail_where">where:\u0020</string>
     <string name="detail_edit">edit blast</string>
     <string name="detail_leave">leave blast :(</string>
     <string name="detail_join">have a blast! :)</string>
