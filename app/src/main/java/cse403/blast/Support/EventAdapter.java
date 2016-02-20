@@ -1,4 +1,4 @@
-package cse403.blast.Data;
+package cse403.blast.Support;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -44,21 +44,12 @@ public class EventAdapter extends ArrayAdapter<Event> {
         // Return the completed view to render on screen
 
         ImageView eventImage = (ImageView) convertView.findViewById(R.id.event_category_image);
-        //For adding background images
+        //TODO: For adding background images
         //int id = getContext().getResources().getIdentifier("cse403.blast:drawable/" + "ic_menu_share", null, null);
         //eventImage.setImageResource(id);
 
-        /*Random r = new Random();
+        //eventImage.setBackgroundColor(event.getCategoryColor());
 
-        int color = r.nextInt(100);
-        if (color < 33) {
-            eventImage.setBackgroundColor(Color.rgb(199, 198, 197));
-        } else if (color < 66) {
-            eventImage.setBackgroundColor(Color.rgb(160, 169, 222));
-        } else {
-            eventImage.setBackgroundColor(Color.rgb(255,120,75));
-        }
-        */
         return convertView;
     }
 }

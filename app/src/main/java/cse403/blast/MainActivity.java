@@ -3,7 +3,6 @@ package cse403.blast;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,10 +14,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -26,15 +26,12 @@ import com.firebase.client.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import cse403.blast.Data.Constants;
-import cse403.blast.Data.EventAdapter;
+import cse403.blast.Support.EventAdapter;
+import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
-import cse403.blast.Model.User;
 
 
 /**
@@ -47,13 +44,14 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = "MainActivity";
     private ListView mainListView;
+    private FacebookManager fbManager = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FacebookManager fbManager = FacebookManager.getInstance();
 
         // Redirecting to Login if necessary
-        // TODO: replace with real login stuff (ParseUser.getCurrentUser() == null)
-        if (false) {
+        if (!fbManager.isValidSession()) {
             Log.i(TAG, "NO USER");
             Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginPage);
@@ -87,22 +85,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-//        // hardcoded the userID, event title, description, # of attendees, and time
-//        User user1 = new User("Grace");
-//        User user2 = new User("Michelle");
-//        Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", "Star Karaoke", 10, new Date(1));
-//        user1.addCreatedEvent(event1);
-//        event1.addAttendee(new User("Sheen"));
-//        event1.addAttendee(new User("Carson"));
-//        Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", "Oasis", 5, new Date(1));
-//        user2.addCreatedEvent(event2);
-//        event2.addAttendee(new User("Melissa"));
-//        event2.addAttendee(new User("Kristi"));
-//        events.add(event1);
-//        events.add(event2);
-
+        
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -139,7 +122,6 @@ public class MainActivity extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Event eventAtPosition = (Event) parent.getItemAtPosition(position);
-                Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
 
                 // Creating a detail activity
                 // TODO: remove toString() after Data Manager is set up
@@ -151,7 +133,6 @@ public class MainActivity extends AppCompatActivity
 
 //                Set<User> exampleSet = new HashSet<User>();
                 detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
-
                 startActivity(detailIntent);
             }
         });
