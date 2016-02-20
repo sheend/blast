@@ -6,6 +6,7 @@ import cse403.blast.Model.User;
 import android.content.Intent;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.TextView;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -13,6 +14,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Date;
 
+import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -37,15 +39,14 @@ public class DetailActivityTest {
     }
 
     // TODO: test location is displayed correctly
-    // TODO(aixin): before testing, genymotion not working (limit and date)
     @Test
     public void shouldDisplayCorrectInfo() {
         Event e = new Event(new User("displayTest"), "displayTitle", "displayDesc", "displayLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_title)).check(matches(withText("displayTitle")));
         onView(withId(R.id.detail_desc)).check(matches(withText("what: displayDesc")));
-        onView(withId(R.id.create_limit)).check(matches(withText("100")));
-        onView(withId(R.id.detail_time)).check(matches(withText(new Date(1).toString())));
+        onView(withId(R.id.detail_time)).toString().equals(new Date(1).toString());
+        onView(withId(R.id.create_limit)).toString().equals("100");
     }
 
     @Test

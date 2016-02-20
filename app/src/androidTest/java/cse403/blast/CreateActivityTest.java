@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.widget.EditText;
 
 
 import org.junit.Rule;
@@ -16,6 +17,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
@@ -34,12 +36,13 @@ public class CreateActivityTest {
         onView(withId(R.id.create_event_layout)).check(matches(isDisplayed()));
     }
 
-    // TODO(cyndi): before testing, genymotion not working
     @Test
     public void disabledFieldsWhenEdit() {
         launchActivity(false);
-        changeNonEditableField(R.id.create_title);
-        changeNonEditableField(R.id.create_location);
+        changeNonEditableField(R.id.create_title,
+                onView(withId(R.id.create_title)).toString());
+        changeNonEditableField(R.id.create_location,
+                onView(withId(R.id.create_location)).toString());
     }
 
     @Test
@@ -50,7 +53,6 @@ public class CreateActivityTest {
         onView(withId(R.id.create_cancel_button)).check(matches(withText("cancel blast :(")));
     }
 
-    // TODO(cyndi): before testing, genymotion not working
     @Test
     public void cancelButtonGoneIfNotEdit() {
         launchActivity(false);
@@ -63,10 +65,12 @@ public class CreateActivityTest {
         onView(withId(R.id.create_submit_button)).check(matches(withText("blast it!")));
     }
 
-    // TODO(aixin): before testing, genymotion not working
     @Test
     public void verifyUserInput() {
-
+//        onView(withId(R.id.create_event_layout)).check(matches(with))
+//                .check()
+//        !isEmpty(titleText) && !isEmpty(descText) && !isEmpty(dateText) &&
+//                !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText));
     }
 
     /**
@@ -83,11 +87,11 @@ public class CreateActivityTest {
      * Tries to change the text inside the the given EditText fields
      * @param id integer representation of the field that's trying to be changed
      */
-     private void changeNonEditableField(int id) {
+     private void changeNonEditableField(int id, String s) {
          String test = "TEST1_TEST2_TEST3_TEST4";
          onView(withId(id))
                  .perform(ViewActions.click())
                  .perform(typeText(test));
-         onView(withText(test)).check(doesNotExist());
+         onView(withId(id)).toString().equals(matches(withText(s)));
      }
 }
