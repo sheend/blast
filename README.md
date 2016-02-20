@@ -3,7 +3,7 @@
 
 
 #Beta Updates
-[SRS](https://drive.google.com/file/d/0B3PwQkCDyLnwbWJ4SnRZYzhYVzg/view)and [SDS](https://drive.google.com/file/d/0B3PwQkCDyLnwYTZEZTVPOUV4UWs/view)documents have been updated! </br>
+[SRS](https://drive.google.com/file/d/0B3PwQkCDyLnwbWJ4SnRZYzhYVzg/view) and [SDS](https://drive.google.com/file/d/0B3PwQkCDyLnwYTZEZTVPOUV4UWs/view) documents have been updated! </br>
 We have two use cases functioning at this time: logging in with Facebook and creating and event. After logging in, the user is able to view all the events currently in the database. They can click on an event to view details, but they are not yet able to "attend" an event. They are able to create their own events though, which are sent to the database and thus displayed in their view.
 
 #Developer Documentation
