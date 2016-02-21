@@ -6,15 +6,23 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.util.Set;
 
+import cse403.blast.Data.Constants;
+import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
@@ -37,8 +45,11 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Grab associated event and display event title
-        // TODO: update currentUser with real current user, not hardcoded
-        currentUser = new User("Grace");
+        FacebookManager fbManager = FacebookManager.getInstance();
+        currentUser = fbManager.getCurrentUser();
+        if(currentUser == null) {
+            Log.i(TAG, "currentUser is null");
+        }
         Intent detailIntent = getIntent();
         event = (Event) detailIntent.getSerializableExtra("event");
         TextView title = (TextView) findViewById(R.id.detail_title);
@@ -102,6 +113,24 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
                     currentUser.attendEvent(event);
+
+                    final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID());
+                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            ref.setValue(currentUser);
+                            Log.i("attendingEventTag", "user is attending event");
+                        }
+
+                        @Override
+                        public void onCancelled(FirebaseError firebaseError) {
+
+                        }
+                    });
+
+
+
+
                     startActivity(mainIntent);
                 }
             });

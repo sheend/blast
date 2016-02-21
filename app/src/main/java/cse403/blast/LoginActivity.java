@@ -43,6 +43,7 @@ public class LoginActivity extends FragmentActivity {
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     private TextView message;
+    private User userInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +60,14 @@ public class LoginActivity extends FragmentActivity {
                 Log.i(TAG, "onSuccess");
                 AccessToken token = loginResult.getAccessToken();
                 FacebookManager fbManager = FacebookManager.getInstance();
+                userInfo = fbManager.getCurrentUser();
 
                 // Asynchronously adds the logged in user to Firebase
                 addLoginUser(loginResult);
+
+                // sets the current User
+                Log.i(TAG, "userInfo: " + userInfo.getFacebookID());
+                //fbManager.setCurrentUser(userInfo);
 
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 fbManager.setToken(token);
@@ -105,13 +111,15 @@ public class LoginActivity extends FragmentActivity {
 
                         if (dataSnapshot.getValue() == null) {
                             // TODO: replace with facebook ID
-                            User userInfo = new User(fid);
+                            userInfo = new User(fid);
 
                             // Add user to DB
                             ref.setValue(userInfo);
+                            FacebookManager fbManager = FacebookManager.getInstance();
                             Log.i("addedNewUserTAG", "we added a new user");
 
                         } else {
+                            //userInfo = dataSnapshot.getValue(User.class);
                             Log.i("noUserAddedTAG", "user already exists in db");
                         }
 
@@ -124,6 +132,7 @@ public class LoginActivity extends FragmentActivity {
                 });
             }
         }).executeAsync();
+
     }
 
 }
