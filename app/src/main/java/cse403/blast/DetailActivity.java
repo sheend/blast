@@ -13,9 +13,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
 
 import org.w3c.dom.Text;
@@ -50,28 +52,53 @@ public class DetailActivity extends AppCompatActivity {
 
         // Grab ID of current user from shared preferences file
         preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-        currentUserID = preferenceSettings.getString("userInfo", "user");
+        currentUserID = preferenceSettings.getString("userid", "user");
         Log.i("detailActivity", "theCurrentID is: " + currentUserID);
 
         // Grab User object associated with currentUserID
 
-        final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUserID);
+        // final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUserID);
+//
+//        Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users");
+//        Query queryRef = ref.orderByChild("facebookID").equalTo(currentUserID);
+//        queryRef.addChildEventListener(new ChildEventListener() {
+//            @Override
+//            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
+//                   //currentUser = snapshot.getValue(User.class);
+//                    currentUser = new User("123456");
+//            }
+//
+//            @Override
+//            public void onChildChanged(DataSnapshot snapshot, String previousChild) {
+//            }
+//
+//            @Override
+//            public void onChildRemoved(DataSnapshot snapshot) {
+//            }
+//
+//            @Override
+//            public void onChildMoved(DataSnapshot snapshot, String previousChild) {
+//            }
+//
+//            @Override
+//               public void onCancelled(FirebaseError firebaseError) {
+//            }
+//        });
 
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-               @Override
-               public void onDataChange(DataSnapshot dataSnapshot) {
-                   currentUser = dataSnapshot.getValue(User.class);
-               }
+//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//               @Override
+//               public void onDataChange(DataSnapshot dataSnapshot) {
+//                   currentUser = dataSnapshot.getValue(User.class);
+//               }
+//
+//               @Override
+//               public void onCancelled(FirebaseError firebaseError) {
+//               }
+//           });
 
-               @Override
-               public void onCancelled(FirebaseError firebaseError) {
-               }
-           });
 
-//        FacebookManager fbManager = FacebookManager.getInstance();
-//        currentUser = fbManager.getCurrentUser();
 
-            Intent detailIntent = getIntent();
+        Intent detailIntent = getIntent();
         event = (Event) detailIntent.getSerializableExtra("event");
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText(event.getTitle());

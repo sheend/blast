@@ -114,23 +114,26 @@ public class LoginActivity extends FragmentActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.getValue() == null) {
-                            // TODO: replace with facebook ID
+
                             userInfo = new User(fid);
 
                             // Add user to DB
                             ref.setValue(userInfo);
-//                            FacebookManager fbManager = FacebookManager.getInstance();
-//                            fbManager.setCurrentUser(userInfo);
 
                             preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
                             preferenceEditor = preferenceSettings.edit();
-                            preferenceEditor.putString("userInfo", fid);
+                            preferenceEditor.putString("userid", fid);
                             preferenceEditor.commit();
 
                             Log.i("addedNewUserTAG", "we added a new user");
 
                         } else {
                             //userInfo = dataSnapshot.getValue(User.class);
+                            preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+                            preferenceEditor = preferenceSettings.edit();
+                            preferenceEditor.putString("userid", fid);
+                            preferenceEditor.commit();
+
                             Log.i("noUserAddedTAG", "user already exists in db");
                         }
 
