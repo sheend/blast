@@ -3,9 +3,8 @@ package cse403.blast;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v4.app.FragmentActivity;
-
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -17,15 +16,14 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashSet;
@@ -115,7 +113,7 @@ public class LoginActivity extends FragmentActivity {
 
                         if (dataSnapshot.getValue() == null) {
 
-                            userInfo = new User(fid);
+                            userInfo = new User(fid, new HashSet<Event>(), new HashSet<Event>());
 
                             // Add user to DB
                             ref.setValue(userInfo);
@@ -123,15 +121,30 @@ public class LoginActivity extends FragmentActivity {
                             preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
                             preferenceEditor = preferenceSettings.edit();
                             preferenceEditor.putString("userid", fid);
+
+
+                            // Grab User object associated with currentUserID
+                            Gson gson = new Gson();
+                            String json = gson.toJson(userInfo);
+                            Log.i("LoginActivity", "JSON: " + json);
+                            preferenceEditor.putString("MyUser", json);
+
                             preferenceEditor.commit();
 
                             Log.i("addedNewUserTAG", "we added a new user");
 
                         } else {
-                            //userInfo = dataSnapshot.getValue(User.class);
+                            userInfo = dataSnapshot.getValue(User.class);
                             preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
                             preferenceEditor = preferenceSettings.edit();
                             preferenceEditor.putString("userid", fid);
+
+                            // Grab User object associated with currentUserID
+                            Gson gson = new Gson();
+                            String json = gson.toJson(userInfo);
+                            Log.i("LoginActivity", "JSON: " + json);
+                            preferenceEditor.putString("MyUser", json);
+
                             preferenceEditor.commit();
 
                             Log.i("noUserAddedTAG", "user already exists in db");

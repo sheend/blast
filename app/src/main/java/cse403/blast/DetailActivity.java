@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -13,20 +11,15 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.Query;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
 
-import org.w3c.dom.Text;
-
-import java.io.Serializable;
 import java.util.Set;
 
 import cse403.blast.Data.Constants;
-import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
@@ -56,7 +49,12 @@ public class DetailActivity extends AppCompatActivity {
         Log.i("detailActivity", "theCurrentID is: " + currentUserID);
 
         // Grab User object associated with currentUserID
+        Gson gson = new Gson();
+        String json = preferenceSettings.getString("MyUser", "");
+        Log.i("DetailActivity", "JSON: " + json);
+        currentUser = gson.fromJson(json, User.class);
 
+        if (currentUser != null) Log.i("SUCCESS?", "YES T^T");
         // final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUserID);
 //
 //        Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users");

@@ -3,7 +3,6 @@ package cse403.blast.Model;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -33,10 +32,12 @@ public class User implements Serializable {
      * Constructs a new user using their facebook id
      * @param facebookID    user's fb identification
      */
-    public User(String facebookID) {
+    public User(String facebookID, Set<Event> created, Set<Event> attending) {
         this.facebookID = facebookID;
-        eventsCreated = new HashSet<Event>();
-        eventsAttending = new HashSet<Event>();
+//        eventsCreated = new HashSet<Event>();
+//        eventsAttending = new HashSet<Event>();
+        eventsCreated = created;
+        eventsAttending = attending;
     }
 
     /**
