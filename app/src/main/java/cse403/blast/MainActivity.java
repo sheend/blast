@@ -1,9 +1,12 @@
 package cse403.blast;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,12 +16,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -42,7 +46,7 @@ import cse403.blast.Model.Event;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final String TAG = "MainActivity";
+    private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
     private boolean IGNORE_LOGIN = true;
@@ -102,7 +106,8 @@ public class MainActivity extends AppCompatActivity
                 }
                 Log.i("Log tag", "The data changed!");
 
-                listEvent(events);
+                setupListEvents(events);
+                setupNavLists(events);
             }
 
             @Override
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void listEvent(List<Event> events) {
+    public void setupListEvents(List<Event> events) {
         mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
         EventAdapter adapter = new EventAdapter(this, events);
@@ -138,8 +143,35 @@ public class MainActivity extends AppCompatActivity
                 startActivity(detailIntent);
             }
         });
+
     }
 
+
+    public void setupNavLists(List<Event> events) {
+        ListView sideNavListView = (ListView) findViewById(R.id.new_try_list_view);
+        ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(this, android.R.layout.simple_list_item_1, events);
+        sideNavListView.setAdapter(navAdapter);
+
+        // Hack to make the listview scroll on the sidebar
+        sideNavListView.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
+        sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        setListViewHeightBasedOnChildren(sideNavListView);
+    }
 
     @Override
     public void onBackPressed() {
@@ -193,6 +225,34 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    /**
+     * Method for Setting the Height of the ListView dynamically.
+     * Fix the issue of not showing all the items of the ListView
+     * when placed inside a ScrollView
+     */
+    public static void setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null)
+            return;
+
+        DisplayMetrics metrics = Resources.getSystem().getDisplayMetrics();
+        int height = metrics.heightPixels;
+        Log.i(TAG, "height:" + height); // 2392, 1184 : 1592, 384
+
+        ViewGroup.LayoutParams params = listView.getLayoutParams();
+
+        if (height > 2200) {
+            params.height = 1600;
+        } else if (height > 2000) {
+            params.height = 1400;
+        } else if (height > 1400) {
+            params.height = 1200;
+        } else {
+            params.height = 800;
+        }
+        listView.setLayoutParams(params);
     }
 
 }
