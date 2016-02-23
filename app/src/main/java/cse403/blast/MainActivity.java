@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity
         FacebookManager fbManager = FacebookManager.getInstance();
 
         // Redirecting to Login if necessary
-        if (!fbManager.isValidSession() || IGNORE_LOGIN) {
+        if (!fbManager.isValidSession() && !IGNORE_LOGIN) {
             Log.i(TAG, "NO USER");
             Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginPage);
