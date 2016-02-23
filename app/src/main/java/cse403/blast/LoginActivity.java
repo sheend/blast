@@ -112,44 +112,29 @@ public class LoginActivity extends FragmentActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.getValue() == null) {
-
                             userInfo = new User(fid, new HashSet<Event>(), new HashSet<Event>());
 
                             // Add user to DB
                             ref.setValue(userInfo);
 
-                            preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-                            preferenceEditor = preferenceSettings.edit();
-                            preferenceEditor.putString("userid", fid);
-
-
-                            // Grab User object associated with currentUserID
-                            Gson gson = new Gson();
-                            String json = gson.toJson(userInfo);
-                            Log.i("LoginActivity", "JSON: " + json);
-                            preferenceEditor.putString("MyUser", json);
-
-                            preferenceEditor.commit();
-
                             Log.i("addedNewUserTAG", "we added a new user");
-
                         } else {
                             userInfo = dataSnapshot.getValue(User.class);
-                            preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-                            preferenceEditor = preferenceSettings.edit();
-                            preferenceEditor.putString("userid", fid);
-
-                            // Grab User object associated with currentUserID
-                            Gson gson = new Gson();
-                            String json = gson.toJson(userInfo);
-                            Log.i("LoginActivity", "JSON: " + json);
-                            preferenceEditor.putString("MyUser", json);
-
-                            preferenceEditor.commit();
-
                             Log.i("noUserAddedTAG", "user already exists in db");
                         }
 
+                        // Store the current userID in SharedPreferences
+                        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+                        preferenceEditor = preferenceSettings.edit();
+                        preferenceEditor.putString("userid", fid);
+
+                        // Store the current User object in SharedPreferences
+                        Gson gson = new Gson();
+                        String json = gson.toJson(userInfo);
+                        Log.i("LoginActivity", "JSON: " + json);
+                        preferenceEditor.putString("MyUser", json);
+
+                        preferenceEditor.commit();
                     }
 
                     @Override

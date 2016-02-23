@@ -43,58 +43,18 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Grab ID of current user from shared preferences file
+        // Grab ID of current user from SharedPreferences file
         preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
         currentUserID = preferenceSettings.getString("userid", "user");
         Log.i("detailActivity", "theCurrentID is: " + currentUserID);
 
-        // Grab User object associated with currentUserID
+        // Grab User object from SharedPreferences file
         Gson gson = new Gson();
         String json = preferenceSettings.getString("MyUser", "");
         Log.i("DetailActivity", "JSON: " + json);
         currentUser = gson.fromJson(json, User.class);
 
         if (currentUser != null) Log.i("SUCCESS?", "YES T^T");
-        // final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUserID);
-//
-//        Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users");
-//        Query queryRef = ref.orderByChild("facebookID").equalTo(currentUserID);
-//        queryRef.addChildEventListener(new ChildEventListener() {
-//            @Override
-//            public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-//                   //currentUser = snapshot.getValue(User.class);
-//                    currentUser = new User("123456");
-//            }
-//
-//            @Override
-//            public void onChildChanged(DataSnapshot snapshot, String previousChild) {
-//            }
-//
-//            @Override
-//            public void onChildRemoved(DataSnapshot snapshot) {
-//            }
-//
-//            @Override
-//            public void onChildMoved(DataSnapshot snapshot, String previousChild) {
-//            }
-//
-//            @Override
-//               public void onCancelled(FirebaseError firebaseError) {
-//            }
-//        });
-
-//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-//               @Override
-//               public void onDataChange(DataSnapshot dataSnapshot) {
-//                   currentUser = dataSnapshot.getValue(User.class);
-//               }
-//
-//               @Override
-//               public void onCancelled(FirebaseError firebaseError) {
-//               }
-//           });
-
-
 
         Intent detailIntent = getIntent();
         event = (Event) detailIntent.getSerializableExtra("event");
