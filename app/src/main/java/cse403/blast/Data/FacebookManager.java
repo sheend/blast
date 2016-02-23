@@ -25,7 +25,7 @@ public class FacebookManager implements Serializable {
      * Basic constructor
      */
     private FacebookManager() {
-        clearToken();
+        //clearToken();
     }
 
     /**

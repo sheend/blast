@@ -1,6 +1,8 @@
 package cse403.blast;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -34,6 +36,8 @@ public class DetailActivity extends AppCompatActivity {
     private final String TAG = "DetailActivity";
     private Event event;
     private User currentUser;
+    private String currentUserID;
+    private SharedPreferences preferenceSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +48,30 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Grab associated event and display event title
-        FacebookManager fbManager = FacebookManager.getInstance();
-        currentUser = fbManager.getCurrentUser();
-        if(currentUser == null) {
-            Log.i(TAG, "currentUser is null");
-        }
-        Intent detailIntent = getIntent();
+        // Grab ID of current user from shared preferences file
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        currentUserID = preferenceSettings.getString("userInfo", "user");
+        Log.i("detailActivity", "theCurrentID is: " + currentUserID);
+
+        // Grab User object associated with currentUserID
+
+        final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUserID);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+               @Override
+               public void onDataChange(DataSnapshot dataSnapshot) {
+                   currentUser = dataSnapshot.getValue(User.class);
+               }
+
+               @Override
+               public void onCancelled(FirebaseError firebaseError) {
+               }
+           });
+
+//        FacebookManager fbManager = FacebookManager.getInstance();
+//        currentUser = fbManager.getCurrentUser();
+
+            Intent detailIntent = getIntent();
         event = (Event) detailIntent.getSerializableExtra("event");
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText(event.getTitle());
@@ -127,9 +148,6 @@ public class DetailActivity extends AppCompatActivity {
 
                         }
                     });
-
-
-
 
                     startActivity(mainIntent);
                 }

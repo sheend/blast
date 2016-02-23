@@ -1,6 +1,8 @@
 package cse403.blast;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.app.FragmentActivity;
 
 import android.os.Bundle;
@@ -44,6 +46,10 @@ public class LoginActivity extends FragmentActivity {
     private CallbackManager callbackManager;
     private TextView message;
     private User userInfo;
+    private SharedPreferences preferenceSettings;
+    private SharedPreferences.Editor preferenceEditor;
+    private static final int PREFERENCE_MODE_PRIVATE = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,14 +66,12 @@ public class LoginActivity extends FragmentActivity {
                 Log.i(TAG, "onSuccess");
                 AccessToken token = loginResult.getAccessToken();
                 FacebookManager fbManager = FacebookManager.getInstance();
-                userInfo = fbManager.getCurrentUser();
 
                 // Asynchronously adds the logged in user to Firebase
                 addLoginUser(loginResult);
 
                 // sets the current User
-                Log.i(TAG, "userInfo: " + userInfo.getFacebookID());
-                //fbManager.setCurrentUser(userInfo);
+               //  Log.i(TAG, "userInfo: " + userInfo.getFacebookID());
 
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 fbManager.setToken(token);
@@ -115,7 +119,14 @@ public class LoginActivity extends FragmentActivity {
 
                             // Add user to DB
                             ref.setValue(userInfo);
-                            FacebookManager fbManager = FacebookManager.getInstance();
+//                            FacebookManager fbManager = FacebookManager.getInstance();
+//                            fbManager.setCurrentUser(userInfo);
+
+                            preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+                            preferenceEditor = preferenceSettings.edit();
+                            preferenceEditor.putString("userInfo", fid);
+                            preferenceEditor.commit();
+
                             Log.i("addedNewUserTAG", "we added a new user");
 
                         } else {
