@@ -48,13 +48,14 @@ public class MainActivity extends AppCompatActivity
 
     private final String TAG = "MainActivity";
     private FacebookManager fbManager = null;
+    private boolean IGNORE_LOGIN = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FacebookManager fbManager = FacebookManager.getInstance();
 
         // Redirecting to Login if necessary
-        if (!fbManager.isValidSession()) {
+        if (!fbManager.isValidSession() || IGNORE_LOGIN) {
             Log.i(TAG, "NO USER");
             Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginPage);
