@@ -64,7 +64,9 @@ public class LoginActivity extends FragmentActivity {
                 addLoginUser(loginResult);
 
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                fbManager.setToken(token);
+                fbManager.update(token);
+                AccessToken.setCurrentAccessToken(token);
+                fbManager.saveSession(getApplicationContext());
                 startActivity(i);
                 finish();
             }

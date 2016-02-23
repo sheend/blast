@@ -15,6 +15,7 @@ import org.w3c.dom.Text;
 import java.io.Serializable;
 import java.util.Set;
 
+import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
@@ -107,4 +108,15 @@ public class DetailActivity extends AppCompatActivity {
             });
         }
     }
+
+   /* @Override
+    protected void onStop() {
+        super.onStop();
+        FacebookManager fbManager = FacebookManager.getInstance();
+        if (fbManager.isValidSession()) {
+            fbManager.saveSession(getApplicationContext());
+        } else {
+            fbManager.clearSession(getApplicationContext());
+        }
+    }*/
 }

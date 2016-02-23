@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.HashSet;
 
 import cse403.blast.Data.Constants;
+import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.User;
 import cse403.blast.Model.Event;
 import cse403.blast.Support.DatePickerFragment;
@@ -120,6 +121,17 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         Log.i(TAG, "Done creating page");
     }
+
+    /*@Override
+    protected void onStop() {
+        super.onStop();
+        FacebookManager fbManager = FacebookManager.getInstance();
+        if (fbManager.isValidSession()) {
+            fbManager.saveSession(getApplicationContext());
+        } else {
+            fbManager.clearSession(getApplicationContext());
+        }
+    }*/
 
     // VALIDATION METHODS
 
