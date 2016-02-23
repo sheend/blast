@@ -47,10 +47,10 @@ public class DetailActivity extends AppCompatActivity {
         // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
 
-        time.setText(getString(R.string.detail_time) + event.getEventTime());
+        time.setText("" + event.getEventTime());
 
         TextView desc = (TextView) findViewById(R.id.detail_desc);
-        desc.setText(getString(R.string.detail_what) + event.getDesc());
+        desc.setText(event.getDesc());
 
         // TODO: Display the list of attendees by their Facebook profile picture after
         // TODO: integrating with Facebook
@@ -63,11 +63,11 @@ public class DetailActivity extends AppCompatActivity {
             }
             list += user.getFacebookID()+ ", ";
         }
-        attendees.setText(getString(R.string.detail_who) + list);
+        attendees.setText(list);
 
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location_label);
-        locationLabel.setText(getString(R.string.detail_where));
+        locationLabel.setText("");
 
         // Set appropriate text and onclick's depending on user's status
         Button button = (Button) findViewById(R.id.detail_button);
