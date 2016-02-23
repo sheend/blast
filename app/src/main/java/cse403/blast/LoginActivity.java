@@ -12,10 +12,26 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphRequestAsyncTask;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashSet;
+
+import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
+import cse403.blast.Model.Event;
+import cse403.blast.Model.User;
 
 
 /**
@@ -42,8 +58,12 @@ public class LoginActivity extends FragmentActivity {
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG, "onSuccess");
                 AccessToken token = loginResult.getAccessToken();
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 FacebookManager fbManager = FacebookManager.getInstance();
+
+                // Asynchronously adds the logged in user to Firebase
+                addLoginUser(loginResult);
+
+                Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 fbManager.setToken(token);
                 startActivity(i);
                 finish();
@@ -68,5 +88,42 @@ public class LoginActivity extends FragmentActivity {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-}
 
+    private void addLoginUser(final LoginResult loginResult) {
+        final AccessToken accessToken = loginResult.getAccessToken();
+        GraphRequestAsyncTask request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject user, GraphResponse graphResponse) {
+                final String fid = user.optString("id");
+                Log.i("addedNewUserTAG", "we got this user id: " + fid);
+
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        if (dataSnapshot.getValue() == null) {
+                            // TODO: replace with facebook ID
+                            User userInfo = new User(fid);
+
+                            // Add user to DB
+                            ref.setValue(userInfo);
+                            Log.i("addedNewUserTAG", "we added a new user");
+
+                        } else {
+                            Log.i("noUserAddedTAG", "user already exists in db");
+                        }
+
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Log.d(TAG, "error: " + firebaseError.getMessage());
+                    }
+                });
+            }
+        }).executeAsync();
+    }
+
+}

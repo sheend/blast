@@ -41,8 +41,11 @@ dependencies {
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.facebook.android:audience-network-sdk:4.6+'
 
+    /* Firebase UI */
+    compile 'com.firebaseui:firebase-ui:0.2.2'
+
     androidTestCompile 'com.android.support:support-annotations:22+'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
     androidTestCompile 'com.android.support.test:runner:0.4.1'
-
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2'
 }

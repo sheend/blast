@@ -3,7 +3,6 @@ package cse403.blast;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -15,8 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -27,15 +26,12 @@ import com.firebase.client.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import cse403.blast.Data.Constants;
+import cse403.blast.Support.EventAdapter;
 import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
-import cse403.blast.Model.User;
 
 
 /**
@@ -47,6 +43,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = "MainActivity";
+    private ListView mainListView;
     private FacebookManager fbManager = null;
     private boolean IGNORE_LOGIN = true;
 
@@ -62,6 +59,7 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -73,6 +71,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 Intent createEventIntent = new Intent(MainActivity.this, CreateEventActivity.class);
+                createEventIntent.putExtra("edit", false);
                 startActivity(createEventIntent);
 
             }
@@ -88,22 +87,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-
-//        // hardcoded the userID, event title, description, # of attendees, and time
-//        User user1 = new User("Grace");
-//        User user2 = new User("Michelle");
-//        Event event1 = new Event(user1, "Karaoke on the Ave", "Sing the night away!", "Star Karaoke", 10, new Date(1));
-//        user1.addCreatedEvent(event1);
-//        event1.addAttendee(new User("Sheen"));
-//        event1.addAttendee(new User("Carson"));
-//        Event event2 = new Event(user2, "Bubble Tea Run", "Lets get some bubble tea!!", "Oasis", 5, new Date(1));
-//        user2.addCreatedEvent(event2);
-//        event2.addAttendee(new User("Melissa"));
-//        event2.addAttendee(new User("Kristi"));
-//        events.add(event1);
-//        events.add(event2);
-
+        
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -130,18 +114,16 @@ public class MainActivity extends AppCompatActivity
 
 
     public void listEvent(List<Event> events) {
-        ListView mainListView = (ListView) findViewById(R.id.main_blast_list_view);
+        mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
-        ArrayAdapter<Event> stringArrayAdapter = new ArrayAdapter<Event>(this,
-                android.R.layout.simple_list_item_1, events);
-        mainListView.setAdapter(stringArrayAdapter);
+        EventAdapter adapter = new EventAdapter(this, events);
+        mainListView.setAdapter(adapter);
 
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
                 Event eventAtPosition = (Event) parent.getItemAtPosition(position);
-                Toast.makeText(MainActivity.this, eventAtPosition.getTitle(), Toast.LENGTH_SHORT).show();
 
                 // Creating a detail activity
                 // TODO: remove toString() after Data Manager is set up
@@ -150,14 +132,9 @@ public class MainActivity extends AppCompatActivity
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
 
                 detailIntent.putExtra("event", eventAtPosition);
-                //detailIntent.putExtra("name", eventAtPosition.getTitle());
-                //detailIntent.putExtra("time", eventAtPosition.getEventTime().toString());
-                //detailIntent.putExtra("desc", eventAtPosition.getDesc());
 
 //                Set<User> exampleSet = new HashSet<User>();
                 detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
-                //detailIntent.putExtra("attendees", (Serializable) exampleSet);
-
                 startActivity(detailIntent);
             }
         });
@@ -203,7 +180,7 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
+        /*if (id == R.id.nav_camera) {
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
 
@@ -211,10 +188,11 @@ public class MainActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_send) {
 
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }

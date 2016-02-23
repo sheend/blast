@@ -1,83 +1,12 @@
 package cse403.blast.Model;
 
+import android.graphics.Color;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Set;
 import java.util.HashSet;
-
-
-//public class Event {
-//    private User owner;
-//    private String title;
-//    private String desc;
-//    private int limit;
-//    private Date eventTime;
-//    private Date creationTime;
-//    private Set<User> attendees;
-//
-//    public Event() {
-//    }
-//
-//    public Event(User owner, String title, String desc, int limit, Date eventTime, Date creationTime, Set<User> attendees) {
-//        this.owner = owner;
-//        this.title = title;
-//        this.desc = desc;
-//        this.limit = limit;
-//        this.eventTime = eventTime;
-//        this.creationTime = creationTime;
-//        this.attendees = attendees;
-//    }
-//
-//    public Event(User owner, String title, String desc, int limit, Date eventTime) {
-//        this.owner = owner;
-//        this.title = title;
-//        this.desc = desc;
-//        this.limit = limit;
-//        this.eventTime = eventTime;
-//        this.creationTime = new Date(); // initialize to current time
-//        attendees = new HashSet<User>();
-//        owner.addCreatedEvent(this); // add this event to owner's list of created events
-//    }
-//
-//    public User getOwner() {
-//        return owner;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public String getDesc() {
-//        return desc;
-//    }
-//
-//    public int getLimit() {
-//        return limit;
-//    }
-//
-//    public Date getEventTime() {
-//        return eventTime;
-//    }
-//
-//    public Date getCreationTime() {
-//        return creationTime;
-//    }
-//
-//    public Set<User> getAttendees() {
-//        return attendees;
-//    }
-//
-//    public boolean addAttendee(User attendee) {
-//        return attendees.remove(attendee);
-//    }
-//
-//    public boolean removeAttendee(User attendee) {
-//        return attendees.remove(attendee);
-//    }
-//}
-
-
 
 /**
  * Created by Sheen on 2/2/16.
@@ -97,13 +26,19 @@ public class Event implements Serializable {
     eventTime != null && (eventTime - creationTime) < 43200000
     creationTime != null
     attendees.size() >= 1
-     */
+
+
+    public enum Category {
+        SOCIAL, FOOD, ACTIVE, ENTERTAINMENT, OTHER
+    }
+    */
 
     private User owner;
     private String title;
     private String desc;
     private String location;
     private int limit;
+    //private Category category;
     private Date eventTime;
     private Date creationTime;
     private Set<User> attendees;
@@ -114,7 +49,7 @@ public class Event implements Serializable {
     public Event() {
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<User>();
-
+        //this.category = Category.ACTIVE; //TODO: change this
 
     }
 
@@ -133,6 +68,7 @@ public class Event implements Serializable {
         this.desc = desc;
         this.location = location;
         this.limit = limit;
+        //this.category = Category.ACTIVE; //TODO: Change this
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<User>();
@@ -239,6 +175,37 @@ public class Event implements Serializable {
     }
 
     /**
+     * Return category of event
+     * @return category (enum) of event
+
+    public Category getCategory() {
+        return (category == null) ? Category.ACTIVE : category; //TODO: backup plan
+    }
+
+    /**
+     * Return category of event
+     * @return category (enum) of event
+     * //TODO: Add colors to the categories/add pictures?
+     *
+    public int getCategoryColor() {
+        switch (getCategory()) {
+            case ACTIVE:
+                return Color.rgb(255, 26, 0);
+            case ENTERTAINMENT:
+                return Color.rgb(255,26,0);
+            case FOOD:
+                return Color.rgb(255, 26, 0);
+            case SOCIAL:
+                return Color.rgb(130,143,212); // light blue
+            case OTHER:
+                return Color.rgb(255,26,0);
+            default:
+                return Color.rgb(128,128,128);
+        }
+    }
+    */
+
+    /**
      * Return time event is occurring
      * @return  time event is occurring
      */
@@ -274,7 +241,7 @@ public class Event implements Serializable {
         if (newTime.getTime() - creationTime.getTime() < 43200000         // must be within 12 hours of creation time
                 && newTime.getTime() - new Date().getTime() >= 3600000) { // new time must be at least 1 after current time
             this.eventTime = newTime;
-            //checkRep();
+            checkRep();
             return true;
         }
         return false;
@@ -286,7 +253,7 @@ public class Event implements Serializable {
      */
     public void changeDesc(String newDesc) {
         desc = newDesc;
-        //checkRep();
+        checkRep();
     }
 
     /**
@@ -299,7 +266,7 @@ public class Event implements Serializable {
             return false;
         }
         limit = newLimit;
-        //checkRep();
+        checkRep();
         return true;
     }
 
