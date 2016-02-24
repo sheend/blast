@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
-    private boolean IGNORE_LOGIN = true;
+    private boolean IGNORE_LOGIN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
