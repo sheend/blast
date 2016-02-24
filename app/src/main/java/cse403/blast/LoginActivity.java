@@ -117,6 +117,7 @@ public class LoginActivity extends FragmentActivity {
                             Set<Event> created = new HashSet<Event>();
                             attending.add(new Event());
                             created.add(new Event());
+
                             userInfo = new User(fid, attending, created);
 
                             // Add user to DB

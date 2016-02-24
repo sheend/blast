@@ -11,10 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.Set;
@@ -119,25 +116,56 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
+                    startActivity(mainIntent);
+
+                    Log.i(TAG, "PRE current user ID: " + currentUser.getFacebookID());
+                    Log.i(TAG, "PRE current events attending: " + currentUser.getEventsAttending());
+                    Log.i(TAG, "PRE current events created: " + currentUser.getEventsCreated());
                     currentUser.attendEvent(event);
 
-                    final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID());
-                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            ref.setValue(currentUser);
-                            Log.i("attendingEventTag", "user is attending event");
-                        }
+                    ///// update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
 
-                        @Override
-                        public void onCancelled(FirebaseError firebaseError) {
+                    Log.i(TAG, "POST current user ID: " + currentUser.getFacebookID());
+                    Log.i(TAG, "POST current events attending: " + currentUser.getEventsAttending());
+                    Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
 
-                        }
-                    });
+                    //final User newUser = new User(currentUser.getFacebookID(), currentUser.getEventsCreated(), currentUser.getEventsAttending());
 
-                    startActivity(mainIntent);
+                    Firebase newRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
+                    newRef.setValue(currentUser.getEventsAttending());
+//                    Map<String, Object> updatedList = new HashMap<String, Object>();
+//                    updatedList.put("eventsAttending", currentUser.getEventsAttending());
+//                    newRef.setValue(updatedList);
+
+
+
+
+//                    Map<String, Object> toadd = new HashMap<>
+//                    baseref.setValue(newUser);
+
+//                    if (currentUser.getEventsAttending().size() == 0) {
+//                        currentUser.setEventsAttending();
+//                    }
+//                    currentUser.attendEvent(event);
+//
+//                    final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID());
+//                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            ref.setValue(newUser);
+//                            Log.i("attendingEventTag", "user is attending event");
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(FirebaseError firebaseError) {
+//
+//                        }
+//                    });
+
+
                 }
             });
         }
     }
+
 }

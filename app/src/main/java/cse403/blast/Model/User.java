@@ -1,8 +1,8 @@
 package cse403.blast.Model;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -23,9 +23,10 @@ public class User implements Serializable {
     private Set<Event> eventsCreated;
     private Set<Event> eventsAttending;
 
-
     public User() {
-
+        this.facebookID = "";
+        this.eventsCreated = new HashSet<Event>();
+        this.eventsAttending = new HashSet<Event>();
     }
 
     /**
@@ -34,10 +35,10 @@ public class User implements Serializable {
      */
     public User(String facebookID, Set<Event> created, Set<Event> attending) {
         this.facebookID = facebookID;
-//        eventsCreated = new HashSet<Event>();
-//        eventsAttending = new HashSet<Event>();
         eventsCreated = created;
         eventsAttending = attending;
+//        eventsCreated = new HashSet<Event>();
+//        eventsAttending = new HashSet<Event>();
     }
 
     /**
@@ -134,7 +135,7 @@ public class User implements Serializable {
      * @return  events created by user
      */
     public Set<Event> getEventsCreated() {
-        return Collections.unmodifiableSet(eventsCreated);
+        return eventsCreated;
     }
 
     /**
@@ -142,7 +143,7 @@ public class User implements Serializable {
      * @return  events user is attending
      */
     public Set<Event> getEventsAttending() {
-        return Collections.unmodifiableSet(eventsAttending);
+        return eventsAttending;
     }
 
     /**

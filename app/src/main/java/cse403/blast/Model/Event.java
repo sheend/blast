@@ -1,12 +1,10 @@
 package cse403.blast.Model;
 
-import android.graphics.Color;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Sheen on 2/2/16.
@@ -46,12 +44,15 @@ public class Event implements Serializable {
      * Empty constructor
      */
     public Event() {
-        this.creationTime = new Date(); // initialize to current time
-        this.eventTime = new Date(); // initialize to current time
-        this.attendees = new HashSet<User>();
-        //this.category = Category.ACTIVE; //TODO: change this
+        this.owner = new User();
         this.title = "";
         this.desc = "";
+        this.location = "";
+        this.limit = 0;
+        this.eventTime = new Date();
+        this.creationTime = new Date(); // initialize to current time
+        this.attendees = new HashSet<User>();
+        //this.category = Category.ACTIVE; //TODO: change this
     }
 
 
