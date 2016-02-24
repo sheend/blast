@@ -47,9 +47,11 @@ public class Event implements Serializable {
      */
     public Event() {
         this.creationTime = new Date(); // initialize to current time
+        this.eventTime = new Date(); // initialize to current time
         this.attendees = new HashSet<User>();
         //this.category = Category.ACTIVE; //TODO: change this
-
+        this.title = "";
+        this.desc = "";
     }
 
 

@@ -413,6 +413,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Event userEvent = new Event(new User("1234", new HashSet<Event>(), new HashSet<Event>()), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, userEnteredLimit, userEnteredDate);
 
+
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
         Firebase newEventRef = eventRef.push();

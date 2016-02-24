@@ -55,6 +55,7 @@ public class DetailActivity extends AppCompatActivity {
         currentUser = gson.fromJson(json, User.class);
 
         if (currentUser != null) Log.i("SUCCESS?", "YES T^T");
+        Log.i("user set??", "" + currentUser.getEventsAttending());
 
         Intent detailIntent = getIntent();
         event = (Event) detailIntent.getSerializableExtra("event");

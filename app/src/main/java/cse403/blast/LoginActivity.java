@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 import org.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.Set;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
@@ -112,7 +113,11 @@ public class LoginActivity extends FragmentActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.getValue() == null) {
-                            userInfo = new User(fid, new HashSet<Event>(), new HashSet<Event>());
+                            Set<Event> attending = new HashSet<Event>();
+                            Set<Event> created = new HashSet<Event>();
+                            attending.add(new Event());
+                            created.add(new Event());
+                            userInfo = new User(fid, attending, created);
 
                             // Add user to DB
                             ref.setValue(userInfo);
