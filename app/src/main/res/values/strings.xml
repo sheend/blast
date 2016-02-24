@@ -10,7 +10,7 @@
     <string name="title_activity_login">Sign in</string>
 
     <!-- Strings related to CreateEventActivity -->
-    <string name="create_cancel_button">cancel blast :(</string>
+    <string name="create_cancel_button">cancel blast</string>
     <string name="create_save_button">save blast</string>
     <string name="create_blast_button">blast it!</string>
 
@@ -20,8 +20,8 @@
     <string name="detail_what">what:\u0020</string>
     <string name="detail_where">where:\u0020</string>
     <string name="detail_edit">edit blast</string>
-    <string name="detail_leave">leave blast :(</string>
-    <string name="detail_join">have a blast! :)</string>
+    <string name="detail_leave">leave blast</string>
+    <string name="detail_join">have a blast!</string>
 
     <!-- Strings related to login -->
     <string name="app_id">553561694808911</string>

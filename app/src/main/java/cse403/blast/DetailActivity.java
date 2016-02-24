@@ -67,7 +67,7 @@ public class DetailActivity extends AppCompatActivity {
 
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location_label);
-        locationLabel.setText("");
+        locationLabel.setText(event.getLocation());
 
         // Set appropriate text and onclick's depending on user's status
         Button button = (Button) findViewById(R.id.detail_button);

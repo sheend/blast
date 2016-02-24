@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="blastAccent">#FF4C10</color>
     <color name="offWhite">#EEEEEE</color>
+    <color name="blastDark">#322828</color>
 </resources>

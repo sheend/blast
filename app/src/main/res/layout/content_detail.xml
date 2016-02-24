@@ -18,7 +18,8 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="324dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="#322828">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -32,6 +33,7 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
+                android:textColor="@color/offWhite"
                 />
 
             <TextView
@@ -41,6 +43,7 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
+                android:textColor="@color/offWhite"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -49,6 +52,7 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
+                android:textColor="@color/offWhite"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -57,6 +61,7 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
+                android:textColor="@color/offWhite"
                 />
         </LinearLayout>
         <LinearLayout
@@ -65,7 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="56dp"
             android:layout_gravity="right"
-            android:id="@+id/detail_info" >
+            android:id="@+id/detail_info"
+            >
 
             <TextView
                 android:id="@+id/detail_time"
@@ -74,6 +80,7 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
+                android:textColor="@color/offWhite"
                 />
 
             <TextView
@@ -83,6 +90,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-light"
                 android:textSize="20sp"
+                android:textColor="@color/offWhite"
                 />
             <TextView
                 android:id="@+id/detail_location_label"
@@ -91,6 +99,7 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-light"
                 android:textSize="20sp"
+                android:textColor="@color/offWhite"
                 />
 
             <ImageView
@@ -107,6 +116,7 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
+                android:textColor="@color/offWhite"
                 />
         </LinearLayout>
 
@@ -114,10 +124,10 @@
 
     <Button
         android:id="@+id/detail_button"
-        android:layout_width="200dp"
+        android:layout_width="match_parent"
         android:layout_height="72dp"
         android:gravity="center"
-        android:textSize="20sp"
+        android:textSize="30sp"
         android:textColor="@color/offWhite"
         android:fontFamily="sans-serif-light"
         android:layout_gravity="center_horizontal"
