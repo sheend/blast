@@ -7,13 +7,13 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="cse403.blast.MainActivity"
     tools:showIn="@layout/app_bar_main"
-    android:background="@color/blastDark">
+    android:background="@color/windowBackground">
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/main_blast_list_view"
-        android:background="@color/blastDark">
+        android:background="@color/windowBackground">
     </ListView>
 
 </RelativeLayout>

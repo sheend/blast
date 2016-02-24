@@ -18,8 +18,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="324dp"
-        android:orientation="horizontal"
-        android:background="#322828">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -33,7 +32,6 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
-                android:textColor="@color/offWhite"
                 />
 
             <TextView
@@ -43,7 +41,6 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
-                android:textColor="@color/offWhite"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -52,7 +49,6 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
-                android:textColor="@color/offWhite"
                 />
             <TextView
                 android:layout_width="wrap_content"
@@ -61,7 +57,6 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
-                android:textColor="@color/offWhite"
                 />
         </LinearLayout>
         <LinearLayout
@@ -80,7 +75,6 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
-                android:textColor="@color/offWhite"
                 />
 
             <TextView
@@ -90,7 +84,6 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-light"
                 android:textSize="20sp"
-                android:textColor="@color/offWhite"
                 />
             <TextView
                 android:id="@+id/detail_location_label"
@@ -99,7 +92,6 @@
                 android:layout_marginBottom="8dp"
                 android:fontFamily="sans-serif-light"
                 android:textSize="20sp"
-                android:textColor="@color/offWhite"
                 />
 
             <ImageView
@@ -116,7 +108,6 @@
                 android:layout_marginBottom="8dp"
                 android:textSize="20sp"
                 android:fontFamily="sans-serif-light"
-                android:textColor="@color/offWhite"
                 />
         </LinearLayout>
 
@@ -128,10 +119,10 @@
         android:layout_height="72dp"
         android:gravity="center"
         android:textSize="30sp"
-        android:textColor="@color/offWhite"
+        android:textColor="@color/lightText"
         android:fontFamily="sans-serif-light"
         android:layout_gravity="center_horizontal"
         android:textAllCaps="false"
-        android:background="@color/blastAccent" />
+        android:backgroundTint="@color/blastAccent" />
 </LinearLayout>
 

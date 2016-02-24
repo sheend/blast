@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/event_title"
-        android:textColor="@color/offWhite"
         android:fontFamily="sans-serif-light"
         android:textSize="12pt"
         android:gravity="left"
@@ -29,7 +28,6 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="@color/offWhite"
         android:fontFamily="sans-serif-light"
         android:id="@+id/event_subtitle"
         android:layout_below="@+id/event_title"

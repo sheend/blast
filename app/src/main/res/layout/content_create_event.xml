@@ -17,23 +17,21 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:background="#636161"
+        android:background="@color/colorPrimaryDark"
         android:id="@+id/create_image"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:id="@+id/create_title"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@color/offWhite"
-        android:textColorHint="@color/offWhite"
+        android:textColor="@color/lightText"
+        android:textColorHint="@color/lightText"
         android:hint="title"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:id="@+id/create_description"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@color/offWhite"
-        android:textColorHint="@color/offWhite"
+        android:textColor="@color/lightText"
+        android:textColorHint="@color/lightText"
         android:hint="description"/>
     <RelativeLayout
         android:layout_width="match_parent"
@@ -42,17 +40,15 @@
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             android:id="@+id/create_date"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@color/offWhite"
-            android:textColorHint="@color/offWhite"
+            android:textColor="@color/lightText"
+            android:textColorHint="@color/lightText"
             android:hint="date"/>
         <EditText
             android:layout_width="wrap_content"
             android:layout_height="72dp"
             android:id="@+id/create_time"
-            android:fontFamily="sans-serif-light"
-            android:textColor="@color/offWhite"
-            android:textColorHint="@color/offWhite"
+            android:textColor="@color/lightText"
+            android:textColorHint="@color/lightText"
             android:hint="time"
             android:layout_toRightOf="@+id/create_date"/>
     </RelativeLayout>
@@ -60,24 +56,22 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:id="@+id/create_location"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@color/offWhite"
-        android:textColorHint="@color/offWhite"
+        android:textColor="@color/lightText"
+        android:textColorHint="@color/lightText"
         android:hint="location"/>
     <EditText
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:id="@+id/create_limit"
-        android:fontFamily="sans-serif-light"
-        android:textColor="@color/offWhite"
-        android:textColorHint="@color/offWhite"
+        android:textColor="@color/lightText"
+        android:textColorHint="@color/lightText"
         android:hint="limit"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:textSize="30sp"
-        android:background="@color/blastAccent"
-        android:textColor="@color/offWhite"
+        android:backgroundTint="@color/blastAccent"
+        android:textColor="@color/lightText"
         android:fontFamily="sans-serif-light"
         android:textAllCaps="false"
         android:id="@+id/create_submit_button" />
@@ -85,8 +79,8 @@
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:textSize="30sp"
-        android:background="@color/blastAccent"
-        android:textColor="@color/offWhite"
+        android:backgroundTint="@color/blastAccent"
+        android:textColor="@color/lightText"
         android:fontFamily="sans-serif-light"
         android:textAllCaps="false"
         android:id="@+id/create_cancel_button" />

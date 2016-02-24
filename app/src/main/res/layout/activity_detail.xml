@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="cse403.blast.DetailActivity"
-    android:background="@color/blastDark">
+    tools:context="cse403.blast.DetailActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -31,7 +30,8 @@
                 android:id="@+id/detail_title"
                 android:layout_gravity="bottom"
                 android:textSize="35dp"
-                android:layout_marginLeft="72dp"/>
+                android:layout_marginLeft="72dp"
+                android:textColor="#FFFFFF"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
