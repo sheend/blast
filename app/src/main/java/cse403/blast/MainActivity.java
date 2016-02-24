@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         //Initialize Facebook SDK and set up Facebook Manager
         FacebookSdk.sdkInitialize(getApplicationContext());
-        FacebookManager fbManager = FacebookManager.getInstance();
+        fbManager = FacebookManager.getInstance();
 
         //If no instance session exists, check local storage
         if (!fbManager.isValidSession() && !IGNORE_LOGIN) {
@@ -208,12 +209,22 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.action_logout:
+                fbManager.clearSession(getApplicationContext());
+                fbManager.clearToken();
+                LoginManager.getInstance().logOut();
 
-        return super.onOptionsItemSelected(item);
+                //redirect back to login page
+                Intent i = new Intent(this, LoginActivity.class);
+                startActivity(i);
+                finish();
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")

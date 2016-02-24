@@ -55,7 +55,7 @@ public class FacebookManager implements Serializable {
     /**
      * Sets the access token containing user info for the current session
      */
-    public void update(AccessToken t) {
+    public void setToken(AccessToken t) {
         token = t;
         userID = t.getUserId();
         expiration = t.getExpires();
@@ -132,7 +132,7 @@ public class FacebookManager implements Serializable {
         if (accessString == null || id == null || expiration == null || current == null) {
             clearToken();
         } else {
-            update(new AccessToken(accessString, context.getString(R.string.app_id), id,
+            setToken(new AccessToken(accessString, context.getString(R.string.app_id), id,
                     null, null, AccessTokenSource.FACEBOOK_APPLICATION_NATIVE,
                     expiration, current));
         }
