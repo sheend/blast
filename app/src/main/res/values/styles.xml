@@ -10,6 +10,7 @@
         <item name="colorControlActivated">@color/blastAccent</item>
         <item name="colorControlHighlight">@color/blastAccent</item>
         <item name="android:textColor">@color/offWhite</item>
+        <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
