@@ -26,6 +26,7 @@ public class DetailActivity extends AppCompatActivity {
     private final String TAG = "DetailActivity";
     private Event event;
     private User currentUser;
+    private boolean newUser = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,24 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Tutorial
+        View tutorialCreate = findViewById(R.id.tutorial_detail);
+        if (newUser) {
+            tutorialCreate.setVisibility(View.VISIBLE);
+        } else {
+            tutorialCreate.setVisibility(View.GONE);
+        }
+
+        tutorialCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                newUser = false;
+            }
+        });
+
+        // Real detail starts from here
 
         // Grab associated event and display event title
         // TODO: update currentUser with real current user, not hardcoded
