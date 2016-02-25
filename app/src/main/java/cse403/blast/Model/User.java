@@ -64,16 +64,13 @@ public class User implements Serializable {
     }
 
     /**
-     * User creates event, now add to list of events created and add self to event's attendees
-     * @return  event that was created
+     * User creates event
+     * @param e event to create
+     * @return  true if successfully added this to attendees, false otherwise (user is owner)
      */
-    // TODO: is it ok to only allow creation of events through Users?
-    // TODO: update database
-    // TODO: why will this only work when eventsCreated.add(event) is in an assert?
-    public Event createEvent(String title, String desc, String loc, int limit, Date eventTime) {
-        Event event = new Event(this.getFacebookID(), title, desc, loc, limit, eventTime);
-        assert(eventsCreated.add(event.getId()));
-        return event;
+    public boolean createEvent(Event e) {
+        boolean added = eventsCreated.add(e.getId());
+        return added;
     }
 
     /**
@@ -115,7 +112,7 @@ public class User implements Serializable {
         if (eventsCreated.contains(e)) { // user created this event they're trying to attend
             return false;
         }
-        e.addAttendee(this);
+        //e.addAttendee(this);
         boolean added = eventsAttending.add(e.getId());
         return added;
     }

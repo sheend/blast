@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -27,6 +30,8 @@ import java.util.Date;
 import java.util.HashSet;
 
 import cse403.blast.Data.Constants;
+import cse403.blast.Data.FacebookManager;
+import cse403.blast.Model.User;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.DatePickerFragment;
@@ -53,8 +58,11 @@ public class CreateEventActivity extends AppCompatActivity {
     private int userYear;
     private int userHour;
     private int userMin;
+    private boolean newUser = true;
+    private User currentUser;
 
     private SharedPreferences preferenceSettings;
+    private SharedPreferences.Editor preferenceEditor;
 
     private final String TAG = "CreateEventActivity";
 
@@ -66,6 +74,24 @@ public class CreateEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent createEventIntent = getIntent();
+
+        // Tutorial
+        View tutorialCreate = findViewById(R.id.tutorial_create);
+        if (newUser) {
+            tutorialCreate.setVisibility(View.VISIBLE);
+        } else {
+            tutorialCreate.setVisibility(View.GONE);
+        }
+
+        tutorialCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                newUser = false;
+            }
+        });
+
+        // Real create starts from here
 
         submitButton = (Button) findViewById(R.id.create_submit_button);
         cancelButton = (Button) findViewById(R.id.create_cancel_button);
@@ -121,6 +147,17 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         Log.i(TAG, "Done creating page");
     }
+
+    /*@Override
+    protected void onStop() {
+        super.onStop();
+        FacebookManager fbManager = FacebookManager.getInstance();
+        if (fbManager.isValidSession()) {
+            fbManager.saveSession(getApplicationContext());
+        } else {
+            fbManager.clearSession(getApplicationContext());
+        }
+    }*/
 
     // VALIDATION METHODS
 
@@ -416,14 +453,20 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Grab User object from SharedPreferences file
         preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        //preferenceEditor = preferenceSettings.edit();
+
         Gson gson = new Gson();
         String json = preferenceSettings.getString("MyUser", "");
         Log.i("DetailActivity", "JSON: " + json);
-        User currentUser = gson.fromJson(json, User.class);
+        currentUser = gson.fromJson(json, User.class);
+
+        //preferenceEditor.commit();
 
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, userEnteredLimit, userEnteredDate);
+
+
 
 
         // Generate unique ID for event
@@ -436,5 +479,14 @@ public class CreateEventActivity extends AppCompatActivity {
         // Add event to DB
         newEventRef.setValue(userEvent);
 
+        // updates user's created events
+        currentUser.createEvent(userEvent);
+        Firebase userCreatedRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsCreated");
+        userCreatedRef.setValue(currentUser.getEventsCreated());
+
+        // update attendee list for the event that the user just created
+        userEvent.addAttendee(currentUser);
+        Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
+        userAttendingRef.setValue(userEvent.getAttendees());
     }
 }
