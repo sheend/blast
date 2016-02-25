@@ -76,20 +76,20 @@ public class CreateEventActivity extends AppCompatActivity {
         Intent createEventIntent = getIntent();
 
         // Tutorial
-        View tutorialCreate = findViewById(R.id.tutorial_create);
-        if (newUser) {
-            tutorialCreate.setVisibility(View.VISIBLE);
-        } else {
-            tutorialCreate.setVisibility(View.GONE);
-        }
-
-        tutorialCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setVisibility(View.GONE);
-                newUser = false;
-            }
-        });
+//        View tutorialCreate = findViewById(R.id.tutorial_create);
+//        if (newUser) {
+//            tutorialCreate.setVisibility(View.VISIBLE);
+//        } else {
+//            tutorialCreate.setVisibility(View.GONE);
+//        }
+//
+//        tutorialCreate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                v.setVisibility(View.GONE);
+//                newUser = false;
+//            }
+//        });
 
         // Real create starts from here
 
@@ -451,23 +451,20 @@ public class CreateEventActivity extends AppCompatActivity {
         // Log string for entered date
         Log.i("TestMyDate", userEnteredDate.toString());
 
+
         // Grab User object from SharedPreferences file
         preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-        //preferenceEditor = preferenceSettings.edit();
+        preferenceEditor = preferenceSettings.edit();
 
         Gson gson = new Gson();
         String json = preferenceSettings.getString("MyUser", "");
         Log.i("DetailActivity", "JSON: " + json);
         currentUser = gson.fromJson(json, User.class);
 
-        //preferenceEditor.commit();
 
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, userEnteredLimit, userEnteredDate);
-
-
-
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
@@ -479,10 +476,18 @@ public class CreateEventActivity extends AppCompatActivity {
         // Add event to DB
         newEventRef.setValue(userEvent);
 
+
+
         // updates user's created events
         currentUser.createEvent(userEvent);
         Firebase userCreatedRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsCreated");
         userCreatedRef.setValue(currentUser.getEventsCreated());
+
+        String json2 = gson.toJson(currentUser);
+        Log.i(TAG, "JSON: " + json2);
+        preferenceEditor.putString("MyUser", json2);
+        preferenceEditor.commit();
+
 
         // update attendee list for the event that the user just created
         userEvent.addAttendee(currentUser);
