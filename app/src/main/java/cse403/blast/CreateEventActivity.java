@@ -77,6 +77,7 @@ public class CreateEventActivity extends AppCompatActivity {
         // Tutorial
 
         View tutorialCreate = findViewById(R.id.tutorial_create);
+        // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(CreateEventActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
         if (newUser) {
             tutorialCreate.setVisibility(View.VISIBLE);
         } else {
