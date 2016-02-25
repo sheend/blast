@@ -129,7 +129,7 @@ public class DetailActivity extends AppCompatActivity {
 
                     // add event to user's attending
                     currentUser.attendEvent(event);
-                    // add user to event's attendeees
+                    // add user to event's attendees
                     event.addAttendee(currentUser);
 
                     ///// update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
@@ -147,7 +147,6 @@ public class DetailActivity extends AppCompatActivity {
                     Log.i(TAG, "POST current events attending: " + currentUser.getEventsAttending());
                     Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
 
-                    //final User newUser = new User(currentUser.getFacebookID(), currentUser.getEventsCreated(), currentUser.getEventsAttending());
 
                     // updates user's attending
                     Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
@@ -156,36 +155,6 @@ public class DetailActivity extends AppCompatActivity {
                     // update event's attendees field
                     Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
                     eventRef.setValue(event.getAttendees());
-
-//                    Map<String, Object> updatedList = new HashMap<String, Object>();
-//                    updatedList.put("eventsAttending", currentUser.getEventsAttending());
-//                    newRef.setValue(updatedList);
-
-
-
-
-//                    Map<String, Object> toadd = new HashMap<>
-//                    baseref.setValue(newUser);
-
-//                    if (currentUser.getEventsAttending().size() == 0) {
-//                        currentUser.setEventsAttending();
-//                    }
-//                    currentUser.attendEvent(event);
-//
-//                    final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID());
-//                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(DataSnapshot dataSnapshot) {
-//                            ref.setValue(newUser);
-//                            Log.i("attendingEventTag", "user is attending event");
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(FirebaseError firebaseError) {
-//
-//                        }
-//                    });
-
 
                 }
             });
