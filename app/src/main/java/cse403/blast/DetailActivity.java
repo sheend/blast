@@ -1,21 +1,26 @@
 package cse403.blast;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.firebase.client.Firebase;
+import com.google.gson.Gson;
 
-import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import cse403.blast.Data.FacebookManager;
+import cse403.blast.Data.Constants;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
@@ -27,6 +32,9 @@ public class DetailActivity extends AppCompatActivity {
     private final String TAG = "DetailActivity";
     private Event event;
     private User currentUser;
+    private String currentUserID;
+    private SharedPreferences preferenceSettings;
+    private SharedPreferences.Editor preferenceEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +45,20 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Grab associated event and display event title
-        // TODO: update currentUser with real current user, not hardcoded
-        currentUser = new User("Grace");
+        // Grab ID of current user from SharedPreferences file
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        currentUserID = preferenceSettings.getString("userid", "user");
+        Log.i("detailActivity", "theCurrentID is: " + currentUserID);
+
+        // Grab User object from SharedPreferences file
+        Gson gson = new Gson();
+        String json = preferenceSettings.getString("MyUser", "");
+        Log.i("DetailActivity", "JSON: " + json);
+        currentUser = gson.fromJson(json, User.class);
+
+        if (currentUser != null) Log.i("SUCCESS?", "YES T^T");
+        Log.i("user set??", "" + currentUser.getEventsAttending());
+
         Intent detailIntent = getIntent();
         event = (Event) detailIntent.getSerializableExtra("event");
         TextView title = (TextView) findViewById(R.id.detail_title);
@@ -55,16 +74,16 @@ public class DetailActivity extends AppCompatActivity {
 
         // TODO: Display the list of attendees by their Facebook profile picture after
         // TODO: integrating with Facebook
-        TextView attendees = (TextView) findViewById(R.id.detail_attendees);
-        Set<User> users = event.getAttendees();
-        String list = "";
-        for (User user: users) {
-            if (event.getOwner().equals(user)) {
-                list += "(Creator) ";
-            }
-            list += user.getFacebookID()+ ", ";
-        }
-        attendees.setText(getString(R.string.detail_who) + list);
+//        TextView attendees = (TextView) findViewById(R.id.detail_attendees);
+//        Set<String> users = event.getAttendees();
+//        String list = "";
+//        for (String user: users) {
+//            if (event.getOwner().getFacebookID().equals(user)) {
+//                list += "(Creator) ";
+//            }
+//            list += user.getFacebookID()+ ", ";
+//        }
+//        attendees.setText(getString(R.string.detail_who) + list);
 
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location_label);
@@ -102,21 +121,74 @@ public class DetailActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
-                    currentUser.attendEvent(event);
                     startActivity(mainIntent);
+
+                    Log.i(TAG, "PRE current user ID: " + currentUser.getFacebookID());
+                    Log.i(TAG, "PRE current events attending: " + currentUser.getEventsAttending());
+                    Log.i(TAG, "PRE current events created: " + currentUser.getEventsCreated());
+
+                    // add event to user's attending
+                    currentUser.attendEvent(event);
+                    // add user to event's attendeees
+                    event.addAttendee(currentUser);
+
+                    ///// update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
+                    preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+                    preferenceEditor = preferenceSettings.edit();
+
+                    // Store the current User object in SharedPreferences
+                    Gson gson = new Gson();
+                    String json = gson.toJson(currentUser);
+                    Log.i(TAG, "JSON: " + json);
+                    preferenceEditor.putString("MyUser", json);
+                    preferenceEditor.commit();
+
+                    Log.i(TAG, "POST current user ID: " + currentUser.getFacebookID());
+                    Log.i(TAG, "POST current events attending: " + currentUser.getEventsAttending());
+                    Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
+
+                    //final User newUser = new User(currentUser.getFacebookID(), currentUser.getEventsCreated(), currentUser.getEventsAttending());
+
+                    // updates user's attending
+                    Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
+                    userRef.setValue(currentUser.getEventsAttending());
+
+                    // update event's attendees field
+                    Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
+                    eventRef.setValue(event.getAttendees());
+
+//                    Map<String, Object> updatedList = new HashMap<String, Object>();
+//                    updatedList.put("eventsAttending", currentUser.getEventsAttending());
+//                    newRef.setValue(updatedList);
+
+
+
+
+//                    Map<String, Object> toadd = new HashMap<>
+//                    baseref.setValue(newUser);
+
+//                    if (currentUser.getEventsAttending().size() == 0) {
+//                        currentUser.setEventsAttending();
+//                    }
+//                    currentUser.attendEvent(event);
+//
+//                    final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID());
+//                    ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(DataSnapshot dataSnapshot) {
+//                            ref.setValue(newUser);
+//                            Log.i("attendingEventTag", "user is attending event");
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(FirebaseError firebaseError) {
+//
+//                        }
+//                    });
+
+
                 }
             });
         }
     }
-
-   /* @Override
-    protected void onStop() {
-        super.onStop();
-        FacebookManager fbManager = FacebookManager.getInstance();
-        if (fbManager.isValidSession()) {
-            fbManager.saveSession(getApplicationContext());
-        } else {
-            fbManager.clearSession(getApplicationContext());
-        }
-    }*/
 }

@@ -29,6 +29,8 @@ import java.util.Locale;
 
 import cse403.blast.R;
 
+import cse403.blast.Model.User;
+
 /**
  * FacebookManager is a Singleton object that stores basic session data
  * To use it in an Activity, call FacebookManager.getInstance()
@@ -48,12 +50,13 @@ public class FacebookManager {
     private AccessToken token;
     private Date expiration;
     private String userID;
+    private User currentUser;
 
     /**
      * Basic constructor
      */
     private FacebookManager() {
-        clearToken();
+        //clearToken();
     }
 
     /**
@@ -111,10 +114,32 @@ public class FacebookManager {
     }
 
     /**
-     * Gets the current logged in user's Facebook ID
-     * @return String representing id of the Facebook user, else null if there is none
+     * Sets the current logged in user's Facebook ID
      */
-    public String getUser() {
+    public void setCurrentUserID(String id) {
+        userID = id;
+    }
+
+    /**
+     * Sets the current logged in user
+     */
+    public void setCurrentUser(User user) {
+        currentUser = user;
+    }
+
+    /**
+     * Gets the current logged in user
+     * @return The current User object
+     */
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    /**
+     * Gets the current logged in user's Facebook ID
+     * @return the current user's Facebook ID
+     */
+    public String getUserID() {
         return userID;
     }
 
