@@ -38,7 +38,7 @@ public class Event implements Serializable {
     //private Category category;
     private Date eventTime;
     private Date creationTime;
-    private Set<User> attendees;
+    private Set<String> attendees;
     private String firebaseID;
 
     /**
@@ -52,7 +52,7 @@ public class Event implements Serializable {
         this.limit = 0;
         this.eventTime = new Date();
         this.creationTime = new Date(); // initialize to current time
-        this.attendees = new HashSet<User>();
+        this.attendees = new HashSet<String>();
         this.firebaseID = "";
         //this.category = Category.ACTIVE; //TODO: change this
     }
@@ -75,7 +75,8 @@ public class Event implements Serializable {
         //this.category = Category.ACTIVE; //TODO: Change this
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
-        this.attendees = new HashSet<User>();
+        this.attendees = new HashSet<String>();
+        attendees.add("");
         this.firebaseID = "";
         // TODO: add the event to owner's list through client code
         // TODO: cannot call method from constructor because of firebase parsing
@@ -123,7 +124,7 @@ public class Event implements Serializable {
      * @return  true if successfully added, false otherwise
      */
     public boolean addAttendee(User attendee) {
-        boolean added = attendees.add(attendee);
+        boolean added = attendees.add(attendee.getFacebookID());
         checkRep();
         return added;
     }
@@ -134,7 +135,7 @@ public class Event implements Serializable {
      * @return  true if successfully removed, false otherwise
      */
     public boolean removeAttendee(User attendee) {
-        boolean removed = attendees.remove(attendee);
+        boolean removed = attendees.remove(attendee.getFacebookID());
         checkRep();
         return removed;
     }
@@ -230,7 +231,7 @@ public class Event implements Serializable {
      * Current people attending event
      * @return  list of attendees
      */
-    public Set<User> getAttendees() {
+    public Set<String> getAttendees() {
          return Collections.unmodifiableSet(attendees);
     }
 

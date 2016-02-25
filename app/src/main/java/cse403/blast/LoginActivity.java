@@ -47,7 +47,6 @@ public class LoginActivity extends FragmentActivity {
     private User userInfo;
     private SharedPreferences preferenceSettings;
     private SharedPreferences.Editor preferenceEditor;
-    private static final int PREFERENCE_MODE_PRIVATE = 0;
 
 
     @Override

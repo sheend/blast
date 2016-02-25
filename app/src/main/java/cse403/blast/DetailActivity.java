@@ -33,6 +33,7 @@ public class DetailActivity extends AppCompatActivity {
     private User currentUser;
     private String currentUserID;
     private SharedPreferences preferenceSettings;
+    private SharedPreferences.Editor preferenceEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,16 +73,16 @@ public class DetailActivity extends AppCompatActivity {
 
         // TODO: Display the list of attendees by their Facebook profile picture after
         // TODO: integrating with Facebook
-        TextView attendees = (TextView) findViewById(R.id.detail_attendees);
-        Set<User> users = event.getAttendees();
-        String list = "";
-        for (User user: users) {
-            if (event.getOwner().equals(user)) {
-                list += "(Creator) ";
-            }
-            list += user.getFacebookID()+ ", ";
-        }
-        attendees.setText(getString(R.string.detail_who) + list);
+//        TextView attendees = (TextView) findViewById(R.id.detail_attendees);
+//        Set<String> users = event.getAttendees();
+//        String list = "";
+//        for (String user: users) {
+//            if (event.getOwner().getFacebookID().equals(user)) {
+//                list += "(Creator) ";
+//            }
+//            list += user.getFacebookID()+ ", ";
+//        }
+//        attendees.setText(getString(R.string.detail_who) + list);
 
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location_label);
@@ -125,9 +126,21 @@ public class DetailActivity extends AppCompatActivity {
                     Log.i(TAG, "PRE current events attending: " + currentUser.getEventsAttending());
                     Log.i(TAG, "PRE current events created: " + currentUser.getEventsCreated());
 
+                    // add event to user's attending
                     currentUser.attendEvent(event);
+                    // add user to event's attendeees
+                    event.addAttendee(currentUser);
 
                     ///// update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
+                    preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+                    preferenceEditor = preferenceSettings.edit();
+
+                    // Store the current User object in SharedPreferences
+                    Gson gson = new Gson();
+                    String json = gson.toJson(currentUser);
+                    Log.i(TAG, "JSON: " + json);
+                    preferenceEditor.putString("MyUser", json);
+                    preferenceEditor.commit();
 
                     Log.i(TAG, "POST current user ID: " + currentUser.getFacebookID());
                     Log.i(TAG, "POST current events attending: " + currentUser.getEventsAttending());
@@ -140,7 +153,8 @@ public class DetailActivity extends AppCompatActivity {
                     userRef.setValue(currentUser.getEventsAttending());
 
                     // update event's attendees field
-                    //Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child()
+                    Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
+                    eventRef.setValue(event.getAttendees());
 
 //                    Map<String, Object> updatedList = new HashMap<String, Object>();
 //                    updatedList.put("eventsAttending", currentUser.getEventsAttending());
