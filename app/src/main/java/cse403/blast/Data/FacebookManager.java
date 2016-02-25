@@ -8,11 +8,20 @@ import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
+import com.facebook.Profile;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -34,6 +43,7 @@ public class FacebookManager {
     private final String TOKEN_KEY = "token";
     private final String EXP_KEY = "expire";
     private final String ID_KEY = "id";
+    private final String GRAPH_URL = "https://graph.facebook.com/";
 
     private AccessToken token;
     private Date expiration;
@@ -173,23 +183,76 @@ public class FacebookManager {
     }
 
     /**
+     * Retrieves the full name of the currently logged in user.
+     *
+     * @return String user's name
+     */
+    public String getUserName() {
+        return Profile.getCurrentProfile().getName();
+    }
+
+    /**
+     * Pulls the JSON
+     * @param fbID
+     * @return
+     */
+    private JSONObject getUser(String fbID) {
+        InputStream is = null;
+        try {
+            is = new URL(GRAPH_URL + fbID + "?access_token=" + token.toString()).openStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
+            StringBuilder sb  = new StringBuilder();
+            int cp;
+            while ((cp = br.read()) != -1) {
+                sb.append((char) cp);
+            }
+            return new JSONObject(sb.toString());
+        } catch (MalformedURLException e) {
+            Log.i("FB Manager", fbID + ": " + e.toString());
+        } catch (IOException e) {
+            Log.i("FB Manager", fbID + ": " + e.toString());
+        } catch (JSONException e) {
+            Log.i("FB Manager", fbID + ": " + e.toString());
+        }
+        return null;
+    }
+
+    /**
      * Pulls the profile picture of a given user
-     * 
+     *
      * @param fbID String id of the facebook user
      * @return Bitmap of the user's profile picture
      * @throws IOException if unable to connect and retrieve image
      */
-    public static Bitmap getFacebookProfilePicture(String fbID) throws IOException {
+    public Bitmap getFacebookProfilePicture(String fbID) throws IOException {
         URL imageURL = null;
         try {
-            imageURL = new URL("https://graph.facebook.com/" +fbID + "/picture?type=large");
+            imageURL = new URL(GRAPH_URL +fbID + "/picture?type=large&access_token=" + token.toString());
         } catch (MalformedURLException e) {
-            Log.i("FB Manager", fbID  + "");
+            Log.i("FB Manager", fbID  + ": malformed url");
             return null;
         }
         Bitmap bitmap = null;
         if (imageURL != null)
-            BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+            bitmap = BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
         return bitmap;
     }
+
+    /**
+     * Gets the full name of a user given their Facebook id
+     *
+     * @param fbID String facebook id
+     * @return String full name
+     */
+    public String getName(String fbID) {
+        String name = null;
+        try {
+            name = getUser(fbID).getString("name");
+        } catch (JSONException e) {
+            Log.i("FB Manager", fbID + ": " + e.toString());
+        }
+        return name;
+    }
+
+
 }
