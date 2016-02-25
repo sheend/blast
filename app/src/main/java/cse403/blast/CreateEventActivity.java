@@ -1,7 +1,12 @@
 package cse403.blast;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -10,28 +15,27 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.app.TimePickerDialog;
-import android.app.DatePickerDialog;
 import android.widget.TimePicker;
-import android.view.View.OnFocusChangeListener;
 import android.widget.Toast;
+
+import com.firebase.client.Firebase;
+import com.google.gson.Gson;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 
 import cse403.blast.Data.Constants;
+import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.User;
 import cse403.blast.Model.Event;
+import cse403.blast.Model.User;
 import cse403.blast.Support.DatePickerFragment;
 import cse403.blast.Support.TimePickerFragment;
-
-import com.firebase.client.Firebase;
-import cse403.blast.Model.*;
 
 
 /**
@@ -54,6 +58,9 @@ public class CreateEventActivity extends AppCompatActivity {
     private int userYear;
     private int userHour;
     private int userMin;
+    private boolean newUser = true;
+
+    private SharedPreferences preferenceSettings;
 
     private final String TAG = "CreateEventActivity";
 
@@ -65,6 +72,24 @@ public class CreateEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent createEventIntent = getIntent();
+
+        // Tutorial
+        View tutorialCreate = findViewById(R.id.tutorial_create);
+        if (newUser) {
+            tutorialCreate.setVisibility(View.VISIBLE);
+        } else {
+            tutorialCreate.setVisibility(View.GONE);
+        }
+
+        tutorialCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                newUser = false;
+            }
+        });
+
+        // Real create starts from here
 
         submitButton = (Button) findViewById(R.id.create_submit_button);
         cancelButton = (Button) findViewById(R.id.create_cancel_button);
@@ -120,6 +145,17 @@ public class CreateEventActivity extends AppCompatActivity {
         }
         Log.i(TAG, "Done creating page");
     }
+
+    /*@Override
+    protected void onStop() {
+        super.onStop();
+        FacebookManager fbManager = FacebookManager.getInstance();
+        if (fbManager.isValidSession()) {
+            fbManager.saveSession(getApplicationContext());
+        } else {
+            fbManager.clearSession(getApplicationContext());
+        }
+    }*/
 
     // VALIDATION METHODS
 
@@ -413,17 +449,27 @@ public class CreateEventActivity extends AppCompatActivity {
         // Log string for entered date
         Log.i("TestMyDate", userEnteredDate.toString());
 
+        // Grab User object from SharedPreferences file
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = preferenceSettings.getString("MyUser", "");
+        Log.i("DetailActivity", "JSON: " + json);
+        User currentUser = gson.fromJson(json, User.class);
+
         // Create event object using user-submitted data
-        Event userEvent = new Event(new User("1234"), userEnteredTitle, userEnteredDesc,
+        Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, userEnteredLimit, userEnteredDate);
+
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
         Firebase newEventRef = eventRef.push();
 
+        String eventId = newEventRef.getKey();
+        userEvent.setId(eventId);
+
         // Add event to DB
         newEventRef.setValue(userEvent);
 
-        // String eventId = newEventRef.getKey();
     }
 }

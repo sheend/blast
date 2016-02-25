@@ -30,7 +30,8 @@
                 android:id="@+id/detail_title"
                 android:layout_gravity="bottom"
                 android:textSize="35dp"
-                android:layout_marginLeft="72dp"/>
+                android:layout_marginLeft="72dp"
+                android:textColor="#FFFFFF"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

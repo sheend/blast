@@ -2,6 +2,8 @@ package cse403.blast;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.DisplayMetrics;
@@ -23,6 +25,9 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -49,11 +54,18 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
-    private boolean IGNORE_LOGIN = true;
+    private boolean IGNORE_LOGIN = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FacebookManager fbManager = FacebookManager.getInstance();
+        //Initialize Facebook SDK and set up Facebook Manager
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        fbManager = FacebookManager.getInstance();
+
+        //If no instance session exists, check local storage
+        if (!fbManager.isValidSession() && !IGNORE_LOGIN) {
+            fbManager.getSession(getApplicationContext());
+        }
 
         // Redirecting to Login if necessary
         if (!fbManager.isValidSession() && !IGNORE_LOGIN) {
@@ -141,6 +153,7 @@ public class MainActivity extends AppCompatActivity
 //                Set<User> exampleSet = new HashSet<User>();
                 detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
                 startActivity(detailIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
@@ -197,12 +210,22 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        switch (id) {
+            case R.id.action_logout:
+                fbManager.clearSession(getApplicationContext());
+                fbManager.clearToken();
+                LoginManager.getInstance().logOut();
 
-        return super.onOptionsItemSelected(item);
+                //redirect back to login page
+                Intent i = new Intent(this, LoginActivity.class);
+                startActivity(i);
+                finish();
+                return true;
+            case R.id.action_settings:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -255,4 +278,13 @@ public class MainActivity extends AppCompatActivity
         listView.setLayoutParams(params);
     }
 
+    /*@Override
+    protected void onStop() {
+        if (fbManager.isValidSession()) {
+            fbManager.saveSession(getApplicationContext());
+        } else {
+            fbManager.clearSession(getApplicationContext());
+        }
+        super.onStop();
+    }*/
 }

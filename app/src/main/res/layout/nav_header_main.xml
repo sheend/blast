@@ -46,12 +46,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Blasts You Are Attending"
-        android:padding="10dp" />
+        android:padding="10dp"
+        android:background="@color/colorPrimary"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/lightText"/>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/new_try_list_view">
+        android:id="@+id/new_try_list_view"
+        android:background="@color/windowBackground">
     </ListView>
 
 </LinearLayout>

@@ -19,6 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/event_title"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/lightText"
         android:textSize="12pt"
         android:gravity="left"
         android:layout_centerVertical="true"
@@ -27,12 +29,17 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/lightText"
         android:id="@+id/event_subtitle"
         android:layout_below="@+id/event_title"
         android:layout_alignParentStart="true" />
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/lightText"
+        android:fontFamily="sans-serif-light"
+        />
 
 </RelativeLayout>

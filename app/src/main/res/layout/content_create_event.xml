@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -14,53 +14,98 @@
     tools:showIn="@layout/activity_create_event"
     android:id="@+id/create_event_layout">
 
-    <ImageView
+    <!-- Usual content -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200px"
-        android:background="#d3d3d3"
-        android:id="@+id/create_image"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/create_title"
-        android:hint="Title"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/create_description"
-        android:hint="Description"/>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/create_date"
-            android:hint="Date"/>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/create_time"
-            android:hint="Time"
-            android:layout_toRightOf="@+id/create_date"/>
-    </RelativeLayout>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/create_location"
-        android:hint="Location"/>
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/create_limit"
-        android:hint="Limit"/>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/create_submit_button" />
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/create_cancel_button" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:background="@color/colorPrimaryDark"
+            android:id="@+id/create_image"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:id="@+id/create_title"
+            android:textColor="@color/lightText"
+            android:textColorHint="@color/lightText"
+            android:hint="title"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:id="@+id/create_description"
+            android:textColor="@color/lightText"
+            android:textColorHint="@color/lightText"
+            android:hint="description"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="72dp"
+                android:id="@+id/create_date"
+                android:textColor="@color/lightText"
+                android:textColorHint="@color/lightText"
+                android:hint="date"/>
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="72dp"
+                android:id="@+id/create_time"
+                android:textColor="@color/lightText"
+                android:textColorHint="@color/lightText"
+                android:hint="time"
+                android:layout_toRightOf="@+id/create_date"/>
+        </RelativeLayout>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:id="@+id/create_location"
+            android:textColor="@color/lightText"
+            android:textColorHint="@color/lightText"
+            android:hint="location"/>
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:id="@+id/create_limit"
+            android:textColor="@color/lightText"
+            android:textColorHint="@color/lightText"
+            android:hint="limit"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:textSize="30sp"
+            android:backgroundTint="@color/blastAccent"
+            android:textColor="@color/lightText"
+            android:fontFamily="sans-serif-light"
+            android:textAllCaps="false"
+            android:id="@+id/create_submit_button" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:textSize="30sp"
+            android:backgroundTint="@color/blastAccent"
+            android:textColor="@color/lightText"
+            android:fontFamily="sans-serif-light"
+            android:textAllCaps="false"
+            android:id="@+id/create_cancel_button" />
+    </LinearLayout>
+
+
+    <!-- Tutorial -->
+
+    <RelativeLayout
+        android:id="@+id/tutorial_create"
+        android:background="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:src="@drawable/create_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>
