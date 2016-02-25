@@ -140,28 +140,10 @@ public class DetailActivity extends AppCompatActivity {
 
                     // remove event from user's attending
                     currentUser.leaveEvent(event);
-                    // remove user from event's attendees
-                    //event.removeAttendee(currentUser);
 
-                    // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
-                    preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-                    preferenceEditor = preferenceSettings.edit();
+                    setPreferences();
 
-                    // Store the current User object in SharedPreferences
-                    Gson gson = new Gson();
-                    String json = gson.toJson(currentUser);
-                    Log.i(TAG, "JSON: " + json);
-                    preferenceEditor.putString("MyUser", json);
-                    preferenceEditor.commit();
-
-                    // updates user's attending
-                    Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
-                    userRef.setValue(currentUser.getEventsAttending());
-
-                    // update event's attendees field
-                    Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
-                    eventRef.setValue(event.getAttendees());
-
+                    updateToFireBase();
                 }
             });
         } else { // user could potentially attend
@@ -182,32 +164,40 @@ public class DetailActivity extends AppCompatActivity {
                     // add user to event's attendees
                     //event.addAttendee(currentUser);
 
-                    // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
-                    preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-                    preferenceEditor = preferenceSettings.edit();
-
-                    // Store the current User object in SharedPreferences
-                    Gson gson = new Gson();
-                    String json = gson.toJson(currentUser);
-                    Log.i(TAG, "JSON: " + json);
-                    preferenceEditor.putString("MyUser", json);
-                    preferenceEditor.commit();
+                    setPreferences();
 
                     Log.i(TAG, "POST current user ID: " + currentUser.getFacebookID());
                     Log.i(TAG, "POST current events attending: " + currentUser.getEventsAttending());
                     Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
 
-
-                    // updates user's attending
-                    Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
-                    userRef.setValue(currentUser.getEventsAttending());
-
-                    // update event's attendees field
-                    Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
-                    eventRef.setValue(event.getAttendees());
+                    updateToFireBase();
 
                 }
             });
         }
+    }
+
+    public void setPreferences() {
+        // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceEditor = preferenceSettings.edit();
+
+        // Store the current User object in SharedPreferences
+        Gson gson = new Gson();
+        String json = gson.toJson(currentUser);
+        Log.i(TAG, "JSON: " + json);
+        preferenceEditor.putString("MyUser", json);
+        preferenceEditor.commit();
+
+    }
+
+    public void updateToFireBase() {
+        // updates user's attending
+        Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
+        userRef.setValue(currentUser.getEventsAttending());
+
+        // update event's attendees field
+        Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
+        eventRef.setValue(event.getAttendees());
     }
 }
