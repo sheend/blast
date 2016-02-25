@@ -2,6 +2,7 @@ package cse403.blast;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
@@ -54,6 +55,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private int userYear;
     private int userHour;
     private int userMin;
+    private boolean newUser = true;
 
     private final String TAG = "CreateEventActivity";
 
@@ -65,6 +67,24 @@ public class CreateEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Intent createEventIntent = getIntent();
+
+        // Tutorial
+        View tutorialCreate = findViewById(R.id.tutorial_create);
+        if (newUser) {
+            tutorialCreate.setVisibility(View.VISIBLE);
+        } else {
+            tutorialCreate.setVisibility(View.GONE);
+        }
+
+        tutorialCreate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                newUser = false;
+            }
+        });
+
+        // Real create starts from here
 
         submitButton = (Button) findViewById(R.id.create_submit_button);
         cancelButton = (Button) findViewById(R.id.create_cancel_button);
