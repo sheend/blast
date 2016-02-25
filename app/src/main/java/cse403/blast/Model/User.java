@@ -94,11 +94,11 @@ public class User implements Serializable {
      * @return true if successfully left, false otherwise (this is not part of e or this is owner, this should cancelEvent instead of leaveEvent)
      */
     public boolean leaveEvent(Event e) {
-        if (!e.getAttendees().contains(this) || e.getOwner().equals(this)) { // user is not part of e, or user is owner
+        if (!e.getAttendees().contains(this.getFacebookID()) || e.getOwner().equals(this)) { // user is not part of e, or user is owner
             return false;
         }
         e.removeAttendee(this);
-        boolean removed = eventsAttending.remove(e);
+        boolean removed = eventsAttending.remove(e.getId());
         return removed;
     }
 
@@ -112,7 +112,7 @@ public class User implements Serializable {
         if (eventsCreated.contains(e)) { // user created this event they're trying to attend
             return false;
         }
-        //e.addAttendee(this);
+        e.addAttendee(this);
         boolean added = eventsAttending.add(e.getId());
         return added;
     }

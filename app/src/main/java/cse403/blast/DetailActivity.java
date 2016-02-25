@@ -126,17 +126,42 @@ public class DetailActivity extends AppCompatActivity {
                     createIntent.putExtra("edit", true);
                     createIntent.putExtra("event", event);
                     startActivity(createIntent);
+
                 }
             });
-        } else if (event.getAttendees().contains(currentUser)) { // user is an attendee, have option to leave
+        } else if (event.getAttendees().contains(currentUser.getFacebookID())) { // user is an attendee, have option to leave
             button.setText(getString(R.string.detail_leave));
             // Go back to main page
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
-                    currentUser.leaveEvent(event);
                     startActivity(mainIntent);
+
+                    // remove event from user's attending
+                    currentUser.leaveEvent(event);
+                    // remove user from event's attendees
+                    //event.removeAttendee(currentUser);
+
+                    // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
+                    preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+                    preferenceEditor = preferenceSettings.edit();
+
+                    // Store the current User object in SharedPreferences
+                    Gson gson = new Gson();
+                    String json = gson.toJson(currentUser);
+                    Log.i(TAG, "JSON: " + json);
+                    preferenceEditor.putString("MyUser", json);
+                    preferenceEditor.commit();
+
+                    // updates user's attending
+                    Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
+                    userRef.setValue(currentUser.getEventsAttending());
+
+                    // update event's attendees field
+                    Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
+                    eventRef.setValue(event.getAttendees());
+
                 }
             });
         } else { // user could potentially attend
@@ -155,9 +180,9 @@ public class DetailActivity extends AppCompatActivity {
                     // add event to user's attending
                     currentUser.attendEvent(event);
                     // add user to event's attendees
-                    event.addAttendee(currentUser);
+                    //event.addAttendee(currentUser);
 
-                    ///// update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
+                    // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
                     preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
                     preferenceEditor = preferenceSettings.edit();
 
