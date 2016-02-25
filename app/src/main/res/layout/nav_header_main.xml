@@ -48,7 +48,8 @@
         android:text="Blasts You Are Attending"
         android:padding="10dp"
         android:background="@color/colorPrimary"
-        android:fontFamily="sans-serif-light"/>
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/lightText"/>
 
     <ListView
         android:layout_width="match_parent"

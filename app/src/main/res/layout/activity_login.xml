@@ -37,7 +37,7 @@
                 android:layout_height="wrap_content"
                 android:text="Be spontaneous.\nGet Blastin'!"
                 android:textSize="30dp"
-                android:textColor="@color/offWhite"
+                android:textColor="@color/lightText"
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"/>
 

@@ -21,7 +21,7 @@
 
     <!-- For all themes -->
     <color name="blastAccent">#FF4C10</color>
-    <color name="lightText">#c7ffffff</color>
+    <color name="lightText">#EEEEEE</color>
     <color name="darkText">#da000000</color>
 
 </resources>
