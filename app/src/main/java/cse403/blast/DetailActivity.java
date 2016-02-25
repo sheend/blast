@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -35,6 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     private String currentUserID;
     private SharedPreferences preferenceSettings;
     private SharedPreferences.Editor preferenceEditor;
+    private boolean newUser = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,25 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Tutorial
+        View tutorialDetail = findViewById(R.id.tutorial_detail);
+        // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(DetailActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
+        if (newUser) {
+            tutorialDetail.setVisibility(View.VISIBLE);
+        } else {
+            tutorialDetail.setVisibility(View.GONE);
+        }
+
+        tutorialDetail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                newUser = false;
+            }
+        });
+
+        // Real detail starts from here
 
         // Grab ID of current user from SharedPreferences file
         preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
