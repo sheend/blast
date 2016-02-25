@@ -30,7 +30,7 @@ public class Event implements Serializable {
     }
     */
 
-    private User owner;
+    private String owner;
     private String title;
     private String desc;
     private String location;
@@ -45,7 +45,7 @@ public class Event implements Serializable {
      * Empty constructor
      */
     public Event() {
-        this.owner = new User();
+        this.owner = "";
         this.title = "";
         this.desc = "";
         this.location = "";
@@ -66,7 +66,7 @@ public class Event implements Serializable {
      * @param limit limit of people for event
      * @param eventTime time event will occur
      */
-    public Event(User owner, String title, String desc, String location, int limit, Date eventTime) {
+    public Event(String owner, String title, String desc, String location, int limit, Date eventTime) {
         this.owner = owner;
         this.title = title;
         this.desc = desc;
@@ -146,7 +146,7 @@ public class Event implements Serializable {
      * Return owner of event
      * @return  owner of event
      */
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 

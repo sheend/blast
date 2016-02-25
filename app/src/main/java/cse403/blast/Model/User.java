@@ -33,12 +33,12 @@ public class User implements Serializable {
      * Constructs a new user using their facebook id
      * @param facebookID    user's fb identification
      */
-    public User(String facebookID, Set<String> created, Set<String> attending) {
+    public User(String facebookID) {
         this.facebookID = facebookID;
-        eventsCreated = created;
-        eventsAttending = attending;
-//        eventsCreated = new HashSet<Event>();
-//        eventsAttending = new HashSet<Event>();
+        this.eventsCreated = new HashSet<String>();
+        this.eventsAttending = new HashSet<String>();
+        eventsCreated.add("");
+        eventsAttending.add("");
     }
 
     /**
@@ -71,7 +71,7 @@ public class User implements Serializable {
     // TODO: update database
     // TODO: why will this only work when eventsCreated.add(event) is in an assert?
     public Event createEvent(String title, String desc, String loc, int limit, Date eventTime) {
-        Event event = new Event(this, title, desc, loc, limit, eventTime);
+        Event event = new Event(this.getFacebookID(), title, desc, loc, limit, eventTime);
         assert(eventsCreated.add(event.getId()));
         return event;
     }
