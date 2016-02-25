@@ -141,6 +141,7 @@ public class MainActivity extends AppCompatActivity
 //                Set<User> exampleSet = new HashSet<User>();
                 detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
                 startActivity(detailIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
         });
 
