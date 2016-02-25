@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity
     private ListView mainListView;
     private FacebookManager fbManager = null;
     private boolean IGNORE_LOGIN = false;
+    private boolean newUser = true;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +85,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // the Button that allows the user to create a new Event
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,6 +95,28 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        /* Tutorial */
+        // TODO: set constant for first time users, currently shows every time activity is created
+        View tutorialMain = findViewById(R.id.tutorial_main);
+        // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(DetailActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
+        if (newUser) {
+            tutorialMain.setVisibility(View.VISIBLE);
+            fab.setEnabled(false);
+        } else {
+            tutorialMain.setVisibility(View.GONE);
+        }
+
+        tutorialMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setVisibility(View.GONE);
+                newUser = false;
+                fab.setEnabled(true);
+            }
+        });
+
+        /* Real Main */
 
         // The left drawer, which allows the user to view the Events that he/she made, or the Events that
         // he/she is attending.

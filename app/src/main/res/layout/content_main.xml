@@ -16,4 +16,18 @@
         android:background="@color/windowBackground">
     </ListView>
 
+    <!-- Tutorial -->
+
+    <RelativeLayout
+        android:id="@+id/tutorial_main"
+        android:background="#c1000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:src="@drawable/main_overlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </RelativeLayout>
 </RelativeLayout>
