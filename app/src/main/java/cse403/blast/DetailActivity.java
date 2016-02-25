@@ -37,6 +37,7 @@ public class DetailActivity extends AppCompatActivity {
     private SharedPreferences preferenceSettings;
     private SharedPreferences.Editor preferenceEditor;
     private boolean newUser = true;
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +49,13 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // Tutorial
+        // TODO: set constant for first time users, currently shows every time activity is created
         View tutorialDetail = findViewById(R.id.tutorial_detail);
+        button = (Button) findViewById(R.id.detail_button);
         // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(DetailActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
         if (newUser) {
             tutorialDetail.setVisibility(View.VISIBLE);
+            button.setEnabled(false);
         } else {
             tutorialDetail.setVisibility(View.GONE);
         }
@@ -61,6 +65,7 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
                 newUser = false;
+                button.setEnabled(true);
             }
         });
 
@@ -107,11 +112,10 @@ public class DetailActivity extends AppCompatActivity {
 //        attendees.setText(getString(R.string.detail_who) + list);
 
         // TODO: Display location using text, but hopefully with a map
-        TextView locationLabel = (TextView) findViewById(R.id.detail_location_label);
+        TextView locationLabel = (TextView) findViewById(R.id.detail_location);
         locationLabel.setText(event.getLocation());
 
         // Set appropriate text and onclick's depending on user's status
-        Button button = (Button) findViewById(R.id.detail_button);
         if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
             button.setText(getString(R.string.detail_edit));
             // Go to creation page

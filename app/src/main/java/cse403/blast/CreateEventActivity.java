@@ -53,6 +53,8 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText timeText;
     private EditText locText;
     private EditText limitText;
+    private EditText date;
+    private EditText time;
     private int userDay;
     private int userMonth;
     private int userYear;
@@ -74,12 +76,36 @@ public class CreateEventActivity extends AppCompatActivity {
 
         Intent createEventIntent = getIntent();
 
-        // Tutorial
+        submitButton = (Button) findViewById(R.id.create_submit_button);
+        cancelButton = (Button) findViewById(R.id.create_cancel_button);
+        titleText = (EditText) findViewById(R.id.create_title);
+        descText = (EditText) findViewById(R.id.create_description);
+        locText = (EditText) findViewById(R.id.create_location);
+        limitText = (EditText) findViewById(R.id.create_limit);
+        date = (EditText) findViewById(R.id.create_date);
+        time = (EditText) findViewById(R.id.create_time);
 
+        /* TUTORIAL */
+        // TODO: set constant for first time users, currently showing every time activity is created
         View tutorialCreate = findViewById(R.id.tutorial_create);
         // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(CreateEventActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
         if (newUser) {
             tutorialCreate.setVisibility(View.VISIBLE);
+            // TODO: Disable all possible input
+            submitButton.setEnabled(false);
+            cancelButton.setEnabled(false);
+//            //titleText.setEnabled(false);
+//            titleText.setFocusable(false);
+//            //descText.setEnabled(false);
+//            descText.setFocusable(false);
+//            //locText.setEnabled(false);
+//            locText.setFocusable(false);
+//            //limitText.setEnabled(false);
+//            limitText.setFocusable(false);
+//            //date.setEnabled(false);
+//            date.setFocusable(false);
+//            //time.setEnabled(false);
+//            time.setFocusable(false);
         } else {
             tutorialCreate.setVisibility(View.GONE);
         }
@@ -89,17 +115,25 @@ public class CreateEventActivity extends AppCompatActivity {
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
                 newUser = false;
+//                // TODO: enable all possible input
+                submitButton.setEnabled(true);
+                cancelButton.setEnabled(true);
+//                //titleText.setEnabled(true);
+//                titleText.setFocusable(true);
+//                //descText.setEnabled(true);
+//                descText.setFocusable(true);
+//                //locText.setEnabled(true);
+//                locText.setFocusable(true);
+//                //limitText.setEnabled(true);
+//                limitText.setFocusable(true);
+//                //date.setEnabled(true);
+//                date.setFocusable(true);
+//                //time.setEnabled(true);
+//                time.setFocusable(true);
             }
         });
 
-        // Real create starts from here
-
-        submitButton = (Button) findViewById(R.id.create_submit_button);
-        cancelButton = (Button) findViewById(R.id.create_cancel_button);
-        titleText = (EditText) findViewById(R.id.create_title);
-        descText = (EditText) findViewById(R.id.create_description);
-        locText = (EditText) findViewById(R.id.create_location);
-        limitText = (EditText) findViewById(R.id.create_limit);
+        /* REAL CREATE */
 
         // sets up the listener for displaying the date picker
         dateText = (EditText) findViewById(R.id.create_date);
