@@ -2,12 +2,17 @@ package cse403.blast.Data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.facebook.AccessToken;
 import com.facebook.AccessTokenSource;
 
+import java.io.IOException;
 import java.io.Serializable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +26,7 @@ import cse403.blast.R;
  *
  * Created by kevin on 2/18/16.
  */
-public class FacebookManager implements Serializable {
+public class FacebookManager {
     private static FacebookManager fbInstance = null;
 
     //Shared Preference fields
@@ -165,5 +170,26 @@ public class FacebookManager implements Serializable {
         editor.putString(EXP_KEY, dateFormat.format(expiration));
 
         editor.commit();
+    }
+
+    /**
+     * Pulls the profile picture of a given user
+     * 
+     * @param fbID String id of the facebook user
+     * @return Bitmap of the user's profile picture
+     * @throws IOException if unable to connect and retrieve image
+     */
+    public static Bitmap getFacebookProfilePicture(String fbID) throws IOException {
+        URL imageURL = null;
+        try {
+            imageURL = new URL("https://graph.facebook.com/" +fbID + "/picture?type=large");
+        } catch (MalformedURLException e) {
+            Log.i("FB Manager", fbID  + "");
+            return null;
+        }
+        Bitmap bitmap = null;
+        if (imageURL != null)
+            BitmapFactory.decodeStream(imageURL.openConnection().getInputStream());
+        return bitmap;
     }
 }
