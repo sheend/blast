@@ -113,10 +113,10 @@ public class LoginActivity extends FragmentActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.getValue() == null) {
-                            Set<Event> attending = new HashSet<Event>();
-                            Set<Event> created = new HashSet<Event>();
-                            attending.add(new Event());
-                            created.add(new Event());
+                            Set<String> attending = new HashSet<String>();
+                            Set<String> created = new HashSet<String>();
+                            attending.add("");
+                            created.add("");
 
                             userInfo = new User(fid, attending, created);
 

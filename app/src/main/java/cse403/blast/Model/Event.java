@@ -39,6 +39,7 @@ public class Event implements Serializable {
     private Date eventTime;
     private Date creationTime;
     private Set<User> attendees;
+    private String firebaseID;
 
     /**
      * Empty constructor
@@ -52,6 +53,7 @@ public class Event implements Serializable {
         this.eventTime = new Date();
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<User>();
+        this.firebaseID = "";
         //this.category = Category.ACTIVE; //TODO: change this
     }
 
@@ -74,6 +76,7 @@ public class Event implements Serializable {
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<User>();
+        this.firebaseID = "";
         // TODO: add the event to owner's list through client code
         // TODO: cannot call method from constructor because of firebase parsing
         // owner.addCreatedEvent(this); // add this event to owner's list of created events
@@ -270,6 +273,14 @@ public class Event implements Serializable {
         limit = newLimit;
         checkRep();
         return true;
+    }
+
+    public void setId(String id) {
+        firebaseID = id;
+    }
+
+    public String getId() {
+        return firebaseID;
     }
 
     /**

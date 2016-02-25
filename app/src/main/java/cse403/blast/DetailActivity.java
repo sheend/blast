@@ -14,6 +14,9 @@ import android.widget.TextView;
 import com.firebase.client.Firebase;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import cse403.blast.Data.Constants;
@@ -121,6 +124,7 @@ public class DetailActivity extends AppCompatActivity {
                     Log.i(TAG, "PRE current user ID: " + currentUser.getFacebookID());
                     Log.i(TAG, "PRE current events attending: " + currentUser.getEventsAttending());
                     Log.i(TAG, "PRE current events created: " + currentUser.getEventsCreated());
+
                     currentUser.attendEvent(event);
 
                     ///// update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
@@ -131,8 +135,13 @@ public class DetailActivity extends AppCompatActivity {
 
                     //final User newUser = new User(currentUser.getFacebookID(), currentUser.getEventsCreated(), currentUser.getEventsAttending());
 
-                    Firebase newRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
-                    newRef.setValue(currentUser.getEventsAttending());
+                    // updates user's attending
+                    Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
+                    userRef.setValue(currentUser.getEventsAttending());
+
+                    // update event's attendees field
+                    //Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child()
+
 //                    Map<String, Object> updatedList = new HashMap<String, Object>();
 //                    updatedList.put("eventsAttending", currentUser.getEventsAttending());
 //                    newRef.setValue(updatedList);

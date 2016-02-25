@@ -20,20 +20,20 @@ public class User implements Serializable {
      */
 
     private String facebookID;
-    private Set<Event> eventsCreated;
-    private Set<Event> eventsAttending;
+    private Set<String> eventsCreated;
+    private Set<String> eventsAttending;
 
     public User() {
         this.facebookID = "";
-        this.eventsCreated = new HashSet<Event>();
-        this.eventsAttending = new HashSet<Event>();
+        this.eventsCreated = new HashSet<String>();
+        this.eventsAttending = new HashSet<String>();
     }
 
     /**
      * Constructs a new user using their facebook id
      * @param facebookID    user's fb identification
      */
-    public User(String facebookID, Set<Event> created, Set<Event> attending) {
+    public User(String facebookID, Set<String> created, Set<String> attending) {
         this.facebookID = facebookID;
         eventsCreated = created;
         eventsAttending = attending;
@@ -72,7 +72,7 @@ public class User implements Serializable {
     // TODO: why will this only work when eventsCreated.add(event) is in an assert?
     public Event createEvent(String title, String desc, String loc, int limit, Date eventTime) {
         Event event = new Event(this, title, desc, loc, limit, eventTime);
-        assert(eventsCreated.add(event));
+        assert(eventsCreated.add(event.getId()));
         return event;
     }
 
@@ -116,7 +116,7 @@ public class User implements Serializable {
             return false;
         }
         e.addAttendee(this);
-        boolean added = eventsAttending.add(e);
+        boolean added = eventsAttending.add(e.getId());
         return added;
     }
 
@@ -134,7 +134,7 @@ public class User implements Serializable {
      * Returns the events created by user
      * @return  events created by user
      */
-    public Set<Event> getEventsCreated() {
+    public Set<String> getEventsCreated() {
         return eventsCreated;
     }
 
@@ -142,7 +142,7 @@ public class User implements Serializable {
      * Returns events user is attending
      * @return  events user is attending
      */
-    public Set<Event> getEventsAttending() {
+    public Set<String> getEventsAttending() {
         return eventsAttending;
     }
 

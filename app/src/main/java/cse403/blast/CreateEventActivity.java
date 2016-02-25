@@ -410,7 +410,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Log.i("TestMyDate", userEnteredDate.toString());
 
         // Create event object using user-submitted data
-        Event userEvent = new Event(new User("1234", new HashSet<Event>(), new HashSet<Event>()), userEnteredTitle, userEnteredDesc,
+        Event userEvent = new Event(new User("1234", new HashSet<String>(), new HashSet<String>()), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, userEnteredLimit, userEnteredDate);
 
 
@@ -418,9 +418,11 @@ public class CreateEventActivity extends AppCompatActivity {
         Firebase eventRef = ref.child("events");
         Firebase newEventRef = eventRef.push();
 
+        String eventId = newEventRef.getKey();
+        userEvent.setId(eventId);
+
         // Add event to DB
         newEventRef.setValue(userEvent);
 
-        // String eventId = newEventRef.getKey();
     }
 }
