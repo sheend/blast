@@ -12,7 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
+import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -90,7 +95,23 @@ public class DetailActivity extends AppCompatActivity {
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText(event.getTitle());
 
-        // TODO: Only display the hour of the time (ie. @ 7pm)
+
+        Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event = dataSnapshot.getValue(Event.class);
+            }
+
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+
+            // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
 
         time.setText("" + event.getEventTime());
@@ -116,7 +137,7 @@ public class DetailActivity extends AppCompatActivity {
         locationLabel.setText(event.getLocation());
 
         // Set appropriate text and onclick's depending on user's status
-        if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
+        if (currentUser.getFacebookID().equals(event.getOwner())) { // user is owner, have option to edit
             button.setText(getString(R.string.detail_edit));
             // Go to creation page
             button.setOnClickListener(new View.OnClickListener() {
@@ -126,17 +147,24 @@ public class DetailActivity extends AppCompatActivity {
                     createIntent.putExtra("edit", true);
                     createIntent.putExtra("event", event);
                     startActivity(createIntent);
+
                 }
             });
-        } else if (event.getAttendees().contains(currentUser)) { // user is an attendee, have option to leave
+        } else if (event.getAttendees().contains(currentUser.getFacebookID())) { // user is an attendee, have option to leave
             button.setText(getString(R.string.detail_leave));
             // Go back to main page
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
-                    currentUser.leaveEvent(event);
                     startActivity(mainIntent);
+
+                    // remove event from user's attending
+                    currentUser.leaveEvent(event);
+
+                    setPreferences();
+
+                    updateToFireBase();
                 }
             });
         } else { // user could potentially attend
@@ -155,34 +183,59 @@ public class DetailActivity extends AppCompatActivity {
                     // add event to user's attending
                     currentUser.attendEvent(event);
                     // add user to event's attendees
-                    event.addAttendee(currentUser);
+                    //event.addAttendee(currentUser);
 
-                    ///// update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
-                    preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-                    preferenceEditor = preferenceSettings.edit();
-
-                    // Store the current User object in SharedPreferences
-                    Gson gson = new Gson();
-                    String json = gson.toJson(currentUser);
-                    Log.i(TAG, "JSON: " + json);
-                    preferenceEditor.putString("MyUser", json);
-                    preferenceEditor.commit();
+                    setPreferences();
 
                     Log.i(TAG, "POST current user ID: " + currentUser.getFacebookID());
                     Log.i(TAG, "POST current events attending: " + currentUser.getEventsAttending());
                     Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
 
-
-                    // updates user's attending
-                    Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
-                    userRef.setValue(currentUser.getEventsAttending());
-
-                    // update event's attendees field
-                    Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
-                    eventRef.setValue(event.getAttendees());
+                    updateToFireBase();
 
                 }
             });
         }
+    }
+
+    public void setPreferences() {
+        // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceEditor = preferenceSettings.edit();
+
+        // Store the current User object in SharedPreferences
+        Gson gson = new Gson();
+        String json = gson.toJson(currentUser);
+        Log.i(TAG, "JSON: " + json);
+        preferenceEditor.putString("MyUser", json);
+        preferenceEditor.commit();
+
+    }
+
+    public void updateToFireBase() {
+        // updates user's attending
+        Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
+        userRef.setValue(currentUser.getEventsAttending());
+
+
+
+
+        // update event's attendees field
+        Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
+        eventRef.setValue(event.getAttendees());
+
+//        eventRef.runTransaction(new Transaction.Handler() {
+//            @Override
+//            public Transaction.Result doTransaction(MutableData currentData) {
+//                currentData.setValue(event.getAttendees());
+//                return Transaction.success(currentData);
+//            }
+//
+//            @Override
+//            public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
+//                //This method will be called once with the results of the transaction
+//            }
+//        });
+
     }
 }
