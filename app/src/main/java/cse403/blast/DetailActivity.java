@@ -146,6 +146,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
                     startActivity(mainIntent);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
                     // remove event from user's attending
                     currentUser.leaveEvent(event);
@@ -163,6 +164,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
                     startActivity(mainIntent);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
                     Log.i(TAG, "PRE current user ID: " + currentUser.getFacebookID());
                     Log.i(TAG, "PRE current events attending: " + currentUser.getEventsAttending());
@@ -223,4 +225,10 @@ public class DetailActivity extends AppCompatActivity {
 //        });
 
     }
+//  TODO: back button doesn't transition well
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+//    }
 }
