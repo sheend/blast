@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.DisplayMetrics;
@@ -17,19 +18,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -39,11 +35,11 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
-import org.w3c.dom.Text;
-
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
@@ -63,10 +59,12 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
-    private boolean IGNORE_LOGIN = true;
+    private boolean IGNORE_LOGIN = false;
     private FloatingActionButton fab;
     private SharedPreferences preferenceSettings;
     private User currentUser;
+    private List<Event> attendingEventList;
+    private List<Event> createdEventList;
 
 
     @Override
@@ -105,12 +103,74 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        // Getting current user
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        // Try getting current user from shared preferences
+        final SharedPreferences preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
         Gson gson = new Gson();
         String json = preferenceSettings.getString("MyUser", "");
         Log.i(TAG, "Set currentUser" + json);
         currentUser = gson.fromJson(json, User.class);
+
+        //No user found in local memory, try firebase
+        if (currentUser == null) {
+            if (fbManager.isValidSession()) {
+                final String fid = FacebookManager.getInstance().getUserID();
+                final String name = FacebookManager.getInstance().getUserName();
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        if (dataSnapshot.getValue() == null) {
+                            currentUser = new User(fid, name);
+
+                            // Add user to DB
+                            ref.setValue(currentUser);
+
+                            Log.i(TAG, "we added a new user");
+                        } else {
+                            currentUser = dataSnapshot.getValue(User.class);
+                            Log.i(TAG, "user already exists in db");
+                        }
+
+                        TextView profileName = (TextView) findViewById(R.id.profileName);
+                        profileName.setText(currentUser.getName());
+
+                        //populate attending list
+                        preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
+                        preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
+
+                        //store user to shared preferences
+                        SharedPreferences settings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("userid", fid);
+                        editor.putString("name", name);
+
+                        // Store the current User object in SharedPreferences
+                        Gson gson = new Gson();
+                        String json = gson.toJson(currentUser);
+                        Log.i(TAG, "JSON: " + json);
+                        editor.putString("MyUser", json);
+
+                        editor.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Log.d(TAG, "error: " + firebaseError.getMessage());
+                    }
+                });
+            }
+        } else {
+            //set user name in left drawer
+            TextView profileName = (TextView) findViewById(R.id.profileName);
+            profileName.setText(currentUser.getName());
+
+            //populate attending list
+            preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
+            preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
+
+        }
 
         /* Tutorial */
         View tutorialMain = findViewById(R.id.tutorial_main);
@@ -145,8 +205,8 @@ public class MainActivity extends AppCompatActivity
         //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         //navigationView.setNavigationItemSelectedListener(this);
 
-        TextView profileName = (TextView) findViewById(R.id.profileName);
-        profileName.setText(currentUser.getName());
+        //TextView profileName = (TextView) findViewById(R.id.profileName);
+        //profileName.setText(currentUser.getName());
         
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
@@ -164,8 +224,8 @@ public class MainActivity extends AppCompatActivity
 
                 setupListEvents(events);
 
-                setupNavLists(R.id.attending_list, events);
-                setupNavLists(R.id.created_list, events);
+                //preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
+                //preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
 
             }
 
@@ -180,8 +240,25 @@ public class MainActivity extends AppCompatActivity
     public void setupListEvents(List<Event> events) {
         mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
+        //sanitize and sort listevents
+        for (int i = 0; i < events.size(); i++) {
+            String timeDif = events.get(i).retrieveTimeDifference();
+            if (timeDif.startsWith(" -") || timeDif.contains(" d")) {
+                events.remove(i);
+                i--;
+            }
+        }
+
         EventAdapter adapter = new EventAdapter(this, events);
         mainListView.setAdapter(adapter);
+
+        adapter.sort(new Comparator<Event>() {
+            @Override
+            public int compare(Event lhs, Event rhs) {
+                return lhs.compareTo(rhs);
+            }
+        });
+
 
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -206,37 +283,28 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void setupNavLists(int elementId, List<Event> events) {
-        ListView sideNavListView = (ListView) findViewById(elementId);
-        ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(this, android.R.layout.simple_list_item_1, events);
-        //EventAdapter eventAdapter = new EventAdapter(this, events);
-        sideNavListView.setAdapter(navAdapter);
+    public void preSetupAttendingList(int elementId, Set<String> events) {
+        if (events.contains(""))
+            events.remove("");
 
-        // Hack to make the listview scroll on the sidebar
-        sideNavListView.setOnTouchListener(new View.OnTouchListener() {
-            // Setting on Touch Listener for handling the touch inside ScrollView
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
+        List<String> eventIDList = new ArrayList<>(events); // good
+        attendingEventList = new ArrayList<Event>(); // non null = good
 
-        sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+        //LongOperation task = new LongOperation().doInBackground(attendingEventList);
+        new AttendingUpdates().execute(eventIDList);
 
-                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-                detailIntent.putExtra("event", eventAtPosition);
-                startActivity(detailIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+    }
 
-            }
-        });
+    public void preSetupCreatedList(int elementId, Set<String> events) {
+        if (events.contains(""))
+            events.remove("");
 
-        setListViewHeightBasedOnChildren(sideNavListView);
+        List<String> eventIDList = new ArrayList<>(events); // good
+        createdEventList = new ArrayList<Event>(); // non null = good
+
+        //LongOperation task = new LongOperation().doInBackground(attendingEventList);
+        new CreatedUpdates().execute(eventIDList);
+
     }
 
     @Override
@@ -288,15 +356,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        /*if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -337,4 +396,143 @@ public class MainActivity extends AppCompatActivity
         }
         super.onStop();
     }*/
+
+    private class AttendingUpdates extends AsyncTask<List<String>, Void, String> {
+
+        @Override
+        protected String doInBackground(List<String>... params) {
+
+            for (String eventID : (List<String>) params[0]) {
+
+                // Query Firebase for the Event object based on given ID
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(eventID);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        Event eventToAdd = snapshot.getValue(Event.class);
+                        if (eventToAdd != null)
+                            attendingEventList.add(eventToAdd);
+                        //Log.i(TAG, "LEFT DRAWER EVENT LIST (updated): " + attendingEventList.toString() + " ");
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+                    }
+                });
+
+            }
+
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            Log.i(TAG, "LEFT DRAWER EVENT LIST: " + attendingEventList.toString());
+            setupNavLists(R.id.attending_list);
+
+        }
+
+        private void setupNavLists(int elementId) {
+            ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(MainActivity.this, android.R.layout.simple_list_item_1, attendingEventList);
+            ListView sideNavListView = (ListView) findViewById(elementId);
+            sideNavListView.setAdapter(navAdapter);
+
+            // Hack to make the listview scroll on the sidebar
+            sideNavListView.setOnTouchListener(new View.OnTouchListener() {
+                // Setting on Touch Listener for handling the touch inside ScrollView
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Disallow the touch request for parent scroll on touch of child view
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+
+            sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+
+                    Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                    detailIntent.putExtra("event", eventAtPosition);
+                    startActivity(detailIntent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                }
+            });
+
+            setListViewHeightBasedOnChildren(sideNavListView);
+        }
+    }
+
+    private class CreatedUpdates extends AsyncTask<List<String>, Void, String> {
+
+        @Override
+        protected String doInBackground(List<String>... params) {
+
+            for (String eventID : (List<String>) params[0]) {
+
+                // Query Firebase for the Event object based on given ID
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(eventID);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        Event eventToAdd = snapshot.getValue(Event.class);
+                        if (eventToAdd != null)
+                            createdEventList.add(eventToAdd);
+                        //Log.i(TAG, "LEFT DRAWER EVENT LIST (updated): " + attendingEventList.toString() + " ");
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+                    }
+                });
+
+            }
+
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            Log.i(TAG, "LEFT DRAWER EVENT LIST: " + createdEventList.toString());
+            setupNavLists(R.id.created_list);
+
+        }
+
+        private void setupNavLists(int elementId) {
+            ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(MainActivity.this, android.R.layout.simple_list_item_1, createdEventList);
+            ListView sideNavListView = (ListView) findViewById(elementId);
+            sideNavListView.setAdapter(navAdapter);
+
+            // Hack to make the listview scroll on the sidebar
+            sideNavListView.setOnTouchListener(new View.OnTouchListener() {
+                // Setting on Touch Listener for handling the touch inside ScrollView
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Disallow the touch request for parent scroll on touch of child view
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+
+            sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+
+                    Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                    detailIntent.putExtra("event", eventAtPosition);
+                    startActivity(detailIntent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                }
+            });
+
+            setListViewHeightBasedOnChildren(sideNavListView);
+        }
+    }
+
 }

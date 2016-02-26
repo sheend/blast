@@ -6,9 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -22,16 +19,18 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.GenericTypeIndicator;
+import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.Set;
 
 import cse403.blast.Data.Constants;
-import cse403.blast.Data.FacebookManager;
-import cse403.blast.Model.User;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.DatePickerFragment;
@@ -63,6 +62,7 @@ public class CreateEventActivity extends AppCompatActivity {
     private User currentUser;
     private SharedPreferences preferenceSettings;
     private SharedPreferences.Editor preferenceEditor;
+    private Intent createEventIntent;
 
     private final String TAG = "CreateEventActivity";
 
@@ -73,7 +73,7 @@ public class CreateEventActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Intent createEventIntent = getIntent();
+        createEventIntent = getIntent();
 
         submitButton = (Button) findViewById(R.id.create_submit_button);
         cancelButton = (Button) findViewById(R.id.create_cancel_button);
@@ -83,7 +83,17 @@ public class CreateEventActivity extends AppCompatActivity {
         limitText = (EditText) findViewById(R.id.create_limit);
         date = (EditText) findViewById(R.id.create_date);
         time = (EditText) findViewById(R.id.create_time);
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
+                startActivity(mainActivityIntent);
+                deleteEvent();
+            }
+        });
+
 
         /* TUTORIAL */
         View tutorialCreate = findViewById(R.id.tutorial_create);
@@ -166,13 +176,19 @@ public class CreateEventActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
             // TODO: prepopulate fields
 
             // Disable and enable certain parts
             titleText.setEnabled(false);
+            titleText.setText(event.getTitle());
+            descText.setText(event.getDesc());
+            dateText.setText(event.getEventTime().toString());
             locText.setEnabled(false);
+            locText.setText(event.getLocation());
+            limitText.setText("" + event.getLimit());
             cancelButton.setVisibility(View.VISIBLE);
             cancelButton.setText(getString(R.string.create_cancel_button));
             submitButton.setText(getString(R.string.create_save_button));
@@ -492,7 +508,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         // Grab User object from SharedPreferences file
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
         preferenceEditor = preferenceSettings.edit();
 
         Gson gson = new Gson();
@@ -507,7 +523,15 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
-        Firebase newEventRef = eventRef.push();
+
+        // Get reference to ID of event (create an ID if one does not exist);
+        Firebase newEventRef;
+        if (createEventIntent.getBooleanExtra("edit", true)) {
+            Event event = (Event) createEventIntent.getSerializableExtra("event");
+            newEventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
+        } else {
+            newEventRef = eventRef.push();
+        }
 
         String eventId = newEventRef.getKey();
         userEvent.setId(eventId);
@@ -532,5 +556,60 @@ public class CreateEventActivity extends AppCompatActivity {
         userEvent.addAttendee(currentUser);
         Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
         userAttendingRef.setValue(userEvent.getAttendees());
+    }
+
+    public void deleteEvent() {
+        final Event event = (Event) createEventIntent.getSerializableExtra("event");
+
+        // get attendees
+        Set<String> attendees = event.getAttendees();
+
+        // remove event from each attendee's list of attending events
+        for (String attendee : attendees) {
+            if (!attendee.equals(event.getOwner())) {
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(attendee).child("eventsAttending");
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        GenericTypeIndicator<Set<String>> t = new GenericTypeIndicator<Set<String>>() {};
+                        Set<String> eventsAttending = snapshot.getValue(t);
+                        if (eventsAttending != null) {
+                            eventsAttending.remove(event.getId());
+                            ref.setValue(eventsAttending);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+
+                    }
+                });
+            }
+        }
+
+        // remove from owner's list of events created
+        String owner = event.getOwner();
+        final Firebase ownerRef = new Firebase(Constants.FIREBASE_URL).child("users").child(owner).child("eventsCreated");
+        ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                GenericTypeIndicator<Set<String>> t = new GenericTypeIndicator<Set<String>>() {};
+                Set<String> eventsCreated = snapshot.getValue(t);
+                eventsCreated.remove(event.getId());
+                ownerRef.setValue(eventsCreated);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+
+            }
+        });
+
+
+        // remove from db
+        Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
+        eventRef.removeValue();
+
+        notifyUser("Event deleted");
     }
 }

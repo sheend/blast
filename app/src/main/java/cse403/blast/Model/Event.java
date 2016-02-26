@@ -19,7 +19,7 @@ import cse403.blast.Support.DateDifference;
  * These changes are also restricted by certain limitations.
  *
  */
-public class Event implements Serializable {
+public class Event implements Serializable, Comparable<Event> {
     /*
     Rep invariant:
     owner != null
@@ -119,6 +119,11 @@ public class Event implements Serializable {
     @Override
     public int hashCode() {
         return title.hashCode() * desc.hashCode() * eventTime.hashCode();
+    }
+
+    @Override
+    public int compareTo(Event another) {
+        return this.eventTime.compareTo(another.eventTime);
     }
 
     // Mutators
@@ -230,7 +235,7 @@ public class Event implements Serializable {
      * For use when the time is to be displayed for the event details
      * @return
      */
-    public String getEventTimeString() {
+    public String retrieveEventTimeString() {
         SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
         SimpleDateFormat day = new SimpleDateFormat("dd MMM");
 
@@ -242,7 +247,7 @@ public class Event implements Serializable {
      * For use when the time is to be
      * @return
      */
-    public String getTimeDifference() {
+    public String retrieveTimeDifference() {
         Date today = new Date();
         return DateDifference.getDifferenceString(today, eventTime);
     }

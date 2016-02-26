@@ -42,7 +42,8 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        //preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
 
         /* Tutorial */
         View tutorialDetail = findViewById(R.id.tutorial_detail);
@@ -99,10 +100,10 @@ public class DetailActivity extends AppCompatActivity {
         });
 
 
-            // TODO: Only display the hour of the time (ie. @ 7pm)
+        // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
 
-        time.setText("" + event.getEventTimeString());
+        time.setText("" + event.retrieveEventTimeString());
 
         TextView desc = (TextView) findViewById(R.id.detail_desc);
         desc.setText(event.getDesc());
@@ -190,7 +191,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public void setPreferences() {
         // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
         preferenceEditor = preferenceSettings.edit();
 
         // Store the current User object in SharedPreferences
