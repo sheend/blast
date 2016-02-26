@@ -37,6 +37,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
 
 import org.w3c.dom.Text;
 
@@ -47,6 +48,7 @@ import java.util.List;
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
+import cse403.blast.Model.User;
 import cse403.blast.Support.EventAdapter;
 
 
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity
     private boolean newUser = true;
     private FloatingActionButton fab;
     private SharedPreferences preferenceSettings;
-    private SharedPreferences.Editor preferenceEditor;
+    private User currentUser;
 
 
     @Override
@@ -87,7 +89,6 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -104,6 +105,13 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
+
+        // Getting current user
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = preferenceSettings.getString("MyUser", "");
+        Log.i(TAG, "Set currentUser" + json);
+        currentUser = gson.fromJson(json, User.class);
 
         /* Tutorial */
         // TODO: set constant for first time users, currently shows every time activity is created
@@ -135,8 +143,11 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        //navigationView.setNavigationItemSelectedListener(this);
+
+        TextView profileName = (TextView) findViewById(R.id.profileName);
+        profileName.setText(currentUser.getName());
         
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
@@ -163,14 +174,6 @@ public class MainActivity extends AppCompatActivity
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
-
-
-        // Grab ID of current user from SharedPreferences file
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-        String name = preferenceSettings.getString("name", "");
-        Log.i(TAG, "theCurrentName is: " + name);
-        TextView profileName = (TextView) findViewById(R.id.profileName);
-        profileName.setText(name);
 
     }
 
