@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -177,8 +178,25 @@ public class MainActivity extends AppCompatActivity
     public void setupListEvents(List<Event> events) {
         mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
+        //sanitize and sort listevents
+        for (int i = 0; i < events.size(); i++) {
+            String timeDif = events.get(i).retrieveTimeDifference();
+            if (timeDif.startsWith(" -") || timeDif.contains(" d")) {
+                events.remove(i);
+                i--;
+            }
+        }
+
         EventAdapter adapter = new EventAdapter(this, events);
         mainListView.setAdapter(adapter);
+
+        adapter.sort(new Comparator<Event>() {
+            @Override
+            public int compare(Event lhs, Event rhs) {
+                return lhs.compareTo(rhs);
+            }
+        });
+
 
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
