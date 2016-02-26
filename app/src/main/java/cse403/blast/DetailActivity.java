@@ -32,7 +32,6 @@ public class DetailActivity extends AppCompatActivity {
     private String currentUserID;
     private SharedPreferences preferenceSettings;
     private SharedPreferences.Editor preferenceEditor;
-    private boolean newUser = true;
     private Button button;
 
     @Override
@@ -43,13 +42,12 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
 
         // Tutorial
-        // TODO: set constant for first time users, currently shows every time activity is created
         View tutorialDetail = findViewById(R.id.tutorial_detail);
         button = (Button) findViewById(R.id.detail_button);
-        // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(DetailActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
-        if (newUser) {
+        if (preferenceSettings.getBoolean("initialDetailLaunch", true)) {
             tutorialDetail.setVisibility(View.VISIBLE);
             button.setEnabled(false);
         } else {
@@ -60,15 +58,14 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
-                newUser = false;
                 button.setEnabled(true);
+                preferenceSettings.edit().putBoolean("initialDetailLaunch", false).apply();
             }
         });
 
         // Real detail starts from here
 
         // Grab ID of current user from SharedPreferences file
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
         currentUserID = preferenceSettings.getString("userid", "user");
         Log.i("detailActivity", "theCurrentID is: " + currentUserID);
 

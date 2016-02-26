@@ -60,7 +60,6 @@ public class CreateEventActivity extends AppCompatActivity {
     private int userYear;
     private int userHour;
     private int userMin;
-    private boolean newUser = true;
     private User currentUser;
     private SharedPreferences preferenceSettings;
     private SharedPreferences.Editor preferenceEditor;
@@ -84,12 +83,11 @@ public class CreateEventActivity extends AppCompatActivity {
         limitText = (EditText) findViewById(R.id.create_limit);
         date = (EditText) findViewById(R.id.create_date);
         time = (EditText) findViewById(R.id.create_time);
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
 
         /* TUTORIAL */
-        // TODO: set constant for first time users, currently showing every time activity is created
         View tutorialCreate = findViewById(R.id.tutorial_create);
-        // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(CreateEventActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
-        if (newUser) {
+        if (preferenceSettings.getBoolean("initialCreateLaunch", true)) {
             tutorialCreate.setVisibility(View.VISIBLE);
             // TODO: Disable all possible input
             submitButton.setEnabled(false);
@@ -114,7 +112,7 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
-                newUser = false;
+                preferenceSettings.edit().putBoolean("initialCreateLaunch", false).apply();
 //                // TODO: enable all possible input
                 submitButton.setEnabled(true);
                 cancelButton.setEnabled(true);

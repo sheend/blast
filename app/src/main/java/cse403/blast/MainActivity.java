@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity
     private ListView mainListView;
     private FacebookManager fbManager = null;
     private boolean IGNORE_LOGIN = true;
-    private boolean newUser = true;
     private FloatingActionButton fab;
     private SharedPreferences preferenceSettings;
     private User currentUser;
@@ -114,10 +113,8 @@ public class MainActivity extends AppCompatActivity
         currentUser = gson.fromJson(json, User.class);
 
         /* Tutorial */
-        // TODO: set constant for first time users, currently shows every time activity is created
         View tutorialMain = findViewById(R.id.tutorial_main);
-        // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(DetailActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
-        if (newUser) {
+        if (preferenceSettings.getBoolean("initialMainLaunch", true)) {
             tutorialMain.setVisibility(View.VISIBLE);
             fab.setEnabled(false);
         } else {
@@ -128,8 +125,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
-                newUser = false;
                 fab.setEnabled(true);
+                preferenceSettings.edit().putBoolean("initialMainLaunch", false).apply();
             }
         });
 
