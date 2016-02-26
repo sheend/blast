@@ -126,6 +126,7 @@ public class LoginActivity extends FragmentActivity {
                         preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
                         preferenceEditor = preferenceSettings.edit();
                         preferenceEditor.putString("userid", fid);
+                        preferenceEditor.putString("name", name);
 
                         // Store the current User object in SharedPreferences
                         Gson gson = new Gson();
