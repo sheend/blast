@@ -6,6 +6,11 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.MotionEvent;
+import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +28,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
@@ -31,6 +37,9 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
+
+import org.w3c.dom.Text;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,6 +48,7 @@ import java.util.List;
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
+import cse403.blast.Model.User;
 import cse403.blast.Support.EventAdapter;
 
 
@@ -53,11 +63,10 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
-    private boolean IGNORE_LOGIN = false;
-    private boolean newUser = true;
+    private boolean IGNORE_LOGIN = true;
     private FloatingActionButton fab;
     private SharedPreferences preferenceSettings;
-    private SharedPreferences.Editor preferenceEditor;
+    private User currentUser;
 
 
     @Override
@@ -79,7 +88,6 @@ public class MainActivity extends AppCompatActivity
             finish();
         }
 
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -97,13 +105,19 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        // Getting current user
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = preferenceSettings.getString("MyUser", "");
+        Log.i(TAG, "Set currentUser" + json);
+        currentUser = gson.fromJson(json, User.class);
+
         /* Tutorial */
-        // TODO: set constant for first time users, currently shows every time activity is created
         View tutorialMain = findViewById(R.id.tutorial_main);
-        // boolean tutorialShown = PreferenceManager.getDefaultSharedPreferences(DetailActivity.this).getBoolean(Constants.PREF_KEY_TUT_MAIN, false);
-        if (newUser) {
+        if (preferenceSettings.getBoolean("initialMainLaunch", true)) {
             tutorialMain.setVisibility(View.VISIBLE);
             fab.setEnabled(false);
+            fab.setFocusable(false);
         } else {
             tutorialMain.setVisibility(View.GONE);
         }
@@ -112,8 +126,9 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
-                newUser = false;
                 fab.setEnabled(true);
+                fab.setFocusable(true);
+                preferenceSettings.edit().putBoolean("initialMainLaunch", false).apply();
             }
         });
 
@@ -127,8 +142,11 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        //navigationView.setNavigationItemSelectedListener(this);
+
+        TextView profileName = (TextView) findViewById(R.id.profileName);
+        profileName.setText(currentUser.getName());
         
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
@@ -145,12 +163,9 @@ public class MainActivity extends AppCompatActivity
                 Log.i("Log tag", "The data changed!");
 
                 setupListEvents(events);
-                setupNavLists(events);
 
-                // Grab ID of current user from SharedPreferences file
-                preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-                String name = preferenceSettings.getString("name", "");
-                Log.i(TAG, "theCurrentName is: " + name);
+                setupNavLists(R.id.attending_list, events);
+                setupNavLists(R.id.created_list, events);
 
             }
 
@@ -191,10 +206,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    public void setupNavLists(List<Event> events) {
-        ListView sideNavListView = (ListView) findViewById(R.id.new_try_list_view);
+    public void setupNavLists(int elementId, List<Event> events) {
+        ListView sideNavListView = (ListView) findViewById(elementId);
         ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(this, android.R.layout.simple_list_item_1, events);
+        //EventAdapter eventAdapter = new EventAdapter(this, events);
         sideNavListView.setAdapter(navAdapter);
 
         // Hack to make the listview scroll on the sidebar
@@ -211,7 +226,13 @@ public class MainActivity extends AppCompatActivity
         sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+
+                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                detailIntent.putExtra("event", eventAtPosition);
+                startActivity(detailIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
             }
         });
 
@@ -287,7 +308,7 @@ public class MainActivity extends AppCompatActivity
      * Fix the issue of not showing all the items of the ListView
      * when placed inside a ScrollView
      */
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
+    public void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
             return;
@@ -298,15 +319,12 @@ public class MainActivity extends AppCompatActivity
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
 
-        if (height > 2200) {
-            params.height = 1600;
-        } else if (height > 2000) {
-            params.height = 1400;
-        } else if (height > 1400) {
-            params.height = 1200;
-        } else {
-            params.height = 800;
-        }
+        Resources r = getResources();
+        //Header is 160dp
+        float header = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());
+        int listSpace = height - Math.round(header);
+        params.height = (int)(0.4 * listSpace); // Almost half remaining space divided by 2 sections
+
         listView.setLayoutParams(params);
     }
 

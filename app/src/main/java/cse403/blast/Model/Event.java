@@ -1,10 +1,15 @@
 package cse403.blast.Model;
 
+import android.util.Log;
+
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
+
+import cse403.blast.Support.DateDifference;
 
 /**
  * Created by Sheen on 2/2/16.
@@ -213,10 +218,33 @@ public class Event implements Serializable {
 
     /**
      * Return time event is occurring
+     * For use when the Date object is needed
      * @return  time event is occurring
      */
     public Date getEventTime() {
         return new Date(eventTime.getTime());
+    }
+
+    /**
+     * Return toString for the date
+     * For use when the time is to be displayed for the event details
+     * @return
+     */
+    public String getEventTimeString() {
+        SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
+        SimpleDateFormat day = new SimpleDateFormat("dd MMM");
+
+        return time.format(eventTime) + " on " + day.format(eventTime);
+    }
+
+    /**
+     * Return the toString for the difference in time between now and then
+     * For use when the time is to be
+     * @return
+     */
+    public String getTimeDifference() {
+        Date today = new Date();
+        return DateDifference.getDifferenceString(today, eventTime);
     }
 
     /**
