@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.MutableData;
+import com.firebase.client.Transaction;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
@@ -215,8 +217,23 @@ public class DetailActivity extends AppCompatActivity {
         Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
         userRef.setValue(currentUser.getEventsAttending());
 
+
+
+
         // update event's attendees field
         Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
-        eventRef.setValue(event.getAttendees());
+        eventRef.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData currentData) {
+                currentData.setValue(event.getAttendees());
+                return Transaction.success(currentData);
+            }
+
+            @Override
+            public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
+                //This method will be called once with the results of the transaction
+            }
+        });
+
     }
 }
