@@ -30,6 +30,6 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/ic_plus_button"
-        app:backgroundTint="@color/blastAccent" />
+        app:backgroundTint="@color/blastAccent"/>
 
 </android.support.design.widget.CoordinatorLayout>
