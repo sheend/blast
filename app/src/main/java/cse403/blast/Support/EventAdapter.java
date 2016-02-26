@@ -37,13 +37,15 @@ public class EventAdapter extends ArrayAdapter<Event> {
         // Lookup view for data population
         TextView title = (TextView) convertView.findViewById(R.id.event_title);
         TextView subtitle = (TextView) convertView.findViewById(R.id.event_subtitle);
+        TextView time = (TextView) convertView.findViewById(R.id.time);
 
         // Populate the data into the template view using the data object
         title.setText(event.getTitle());
-        subtitle.setText(event.getLocation() + " @ " + event.getEventTime());
+        subtitle.setText(event.getLocation());
+        time.setText(event.retrieveTimeDifference());
         // Return the completed view to render on screen
 
-        ImageView eventImage = (ImageView) convertView.findViewById(R.id.event_category_image);
+        //ImageView eventImage = (ImageView) convertView.findViewById(R.id.event_category_image);
         //TODO: For adding background images
         //int id = getContext().getResources().getIdentifier("cse403.blast:drawable/" + "ic_menu_share", null, null);
         //eventImage.setImageResource(id);

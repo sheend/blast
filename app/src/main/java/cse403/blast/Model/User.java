@@ -1,8 +1,6 @@
 package cse403.blast.Model;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,23 +19,33 @@ public class User implements Serializable {
      */
 
     private String facebookID;
-    private Set<Event> eventsCreated;
-    private Set<Event> eventsAttending;
+    private String name;
+    private Set<String> eventsCreated;
+    private Set<String> eventsAttending;
 
 
     public User() {
-
+        this.facebookID = "";
+        this.name = "";
+        this.eventsCreated = new HashSet<String>();
+        this.eventsAttending = new HashSet<String>();
     }
 
     /**
      * Constructs a new user using their facebook id
      * @param facebookID    user's fb identification
      */
-    public User(String facebookID) {
+    public User(String facebookID, String name) {
         this.facebookID = facebookID;
-        eventsCreated = new HashSet<Event>();
-        eventsAttending = new HashSet<Event>();
+        this.name = name;
+        this.eventsCreated = new HashSet<String>();
+        this.eventsAttending = new HashSet<String>();
+        eventsCreated.add("");
+        eventsAttending.add("");
     }
+
+
+
 
     /**
      * Determines whether two Users are equal, or are the same person.
@@ -62,16 +70,13 @@ public class User implements Serializable {
     }
 
     /**
-     * User creates event, now add to list of events created and add self to event's attendees
-     * @return  event that was created
+     * User creates event
+     * @param e event to create
+     * @return  true if successfully added this to attendees, false otherwise (user is owner)
      */
-    // TODO: is it ok to only allow creation of events through Users?
-    // TODO: update database
-    // TODO: why will this only work when eventsCreated.add(event) is in an assert?
-    public Event createEvent(String title, String desc, String loc, int limit, Date eventTime) {
-        Event event = new Event(this, title, desc, loc, limit, eventTime);
-        assert(eventsCreated.add(event));
-        return event;
+    public boolean createEvent(Event e) {
+        boolean added = eventsCreated.add(e.getId());
+        return added;
     }
 
     /**
@@ -95,11 +100,11 @@ public class User implements Serializable {
      * @return true if successfully left, false otherwise (this is not part of e or this is owner, this should cancelEvent instead of leaveEvent)
      */
     public boolean leaveEvent(Event e) {
-        if (!e.getAttendees().contains(this) || e.getOwner().equals(this)) { // user is not part of e, or user is owner
+        if (!e.getAttendees().contains(this.getFacebookID()) || e.getOwner().equals(this)) { // user is not part of e, or user is owner
             return false;
         }
         e.removeAttendee(this);
-        boolean removed = eventsAttending.remove(e);
+        boolean removed = eventsAttending.remove(e.getId());
         return removed;
     }
 
@@ -114,7 +119,7 @@ public class User implements Serializable {
             return false;
         }
         e.addAttendee(this);
-        boolean added = eventsAttending.add(e);
+        boolean added = eventsAttending.add(e.getId());
         return added;
     }
 
@@ -129,19 +134,27 @@ public class User implements Serializable {
     }
 
     /**
+     * Returns user's name
+     * @return name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * Returns the events created by user
      * @return  events created by user
      */
-    public Set<Event> getEventsCreated() {
-        return Collections.unmodifiableSet(eventsCreated);
+    public Set<String> getEventsCreated() {
+        return eventsCreated;
     }
 
     /**
      * Returns events user is attending
      * @return  events user is attending
      */
-    public Set<Event> getEventsAttending() {
-        return Collections.unmodifiableSet(eventsAttending);
+    public Set<String> getEventsAttending() {
+        return eventsAttending;
     }
 
     /**
@@ -152,4 +165,5 @@ public class User implements Serializable {
         assert(eventsCreated != null && eventsCreated.size() >= 0);
         assert(eventsAttending != null && eventsAttending.size() >= 0);
     }
+
 }

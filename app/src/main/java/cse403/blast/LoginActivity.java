@@ -1,9 +1,10 @@
 package cse403.blast;
 
+import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.FragmentActivity;
-
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.TextView;
 
@@ -15,22 +16,18 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
 
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashSet;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
-import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
 
@@ -43,6 +40,10 @@ public class LoginActivity extends FragmentActivity {
     private LoginButton loginButton;
     private CallbackManager callbackManager;
     private TextView message;
+    private User userInfo;
+    private SharedPreferences preferenceSettings;
+    private SharedPreferences.Editor preferenceEditor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +64,13 @@ public class LoginActivity extends FragmentActivity {
                 // Asynchronously adds the logged in user to Firebase
                 addLoginUser(loginResult);
 
+                // sets the current User
+               //  Log.i(TAG, "userInfo: " + userInfo.getFacebookID());
+
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 fbManager.setToken(token);
+                AccessToken.setCurrentAccessToken(token);
+                fbManager.saveSession(getApplicationContext());
                 startActivity(i);
                 finish();
             }
@@ -95,7 +101,8 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onCompleted(JSONObject user, GraphResponse graphResponse) {
                 final String fid = user.optString("id");
-                Log.i("addedNewUserTAG", "we got this user id: " + fid);
+                final String name = user.optString("name");
+                Log.i("addedNewUserTAG", "we got this user id: " + fid + " " + name);
 
                 final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
 
@@ -104,17 +111,30 @@ public class LoginActivity extends FragmentActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.getValue() == null) {
-                            // TODO: replace with facebook ID
-                            User userInfo = new User(fid);
+                            userInfo = new User(fid, name);
 
                             // Add user to DB
                             ref.setValue(userInfo);
-                            Log.i("addedNewUserTAG", "we added a new user");
 
+                            Log.i("addedNewUserTAG", "we added a new user");
                         } else {
+                            userInfo = dataSnapshot.getValue(User.class);
                             Log.i("noUserAddedTAG", "user already exists in db");
                         }
 
+                        // Store the current userID in SharedPreferences
+                        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+                        preferenceEditor = preferenceSettings.edit();
+                        preferenceEditor.putString("userid", fid);
+                        preferenceEditor.putString("name", name);
+
+                        // Store the current User object in SharedPreferences
+                        Gson gson = new Gson();
+                        String json = gson.toJson(userInfo);
+                        Log.i("LoginActivity", "JSON: " + json);
+                        preferenceEditor.putString("MyUser", json);
+
+                        preferenceEditor.commit();
                     }
 
                     @Override
@@ -124,6 +144,7 @@ public class LoginActivity extends FragmentActivity {
                 });
             }
         }).executeAsync();
+
     }
 
 }

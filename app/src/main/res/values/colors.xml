@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
+    <!-- Dark theme -->
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimary">#212121</color>
+    <color name="windowBackground">#303030</color>
+    <color name="colorAccent">#424242</color>
+
+    <!-- Light theme
+    <color name="colorPrimaryDark">#c6c5c5</color>
+    <color name="colorPrimary">#E0E0E0</color>
+    <color name="windowBackground">#FAFAFA</color>
+    <color name="colorAccent">#FFFFFF</color>
+    -->
+
+    <!-- Color theme
+    <color name="statusBar">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    -->
+
+    <!-- For all themes -->
     <color name="blastAccent">#FF4C10</color>
-    <color name="offWhite">#EEEEEE</color>
+    <color name="lightText">#EEEEEE</color>
+    <color name="darkText">#da000000</color>
+
 </resources>

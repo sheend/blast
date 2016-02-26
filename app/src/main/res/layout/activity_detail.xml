@@ -21,7 +21,8 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            android:background="@drawable/detail">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -29,7 +30,8 @@
                 android:id="@+id/detail_title"
                 android:layout_gravity="bottom"
                 android:textSize="35dp"
-                android:layout_margin="20dp"/>
+                android:layout_marginLeft="72dp"
+                android:textColor="#FFFFFF"/>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

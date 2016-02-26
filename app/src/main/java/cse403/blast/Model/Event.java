@@ -1,12 +1,15 @@
 package cse403.blast.Model;
 
-import android.graphics.Color;
+import android.util.Log;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
+
+import cse403.blast.Support.DateDifference;
 
 /**
  * Created by Sheen on 2/2/16.
@@ -16,7 +19,7 @@ import java.util.HashSet;
  * These changes are also restricted by certain limitations.
  *
  */
-public class Event implements Serializable {
+public class Event implements Serializable, Comparable<Event> {
     /*
     Rep invariant:
     owner != null
@@ -27,13 +30,12 @@ public class Event implements Serializable {
     creationTime != null
     attendees.size() >= 1
 
-
     public enum Category {
         SOCIAL, FOOD, ACTIVE, ENTERTAINMENT, OTHER
     }
     */
 
-    private User owner;
+    private String owner;
     private String title;
     private String desc;
     private String location;
@@ -41,16 +43,23 @@ public class Event implements Serializable {
     //private Category category;
     private Date eventTime;
     private Date creationTime;
-    private Set<User> attendees;
+    private Set<String> attendees;
+    private String firebaseID;
 
     /**
      * Empty constructor
      */
     public Event() {
+        this.owner = "";
+        this.title = "";
+        this.desc = "";
+        this.location = "";
+        this.limit = 0;
+        this.eventTime = new Date();
         this.creationTime = new Date(); // initialize to current time
-        this.attendees = new HashSet<User>();
+        this.attendees = new HashSet<String>();
+        this.firebaseID = "";
         //this.category = Category.ACTIVE; //TODO: change this
-
     }
 
 
@@ -62,7 +71,7 @@ public class Event implements Serializable {
      * @param limit limit of people for event
      * @param eventTime time event will occur
      */
-    public Event(User owner, String title, String desc, String location, int limit, Date eventTime) {
+    public Event(String owner, String title, String desc, String location, int limit, Date eventTime) {
         this.owner = owner;
         this.title = title;
         this.desc = desc;
@@ -71,7 +80,9 @@ public class Event implements Serializable {
         //this.category = Category.ACTIVE; //TODO: Change this
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
-        this.attendees = new HashSet<User>();
+        this.attendees = new HashSet<String>();
+        attendees.add("");
+        this.firebaseID = "";
         // TODO: add the event to owner's list through client code
         // TODO: cannot call method from constructor because of firebase parsing
         // owner.addCreatedEvent(this); // add this event to owner's list of created events
@@ -110,6 +121,11 @@ public class Event implements Serializable {
         return title.hashCode() * desc.hashCode() * eventTime.hashCode();
     }
 
+    @Override
+    public int compareTo(Event another) {
+        return this.eventTime.compareTo(another.eventTime);
+    }
+
     // Mutators
 
     /**
@@ -118,7 +134,7 @@ public class Event implements Serializable {
      * @return  true if successfully added, false otherwise
      */
     public boolean addAttendee(User attendee) {
-        boolean added = attendees.add(attendee);
+        boolean added = attendees.add(attendee.getFacebookID());
         checkRep();
         return added;
     }
@@ -129,7 +145,7 @@ public class Event implements Serializable {
      * @return  true if successfully removed, false otherwise
      */
     public boolean removeAttendee(User attendee) {
-        boolean removed = attendees.remove(attendee);
+        boolean removed = attendees.remove(attendee.getFacebookID());
         checkRep();
         return removed;
     }
@@ -140,7 +156,7 @@ public class Event implements Serializable {
      * Return owner of event
      * @return  owner of event
      */
-    public User getOwner() {
+    public String getOwner() {
         return owner;
     }
 
@@ -207,10 +223,33 @@ public class Event implements Serializable {
 
     /**
      * Return time event is occurring
+     * For use when the Date object is needed
      * @return  time event is occurring
      */
     public Date getEventTime() {
         return new Date(eventTime.getTime());
+    }
+
+    /**
+     * Return toString for the date
+     * For use when the time is to be displayed for the event details
+     * @return
+     */
+    public String retrieveEventTimeString() {
+        SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
+        SimpleDateFormat day = new SimpleDateFormat("dd MMM");
+
+        return time.format(eventTime) + " on " + day.format(eventTime);
+    }
+
+    /**
+     * Return the toString for the difference in time between now and then
+     * For use when the time is to be
+     * @return
+     */
+    public String retrieveTimeDifference() {
+        Date today = new Date();
+        return DateDifference.getDifferenceString(today, eventTime);
     }
 
     /**
@@ -225,7 +264,7 @@ public class Event implements Serializable {
      * Current people attending event
      * @return  list of attendees
      */
-    public Set<User> getAttendees() {
+    public Set<String> getAttendees() {
          return Collections.unmodifiableSet(attendees);
     }
 
@@ -268,6 +307,14 @@ public class Event implements Serializable {
         limit = newLimit;
         checkRep();
         return true;
+    }
+
+    public void setId(String id) {
+        firebaseID = id;
+    }
+
+    public String getId() {
+        return firebaseID;
     }
 
     /**
