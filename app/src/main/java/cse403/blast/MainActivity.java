@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.DisplayMetrics;
@@ -17,19 +18,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
@@ -39,11 +35,10 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
-import org.w3c.dom.Text;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
@@ -67,6 +62,7 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     private SharedPreferences preferenceSettings;
     private User currentUser;
+    private List<Event> attendingEventList;
 
 
     @Override
@@ -164,8 +160,8 @@ public class MainActivity extends AppCompatActivity
 
                 setupListEvents(events);
 
-                setupNavLists(R.id.attending_list, events);
-                setupNavLists(R.id.created_list, events);
+                preSetupNavLists(R.id.attending_list, currentUser.getEventsAttending());
+                //preSetupNavLists(R.id.created_list, currentUser.getEventsCreated());
 
             }
 
@@ -206,37 +202,16 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void setupNavLists(int elementId, List<Event> events) {
-        ListView sideNavListView = (ListView) findViewById(elementId);
-        ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(this, android.R.layout.simple_list_item_1, events);
-        //EventAdapter eventAdapter = new EventAdapter(this, events);
-        sideNavListView.setAdapter(navAdapter);
+    public void preSetupNavLists(int elementId, Set<String> events) {
+        if (events.contains(""))
+            events.remove("");
 
-        // Hack to make the listview scroll on the sidebar
-        sideNavListView.setOnTouchListener(new View.OnTouchListener() {
-            // Setting on Touch Listener for handling the touch inside ScrollView
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
+        List<String> eventIDList = new ArrayList<>(events); // good
+        attendingEventList = new ArrayList<Event>(); // non null = good
 
-        sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+        //LongOperation task = new LongOperation().doInBackground(attendingEventList);
+        new LongOperation().execute(eventIDList);
 
-                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-                detailIntent.putExtra("event", eventAtPosition);
-                startActivity(detailIntent);
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-
-            }
-        });
-
-        setListViewHeightBasedOnChildren(sideNavListView);
     }
 
     @Override
@@ -288,15 +263,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        /*if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -337,4 +303,73 @@ public class MainActivity extends AppCompatActivity
         }
         super.onStop();
     }*/
+
+    private class LongOperation extends AsyncTask<List<String>, Void, String> {
+
+        @Override
+        protected String doInBackground(List<String>... params) {
+
+            for (String eventID : (List<String>) params[0]) {
+
+                // Query Firebase for the Event object based on given ID
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(eventID);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        Event eventToAdd = snapshot.getValue(Event.class);
+                        if (eventToAdd != null)
+                            attendingEventList.add(eventToAdd);
+                        //Log.i(TAG, "LEFT DRAWER EVENT LIST (updated): " + attendingEventList.toString() + " ");
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+                    }
+                });
+
+            }
+
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            Log.i(TAG, "LEFT DRAWER EVENT LIST: " + attendingEventList.toString());
+            setupNavLists(R.id.attending_list);
+
+        }
+
+        private void setupNavLists(int elementId) {
+            ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(MainActivity.this, android.R.layout.simple_list_item_1, attendingEventList);
+            ListView sideNavListView = (ListView) findViewById(elementId);
+            sideNavListView.setAdapter(navAdapter);
+
+            // Hack to make the listview scroll on the sidebar
+            sideNavListView.setOnTouchListener(new View.OnTouchListener() {
+                // Setting on Touch Listener for handling the touch inside ScrollView
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Disallow the touch request for parent scroll on touch of child view
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+
+            sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+
+                    Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                    detailIntent.putExtra("event", eventAtPosition);
+                    startActivity(detailIntent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                }
+            });
+
+            setListViewHeightBasedOnChildren(sideNavListView);
+        }
+    }
 }

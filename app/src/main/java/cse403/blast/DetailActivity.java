@@ -102,7 +102,7 @@ public class DetailActivity extends AppCompatActivity {
             // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
 
-        time.setText("" + event.getEventTimeString());
+        time.setText("" + event.retrieveEventTimeString());
 
         TextView desc = (TextView) findViewById(R.id.detail_desc);
         desc.setText(event.getDesc());

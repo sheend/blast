@@ -230,7 +230,7 @@ public class Event implements Serializable {
      * For use when the time is to be displayed for the event details
      * @return
      */
-    public String getEventTimeString() {
+    public String retrieveEventTimeString() {
         SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
         SimpleDateFormat day = new SimpleDateFormat("dd MMM");
 
@@ -242,7 +242,7 @@ public class Event implements Serializable {
      * For use when the time is to be
      * @return
      */
-    public String getTimeDifference() {
+    public String retrieveTimeDifference() {
         Date today = new Date();
         return DateDifference.getDifferenceString(today, eventTime);
     }
