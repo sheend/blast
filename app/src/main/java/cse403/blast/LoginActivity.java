@@ -61,9 +61,6 @@ public class LoginActivity extends FragmentActivity {
                 AccessToken token = loginResult.getAccessToken();
                 FacebookManager fbManager = FacebookManager.getInstance();
 
-                // Asynchronously adds the logged in user to Firebase
-                addLoginUser(loginResult);
-
                 // sets the current User
                //  Log.i(TAG, "userInfo: " + userInfo.getFacebookID());
 
@@ -71,6 +68,7 @@ public class LoginActivity extends FragmentActivity {
                 fbManager.setToken(token);
                 AccessToken.setCurrentAccessToken(token);
                 fbManager.saveSession(getApplicationContext());
+                //addLoginUser();
                 startActivity(i);
                 finish();
             }
@@ -95,7 +93,7 @@ public class LoginActivity extends FragmentActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void addLoginUser(final LoginResult loginResult) {
+    /*private void addLoginUser(final LoginResult loginResult) {
         final AccessToken accessToken = loginResult.getAccessToken();
         GraphRequestAsyncTask request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -143,8 +141,53 @@ public class LoginActivity extends FragmentActivity {
                     }
                 });
             }
-        }).executeAsync();
+        }).executeAsync();*/
 
+    private void addLoginUser() {
+        FacebookManager fbManager=  FacebookManager.getInstance();
+        final String name = fbManager.getUserName();
+        final String fid = fbManager.getUserID();
+
+        // Store the current userID in SharedPreferences
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceEditor = preferenceSettings.edit();
+        preferenceEditor.putString("userid", fid);
+        preferenceEditor.putString("name", name);
+
+        // Store the current User object in SharedPreferences
+        Gson gson = new Gson();
+        String json = gson.toJson(userInfo);
+        Log.i("LoginActivity", "JSON: " + json);
+        preferenceEditor.putString("MyUser", json);
+
+        preferenceEditor.commit();
+
+        Log.i("addedNewUserTAG", "we got this user id: " + fid + " " + name);
+
+        final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.getValue() == null) {
+                    userInfo = new User(fid, name);
+
+                    // Add user to DB
+                    ref.setValue(userInfo);
+
+                    Log.i("addedNewUserTAG", "we added a new user");
+                } else {
+                    userInfo = dataSnapshot.getValue(User.class);
+                    Log.i("noUserAddedTAG", "user already exists in db");
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d(TAG, "error: " + firebaseError.getMessage());
+            }
+        });
     }
 
 }

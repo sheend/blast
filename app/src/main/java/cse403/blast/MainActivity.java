@@ -103,12 +103,74 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        // Getting current user
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        // Try getting current user from shared preferences
+        final SharedPreferences preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
         Gson gson = new Gson();
         String json = preferenceSettings.getString("MyUser", "");
         Log.i(TAG, "Set currentUser" + json);
         currentUser = gson.fromJson(json, User.class);
+
+        //No user found in local memory, try firebase
+        if (currentUser == null) {
+            if (fbManager.isValidSession()) {
+                final String fid = FacebookManager.getInstance().getUserID();
+                final String name = FacebookManager.getInstance().getUserName();
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
+
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+
+                        if (dataSnapshot.getValue() == null) {
+                            currentUser = new User(fid, name);
+
+                            // Add user to DB
+                            ref.setValue(currentUser);
+
+                            Log.i(TAG, "we added a new user");
+                        } else {
+                            currentUser = dataSnapshot.getValue(User.class);
+                            Log.i(TAG, "user already exists in db");
+                        }
+
+                        TextView profileName = (TextView) findViewById(R.id.profileName);
+                        profileName.setText(currentUser.getName());
+
+                        //populate attending list
+                        preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
+                        preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
+
+                        //store user to shared preferences
+                        SharedPreferences settings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
+                        SharedPreferences.Editor editor = settings.edit();
+                        editor.putString("userid", fid);
+                        editor.putString("name", name);
+
+                        // Store the current User object in SharedPreferences
+                        Gson gson = new Gson();
+                        String json = gson.toJson(currentUser);
+                        Log.i(TAG, "JSON: " + json);
+                        editor.putString("MyUser", json);
+
+                        editor.commit();
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Log.d(TAG, "error: " + firebaseError.getMessage());
+                    }
+                });
+            }
+        } else {
+            //set user name in left drawer
+            TextView profileName = (TextView) findViewById(R.id.profileName);
+            profileName.setText(currentUser.getName());
+
+            //populate attending list
+            preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
+            preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
+
+        }
 
         /* Tutorial */
         View tutorialMain = findViewById(R.id.tutorial_main);
@@ -143,8 +205,8 @@ public class MainActivity extends AppCompatActivity
         //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         //navigationView.setNavigationItemSelectedListener(this);
 
-        TextView profileName = (TextView) findViewById(R.id.profileName);
-        profileName.setText(currentUser.getName());
+        //TextView profileName = (TextView) findViewById(R.id.profileName);
+        //profileName.setText(currentUser.getName());
         
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
@@ -162,8 +224,8 @@ public class MainActivity extends AppCompatActivity
 
                 setupListEvents(events);
 
-                preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
-                preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
+                //preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
+                //preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
 
             }
 
