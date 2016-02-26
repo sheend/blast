@@ -89,21 +89,21 @@ public class CreateEventActivity extends AppCompatActivity {
         View tutorialCreate = findViewById(R.id.tutorial_create);
         if (preferenceSettings.getBoolean("initialCreateLaunch", true)) {
             tutorialCreate.setVisibility(View.VISIBLE);
-            // TODO: Disable all possible input
+            // Disable all possible input
             submitButton.setEnabled(false);
             cancelButton.setEnabled(false);
-//            //titleText.setEnabled(false);
-//            titleText.setFocusable(false);
-//            //descText.setEnabled(false);
-//            descText.setFocusable(false);
-//            //locText.setEnabled(false);
-//            locText.setFocusable(false);
-//            //limitText.setEnabled(false);
-//            limitText.setFocusable(false);
-//            //date.setEnabled(false);
-//            date.setFocusable(false);
-//            //time.setEnabled(false);
-//            time.setFocusable(false);
+            titleText.setEnabled(false);
+            descText.setEnabled(false);
+            locText.setEnabled(false);
+            limitText.setEnabled(false);
+            date.setEnabled(false);
+            time.setEnabled(false);
+            titleText.setFocusable(false);
+            descText.setFocusable(false);
+            locText.setFocusable(false);
+            limitText.setFocusable(false);
+            date.setFocusable(false);
+            time.setFocusable(false);
         } else {
             tutorialCreate.setVisibility(View.GONE);
         }
@@ -113,21 +113,27 @@ public class CreateEventActivity extends AppCompatActivity {
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
                 preferenceSettings.edit().putBoolean("initialCreateLaunch", false).apply();
-//                // TODO: enable all possible input
+                // enable all possible input
                 submitButton.setEnabled(true);
                 cancelButton.setEnabled(true);
-//                //titleText.setEnabled(true);
-//                titleText.setFocusable(true);
-//                //descText.setEnabled(true);
-//                descText.setFocusable(true);
-//                //locText.setEnabled(true);
-//                locText.setFocusable(true);
-//                //limitText.setEnabled(true);
-//                limitText.setFocusable(true);
-//                //date.setEnabled(true);
-//                date.setFocusable(true);
-//                //time.setEnabled(true);
-//                time.setFocusable(true);
+                titleText.setEnabled(true);
+                descText.setEnabled(true);
+                locText.setEnabled(true);
+                limitText.setEnabled(true);
+                date.setEnabled(true);
+                time.setEnabled(true);
+                titleText.setFocusable(true);
+                titleText.setFocusableInTouchMode(true);
+                descText.setFocusable(true);
+                descText.setFocusableInTouchMode(true);
+                locText.setFocusable(true);
+                locText.setFocusableInTouchMode(true);
+                limitText.setFocusable(true);
+                limitText.setFocusableInTouchMode(true);
+                date.setFocusable(true);
+                date.setFocusableInTouchMode(true);
+                time.setFocusable(true);
+                time.setFocusableInTouchMode(true);
             }
         });
 
