@@ -83,7 +83,7 @@ public class CreateEventActivity extends AppCompatActivity {
         limitText = (EditText) findViewById(R.id.create_limit);
         date = (EditText) findViewById(R.id.create_date);
         time = (EditText) findViewById(R.id.create_time);
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
 
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -508,7 +508,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
 
         // Grab User object from SharedPreferences file
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
         preferenceEditor = preferenceSettings.edit();
 
         Gson gson = new Gson();

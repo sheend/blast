@@ -174,7 +174,7 @@ public class LoginActivity extends FragmentActivity {
         final String fid = fbManager.getUserID();
 
         // Store the current userID in SharedPreferences
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
         preferenceEditor = preferenceSettings.edit();
         preferenceEditor.putString("userid", fid);
         preferenceEditor.putString("name", name);
