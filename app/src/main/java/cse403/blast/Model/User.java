@@ -1,7 +1,6 @@
 package cse403.blast.Model;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,11 +19,14 @@ public class User implements Serializable {
      */
 
     private String facebookID;
+    private String name;
     private Set<String> eventsCreated;
     private Set<String> eventsAttending;
 
+
     public User() {
         this.facebookID = "";
+        this.name = "";
         this.eventsCreated = new HashSet<String>();
         this.eventsAttending = new HashSet<String>();
     }
@@ -33,13 +35,17 @@ public class User implements Serializable {
      * Constructs a new user using their facebook id
      * @param facebookID    user's fb identification
      */
-    public User(String facebookID) {
+    public User(String facebookID, String name) {
         this.facebookID = facebookID;
+        this.name = name;
         this.eventsCreated = new HashSet<String>();
         this.eventsAttending = new HashSet<String>();
         eventsCreated.add("");
         eventsAttending.add("");
     }
+
+
+
 
     /**
      * Determines whether two Users are equal, or are the same person.
@@ -128,6 +134,14 @@ public class User implements Serializable {
     }
 
     /**
+     * Returns user's name
+     * @return name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * Returns the events created by user
      * @return  events created by user
      */
@@ -151,4 +165,5 @@ public class User implements Serializable {
         assert(eventsCreated != null && eventsCreated.size() >= 0);
         assert(eventsAttending != null && eventsAttending.size() >= 0);
     }
+
 }

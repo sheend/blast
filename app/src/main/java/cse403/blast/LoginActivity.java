@@ -26,12 +26,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
-import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
 
@@ -105,7 +101,8 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onCompleted(JSONObject user, GraphResponse graphResponse) {
                 final String fid = user.optString("id");
-                Log.i("addedNewUserTAG", "we got this user id: " + fid);
+                final String name = user.optString("name");
+                Log.i("addedNewUserTAG", "we got this user id: " + fid + " " + name);
 
                 final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
 
@@ -114,7 +111,7 @@ public class LoginActivity extends FragmentActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
                         if (dataSnapshot.getValue() == null) {
-                            userInfo = new User(fid);
+                            userInfo = new User(fid, name);
 
                             // Add user to DB
                             ref.setValue(userInfo);
