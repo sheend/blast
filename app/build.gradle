@@ -16,10 +16,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
-    jacoco {
-        toolVersion = "0.7.1.201405082137"
-        reportsDir = file("$buildDir/reports/jacoco")
-    }
+
 
     buildTypes {
         release {
@@ -49,8 +46,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
     compile 'com.android.support:appcompat-v7:22.2.1'
     compile 'com.android.support:design:22.2.1'
     compile 'com.firebase:firebase-client-android:2.5.0+'
