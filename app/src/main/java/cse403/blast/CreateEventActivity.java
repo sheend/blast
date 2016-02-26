@@ -53,14 +53,16 @@ public class CreateEventActivity extends AppCompatActivity {
     private EditText timeText;
     private EditText locText;
     private EditText limitText;
+    private EditText date;
+    private EditText time;
     private int userDay;
     private int userMonth;
     private int userYear;
     private int userHour;
     private int userMin;
-    private boolean newUser = true;
-
+    private User currentUser;
     private SharedPreferences preferenceSettings;
+    private SharedPreferences.Editor preferenceEditor;
 
     private final String TAG = "CreateEventActivity";
 
@@ -73,10 +75,35 @@ public class CreateEventActivity extends AppCompatActivity {
 
         Intent createEventIntent = getIntent();
 
-        // Tutorial
+        submitButton = (Button) findViewById(R.id.create_submit_button);
+        cancelButton = (Button) findViewById(R.id.create_cancel_button);
+        titleText = (EditText) findViewById(R.id.create_title);
+        descText = (EditText) findViewById(R.id.create_description);
+        locText = (EditText) findViewById(R.id.create_location);
+        limitText = (EditText) findViewById(R.id.create_limit);
+        date = (EditText) findViewById(R.id.create_date);
+        time = (EditText) findViewById(R.id.create_time);
+        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+
+        /* TUTORIAL */
         View tutorialCreate = findViewById(R.id.tutorial_create);
-        if (newUser) {
+        if (preferenceSettings.getBoolean("initialCreateLaunch", true)) {
             tutorialCreate.setVisibility(View.VISIBLE);
+            // Disable all possible input
+            submitButton.setEnabled(false);
+            cancelButton.setEnabled(false);
+            titleText.setEnabled(false);
+            descText.setEnabled(false);
+            locText.setEnabled(false);
+            limitText.setEnabled(false);
+            date.setEnabled(false);
+            time.setEnabled(false);
+            titleText.setFocusable(false);
+            descText.setFocusable(false);
+            locText.setFocusable(false);
+            limitText.setFocusable(false);
+            date.setFocusable(false);
+            time.setFocusable(false);
         } else {
             tutorialCreate.setVisibility(View.GONE);
         }
@@ -85,18 +112,32 @@ public class CreateEventActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
-                newUser = false;
+                preferenceSettings.edit().putBoolean("initialCreateLaunch", false).apply();
+                // enable all possible input
+                submitButton.setEnabled(true);
+                cancelButton.setEnabled(true);
+                titleText.setEnabled(true);
+                descText.setEnabled(true);
+                locText.setEnabled(true);
+                limitText.setEnabled(true);
+                date.setEnabled(true);
+                time.setEnabled(true);
+                titleText.setFocusable(true);
+                titleText.setFocusableInTouchMode(true);
+                descText.setFocusable(true);
+                descText.setFocusableInTouchMode(true);
+                locText.setFocusable(true);
+                locText.setFocusableInTouchMode(true);
+                limitText.setFocusable(true);
+                limitText.setFocusableInTouchMode(true);
+                date.setFocusable(true);
+                date.setFocusableInTouchMode(true);
+                time.setFocusable(true);
+                time.setFocusableInTouchMode(true);
             }
         });
 
-        // Real create starts from here
-
-        submitButton = (Button) findViewById(R.id.create_submit_button);
-        cancelButton = (Button) findViewById(R.id.create_cancel_button);
-        titleText = (EditText) findViewById(R.id.create_title);
-        descText = (EditText) findViewById(R.id.create_description);
-        locText = (EditText) findViewById(R.id.create_location);
-        limitText = (EditText) findViewById(R.id.create_limit);
+        /* REAL CREATE */
 
         // sets up the listener for displaying the date picker
         dateText = (EditText) findViewById(R.id.create_date);
@@ -449,17 +490,20 @@ public class CreateEventActivity extends AppCompatActivity {
         // Log string for entered date
         Log.i("TestMyDate", userEnteredDate.toString());
 
+
         // Grab User object from SharedPreferences file
         preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceEditor = preferenceSettings.edit();
+
         Gson gson = new Gson();
         String json = preferenceSettings.getString("MyUser", "");
         Log.i("DetailActivity", "JSON: " + json);
-        User currentUser = gson.fromJson(json, User.class);
+        currentUser = gson.fromJson(json, User.class);
+
 
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, userEnteredLimit, userEnteredDate);
-
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
@@ -471,5 +515,22 @@ public class CreateEventActivity extends AppCompatActivity {
         // Add event to DB
         newEventRef.setValue(userEvent);
 
+
+
+        // updates user's created events
+        currentUser.createEvent(userEvent);
+        Firebase userCreatedRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsCreated");
+        userCreatedRef.setValue(currentUser.getEventsCreated());
+
+        String json2 = gson.toJson(currentUser);
+        Log.i(TAG, "JSON: " + json2);
+        preferenceEditor.putString("MyUser", json2);
+        preferenceEditor.commit();
+
+
+        // update attendee list for the event that the user just created
+        userEvent.addAttendee(currentUser);
+        Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
+        userAttendingRef.setValue(userEvent.getAttendees());
     }
 }
