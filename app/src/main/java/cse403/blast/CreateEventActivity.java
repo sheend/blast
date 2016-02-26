@@ -19,7 +19,11 @@ import android.widget.EditText;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.GenericTypeIndicator;
+import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.Calendar;
@@ -84,7 +88,9 @@ public class CreateEventActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // delete event
+                Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
+                startActivity(mainActivityIntent);
+                deleteEvent();
             }
         });
 
@@ -549,47 +555,57 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     public void deleteEvent() {
-        Event event = (Event) createEventIntent.getSerializableExtra("event");
+        final Event event = (Event) createEventIntent.getSerializableExtra("event");
 
         // get attendees
         Set<String> attendees = event.getAttendees();
 
-//        // remove event from each attendee's list of attending events
-//        for (String attendee : attendees) {
-//            Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(attendee).child("eventsAttending");
-//
-//            Query queryRef = ref.orderByValue();
-//            queryRef.addChildEventListener(new ChildEventListener() {
-//                @Override
-//                public void onChildAdded(DataSnapshot snapshot, String previousChild) {
-//                    Set<String> events = snapshot.getValue(Set<String>.class);
-//
-//
-//                    DinosaurFacts facts = snapshot.getValue(DinosaurFacts.class);
-//                    System.out.println(snapshot.getKey() + " was " + facts.getHeight() + " meters tall");
-//                }
-//
-//                @Override
-//                public void onChildRemoved(DataSnapshot snapshot) {
-//                }
-//
-//                @Override
-//                public void onChildChanged(DataSnapshot snapshot, String prev) {
-//                }
-//
-//                @Override
-//                public void onChildMoved(DataSnapshot snapshot, String prev) {
-//                }
-//
-//                @Override
-//                public void onCancelled(FirebaseError err) {
-//                }
-//            });
-//
-//        }
+        // remove event from each attendee's list of attending events
+        for (String attendee : attendees) {
+            if (!attendee.equals(event.getOwner())) {
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(attendee).child("eventsAttending");
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        GenericTypeIndicator<Set<String>> t = new GenericTypeIndicator<Set<String>>() {};
+                        Set<String> eventsAttending = snapshot.getValue(t);
+                        if (eventsAttending != null) {
+                            eventsAttending.remove(event.getId());
+                            ref.setValue(eventsAttending);
+                        }
+                    }
 
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+
+                    }
+                });
+            }
+        }
 
         // remove from owner's list of events created
+        String owner = event.getOwner();
+        final Firebase ownerRef = new Firebase(Constants.FIREBASE_URL).child("users").child(owner).child("eventsCreated");
+        ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                GenericTypeIndicator<Set<String>> t = new GenericTypeIndicator<Set<String>>() {};
+                Set<String> eventsCreated = snapshot.getValue(t);
+                eventsCreated.remove(event.getId());
+                ownerRef.setValue(eventsCreated);
+            }
+
+            @Override
+            public void onCancelled(FirebaseError error) {
+
+            }
+        });
+
+
         // remove from db
+        Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
+        eventRef.removeValue();
+
+        notifyUser("Event deleted");
     }
 }
