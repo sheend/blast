@@ -1,6 +1,7 @@
 package cse403.blast.Model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -217,6 +218,22 @@ public class Event implements Serializable {
      */
     public Date getEventTime() {
         return new Date(eventTime.getTime());
+    }
+
+    /**
+     * Return toString for the date
+     * @return
+     */
+    public String getEventTimeString() {
+        SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
+
+        SimpleDateFormat day = new SimpleDateFormat("dd MMM");
+
+        return time.format(eventTime) + " on " + day.format(eventTime);
+    }
+
+    public String getTimeDifference() {
+        return "4 h";
     }
 
     /**
