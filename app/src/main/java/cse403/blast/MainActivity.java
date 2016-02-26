@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
-    private boolean IGNORE_LOGIN = false;
+    private boolean IGNORE_LOGIN = true;
     private boolean newUser = true;
     private FloatingActionButton fab;
 
@@ -144,7 +145,9 @@ public class MainActivity extends AppCompatActivity
                 Log.i("Log tag", "The data changed!");
 
                 setupListEvents(events);
-                setupNavLists(events);
+
+                setupNavLists(R.id.attending_list, events);
+                setupNavLists(R.id.created_list, events);
             }
 
             @Override
@@ -184,10 +187,10 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
-    public void setupNavLists(List<Event> events) {
-        ListView sideNavListView = (ListView) findViewById(R.id.new_try_list_view);
+    public void setupNavLists(int elementId, List<Event> events) {
+        ListView sideNavListView = (ListView) findViewById(elementId);
         ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(this, android.R.layout.simple_list_item_1, events);
+        //EventAdapter eventAdapter = new EventAdapter(this, events);
         sideNavListView.setAdapter(navAdapter);
 
         // Hack to make the listview scroll on the sidebar
@@ -204,7 +207,13 @@ public class MainActivity extends AppCompatActivity
         sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+                Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+
+                Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                detailIntent.putExtra("event", eventAtPosition);
+                startActivity(detailIntent);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
             }
         });
 
@@ -280,7 +289,7 @@ public class MainActivity extends AppCompatActivity
      * Fix the issue of not showing all the items of the ListView
      * when placed inside a ScrollView
      */
-    public static void setListViewHeightBasedOnChildren(ListView listView) {
+    public void setListViewHeightBasedOnChildren(ListView listView) {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter == null)
             return;
@@ -291,15 +300,12 @@ public class MainActivity extends AppCompatActivity
 
         ViewGroup.LayoutParams params = listView.getLayoutParams();
 
-        if (height > 2200) {
-            params.height = 1600;
-        } else if (height > 2000) {
-            params.height = 1400;
-        } else if (height > 1400) {
-            params.height = 1200;
-        } else {
-            params.height = 800;
-        }
+        Resources r = getResources();
+        //Header is 160dp
+        float header = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 160, r.getDisplayMetrics());
+        int listSpace = height - Math.round(header);
+        params.height = (int)(0.4 * listSpace); // Almost half remaining space divided by 2 sections
+
         listView.setLayoutParams(params);
     }
 

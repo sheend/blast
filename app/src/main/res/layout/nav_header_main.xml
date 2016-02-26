@@ -5,6 +5,7 @@
     android:orientation="vertical"
     >
 
+    <!--The nav header-->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/nav_top_content"
         android:layout_width="match_parent"
@@ -37,11 +38,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="queen@arrow.com" />
-
-
-
     </LinearLayout>
 
+
+    <!--Attending-->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,7 +54,24 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/new_try_list_view"
+        android:id="@+id/attending_list"
+        android:background="@color/windowBackground">
+    </ListView>
+
+    <!--Creating-->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Blasts You Created"
+        android:padding="10dp"
+        android:background="@color/colorPrimary"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/lightText"/>
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/created_list"
         android:background="@color/windowBackground">
     </ListView>
 
