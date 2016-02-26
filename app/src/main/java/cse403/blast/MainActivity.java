@@ -1,32 +1,30 @@
 package cse403.blast;
 
+import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.content.SharedPreferences;
-
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.facebook.AccessToken;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.firebase.client.DataSnapshot;
@@ -39,9 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cse403.blast.Data.Constants;
-import cse403.blast.Support.EventAdapter;
 import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
+import cse403.blast.Support.EventAdapter;
 
 
 /**
@@ -58,6 +56,9 @@ public class MainActivity extends AppCompatActivity
     private boolean IGNORE_LOGIN = false;
     private boolean newUser = true;
     private FloatingActionButton fab;
+    private SharedPreferences preferenceSettings;
+    private SharedPreferences.Editor preferenceEditor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +146,12 @@ public class MainActivity extends AppCompatActivity
 
                 setupListEvents(events);
                 setupNavLists(events);
+
+                // Grab ID of current user from SharedPreferences file
+                preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+                String name = preferenceSettings.getString("name", "");
+                Log.i(TAG, "theCurrentName is: " + name);
+
             }
 
             @Override
