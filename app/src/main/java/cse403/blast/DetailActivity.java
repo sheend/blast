@@ -44,7 +44,7 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
 
-        // Tutorial
+        /* Tutorial */
         View tutorialDetail = findViewById(R.id.tutorial_detail);
         button = (Button) findViewById(R.id.detail_button);
         if (preferenceSettings.getBoolean("initialDetailLaunch", true)) {

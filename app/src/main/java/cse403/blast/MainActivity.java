@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity
         if (preferenceSettings.getBoolean("initialMainLaunch", true)) {
             tutorialMain.setVisibility(View.VISIBLE);
             fab.setEnabled(false);
+            fab.setFocusable(false);
         } else {
             tutorialMain.setVisibility(View.GONE);
         }
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 v.setVisibility(View.GONE);
                 fab.setEnabled(true);
+                fab.setFocusable(true);
                 preferenceSettings.edit().putBoolean("initialMainLaunch", false).apply();
             }
         });
