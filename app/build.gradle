@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'jacoco'
 
 android {
     compileSdkVersion 22
@@ -11,12 +12,27 @@ android {
         versionCode 1
         versionName "1.0"
 
+        testApplicationId "cse403.blast.test"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    jacoco {
+        toolVersion = "0.7.1.201405082137"
+        reportsDir = file("$buildDir/reports/jacoco")
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            //applicationIdSuffix ".debug"
+            //versionNameSuffix "-debug"
+            //manifestPlaceholders = [appIcon: "icon_launcher_debug"]
+
+            // Enable Jacoco: $ gradle connectedAndroidTest -> /project/module/build/outputs/reports/coverage
+            testCoverageEnabled = true
         }
     }
 

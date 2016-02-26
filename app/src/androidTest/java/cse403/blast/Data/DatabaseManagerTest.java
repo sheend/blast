@@ -1,7 +1,11 @@
 package cse403.blast.Data;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Calendar;
 import java.util.Date;
 import cse403.blast.Data.Constants;
@@ -17,6 +21,7 @@ import com.firebase.client.ValueEventListener;
  */
 
 // Tests firebase backend: add, remove, fetch functionality
+@RunWith(AndroidJUnit4.class)
 public class DatabaseManagerTest {
     private static final int TIMEOUT = 2000; // 2000ms
     Date testDate = new Date();

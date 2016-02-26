@@ -1,7 +1,11 @@
 package cse403.blast.Model;
 
+import android.support.test.runner.AndroidJUnit4;
+
 import static org.junit.Assert.*;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
@@ -11,6 +15,7 @@ import java.util.HashSet;
 /**
  * Created by Kristi on 2/19/2016.
  */
+@RunWith(AndroidJUnit4.class)
 public class EventTest {
 
     private static final int TIMEOUT = 2000; // 2000ms
