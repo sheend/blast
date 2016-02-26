@@ -33,7 +33,7 @@ public class DetailActivityTest {
 
     @Test
     public void shouldLaunchDetailPage() {
-        Event e = new Event(new User("launchTest"), "launchTitle", "launchDesc", "launchLoc", 100, new Date(1));
+        Event e = new Event("launchTest", "launchTitle", "launchDesc", "launchLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_layout)).check(matches(isDisplayed()));
     }
@@ -41,7 +41,7 @@ public class DetailActivityTest {
     // TODO: test location is displayed correctly
     @Test
     public void shouldDisplayCorrectInfo() {
-        Event e = new Event(new User("displayTest"), "displayTitle", "displayDesc", "displayLoc", 100, new Date(1));
+        Event e = new Event("displayTest", "displayTitle", "displayDesc", "displayLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_title)).check(matches(withText("displayTitle")));
         onView(withId(R.id.detail_desc)).check(matches(withText("what: displayDesc")));
@@ -51,22 +51,22 @@ public class DetailActivityTest {
 
     @Test
     public void shouldDisplayLeaveIfAttendee() {
-        Event e = new Event(new User("attendeeTest"), "attendeeTitle", "attendeeDesc", "attendeeLoc", 100, new Date(1));
-        e.addAttendee(new User("Grace")); // Grace is hardcoded current user in DetailActivity
+        Event e = new Event("attendeeTest", "attendeeTitle", "attendeeDesc", "attendeeLoc", 100, new Date(1));
+        e.addAttendee(new User("Grace", "Grace")); // Grace is hardcoded current user in DetailActivity
         launchActivity(e);
         onView(withId(R.id.detail_button)).check(matches(withText("leave blast :(")));
     }
 
     @Test
     public void shouldDisplayEditIfOwner() {
-        Event e = new Event(new User("Grace"), "ownerTitle", "ownerDesc", "ownerLoc", 100, new Date(1)); // Grace is hardcoded current user
+        Event e = new Event("ownerTest", "ownerTitle", "ownerDesc", "ownerLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_button)).check(matches(withText("edit blast")));
     }
 
     @Test
     public void strangerButtonDisplay() {
-        Event e = new Event(new User("strangerTest"), "strangerTitle", "strangerDesc", "strangerLoc", 100, new Date(1));
+        Event e = new Event("strangerTest", "strangerTitle", "strangerDesc", "strangerLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_button)).check(matches(withText("have a blast! :)")));
     }

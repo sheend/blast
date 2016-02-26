@@ -21,28 +21,29 @@ public class UserTest {
     private static final int TIMEOUT = 2000; // 2000ms
     //test data
     String testID = "FbId";
+    String testName = "FbId";
 
     @Test(timeout = TIMEOUT)
     public void testParamConstructor(){
-        User testUser = new User(testID);
+        User testUser = new User(testID, testName);
         assertNotNull(testUser);
     }
 
     @Test(timeout = TIMEOUT)
     public void testIDGetter(){
-        User testUser = new User(testID);
+        User testUser = new User(testID, testName);
         assertEquals(testID, testUser.getFacebookID());
     }
 
     @Test(timeout = TIMEOUT)
     public void testEventsCreatedGetter(){
-        User testUser = new User(testID);
+        User testUser = new User(testID, testName);
         assertNotNull(testUser.getEventsCreated());
     }
 
     @Test(timeout = TIMEOUT)
     public void testEventsAttendingGetter(){
-        User testUser = new User(testID);
+        User testUser = new User(testID, testName);
         assertNotNull(testUser.getEventsAttending());
     }
 }

@@ -34,9 +34,9 @@ public class DatabaseManagerTest {
     public void testDbAddAndSuccessfulFetchEvent(){
         //*************setup*************
 
-        User testUser = new User("1234");
+        User testUser = new User("1234", "1234");
         // Create event object using test data
-        Event testEvent = new Event(testUser, "testTitle", "testDesc", "testLoc", 4321, testDate);
+        Event testEvent = new Event("1234", "testTitle", "testDesc", "testLoc", 4321, testDate);
         // Generate unique ID for event, creates reference to events node in JSON, then appends event
         Firebase eventRef = ref.child("events"); // will always add to the db
         Firebase newEventRef = eventRef.push(); // will always general the unique id
