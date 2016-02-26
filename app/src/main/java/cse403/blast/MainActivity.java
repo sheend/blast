@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences preferenceSettings;
     private User currentUser;
     private List<Event> attendingEventList;
+    private List<Event> createdEventList;
 
 
     @Override
@@ -160,8 +161,8 @@ public class MainActivity extends AppCompatActivity
 
                 setupListEvents(events);
 
-                preSetupNavLists(R.id.attending_list, currentUser.getEventsAttending());
-                //preSetupNavLists(R.id.created_list, currentUser.getEventsCreated());
+                preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
+                preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
 
             }
 
@@ -202,7 +203,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void preSetupNavLists(int elementId, Set<String> events) {
+    public void preSetupAttendingList(int elementId, Set<String> events) {
         if (events.contains(""))
             events.remove("");
 
@@ -210,7 +211,19 @@ public class MainActivity extends AppCompatActivity
         attendingEventList = new ArrayList<Event>(); // non null = good
 
         //LongOperation task = new LongOperation().doInBackground(attendingEventList);
-        new LongOperation().execute(eventIDList);
+        new AttendingUpdates().execute(eventIDList);
+
+    }
+
+    public void preSetupCreatedList(int elementId, Set<String> events) {
+        if (events.contains(""))
+            events.remove("");
+
+        List<String> eventIDList = new ArrayList<>(events); // good
+        createdEventList = new ArrayList<Event>(); // non null = good
+
+        //LongOperation task = new LongOperation().doInBackground(attendingEventList);
+        new CreatedUpdates().execute(eventIDList);
 
     }
 
@@ -304,7 +317,7 @@ public class MainActivity extends AppCompatActivity
         super.onStop();
     }*/
 
-    private class LongOperation extends AsyncTask<List<String>, Void, String> {
+    private class AttendingUpdates extends AsyncTask<List<String>, Void, String> {
 
         @Override
         protected String doInBackground(List<String>... params) {
@@ -372,4 +385,74 @@ public class MainActivity extends AppCompatActivity
             setListViewHeightBasedOnChildren(sideNavListView);
         }
     }
+
+    private class CreatedUpdates extends AsyncTask<List<String>, Void, String> {
+
+        @Override
+        protected String doInBackground(List<String>... params) {
+
+            for (String eventID : (List<String>) params[0]) {
+
+                // Query Firebase for the Event object based on given ID
+                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(eventID);
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        Event eventToAdd = snapshot.getValue(Event.class);
+                        if (eventToAdd != null)
+                            createdEventList.add(eventToAdd);
+                        //Log.i(TAG, "LEFT DRAWER EVENT LIST (updated): " + attendingEventList.toString() + " ");
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+                    }
+                });
+
+            }
+
+            return "Executed";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            Log.i(TAG, "LEFT DRAWER EVENT LIST: " + createdEventList.toString());
+            setupNavLists(R.id.created_list);
+
+        }
+
+        private void setupNavLists(int elementId) {
+            ArrayAdapter<Event> navAdapter = new ArrayAdapter<Event>(MainActivity.this, android.R.layout.simple_list_item_1, createdEventList);
+            ListView sideNavListView = (ListView) findViewById(elementId);
+            sideNavListView.setAdapter(navAdapter);
+
+            // Hack to make the listview scroll on the sidebar
+            sideNavListView.setOnTouchListener(new View.OnTouchListener() {
+                // Setting on Touch Listener for handling the touch inside ScrollView
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // Disallow the touch request for parent scroll on touch of child view
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                }
+            });
+
+            sideNavListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Event eventAtPosition = (Event) parent.getItemAtPosition(position);
+
+                    Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
+                    detailIntent.putExtra("event", eventAtPosition);
+                    startActivity(detailIntent);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+
+                }
+            });
+
+            setListViewHeightBasedOnChildren(sideNavListView);
+        }
+    }
+
 }
