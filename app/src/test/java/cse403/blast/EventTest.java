@@ -18,7 +18,7 @@ public class EventTest {
 
     private static final int TIMEOUT = 2000; // 2000ms
     //test data
-    User testUser = new User("testid", "testid");
+    User testUser = new User("testUser", "testUser");
     String testTitle = "title";
     String testDesc = "desc";
     String testLocation = "loc";
@@ -46,7 +46,7 @@ public class EventTest {
     @Test(timeout = TIMEOUT)
     public void testOwnerGetter(){
         Event testEvent = new Event("testUser", testTitle, testDesc,testLocation, testLimit, testTime);
-        assertEquals(testUser, testEvent.getOwner());
+        assertEquals(testUser.getName(), testEvent.getOwner());
     }
 
     @Test(timeout = TIMEOUT)

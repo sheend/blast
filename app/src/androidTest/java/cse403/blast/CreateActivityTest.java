@@ -1,4 +1,3 @@
-/*
 package cse403.blast;
 
 import android.content.Intent;
@@ -26,7 +25,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
  * Created by graceqiu on 2/17/16.
-
+ */
 @RunWith(AndroidJUnit4.class)
 public class CreateActivityTest {
 
@@ -38,7 +37,6 @@ public class CreateActivityTest {
         //onView(withId(R.id.create_event_layout)).check(matches(isDisplayed()));
     }
 
-    /*
     @Test
     public void disabledFieldsWhenEdit() {
         launchActivity(false);
@@ -98,7 +96,7 @@ public class CreateActivityTest {
     /**
      * Create intent and launch activity with given boolean edit
      * @param edit boolean to include in intent when launching activity
-
+    */
     private void launchActivity(boolean edit) {
         Intent createIntent = new Intent();
         createIntent.putExtra("edit", edit);
@@ -108,7 +106,7 @@ public class CreateActivityTest {
     /**
      * Tries to change the text inside the the given EditText fields
      * @param id integer representation of the field that's trying to be changed
-
+    */
      private void changeNonEditableField(int id, String s) {
          String test = "TEST1_TEST2_TEST3_TEST4";
          onView(withId(id))
@@ -117,4 +115,3 @@ public class CreateActivityTest {
          onView(withId(id)).toString().equals(matches(withText(s)));
      }
 }
-*/

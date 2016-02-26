@@ -94,7 +94,6 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-
         /* TUTORIAL */
         View tutorialCreate = findViewById(R.id.tutorial_create);
         if (preferenceSettings.getBoolean("initialCreateLaunch", true)) {
