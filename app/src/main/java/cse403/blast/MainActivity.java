@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
-    private boolean IGNORE_LOGIN = true;
+    private boolean IGNORE_LOGIN = false;
     private FloatingActionButton fab;
     private SharedPreferences preferenceSettings;
     private User currentUser;

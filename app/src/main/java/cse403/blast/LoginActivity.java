@@ -16,6 +16,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.DataSnapshot;
@@ -54,24 +56,38 @@ public class LoginActivity extends FragmentActivity {
 
         message = (TextView) findViewById(R.id.message);
         loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("public_profile");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+            private ProfileTracker mProfileTracker;
+
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG, "onSuccess");
                 AccessToken token = loginResult.getAccessToken();
                 FacebookManager fbManager = FacebookManager.getInstance();
 
-                // sets the current User
-               //  Log.i(TAG, "userInfo: " + userInfo.getFacebookID());
+                if(Profile.getCurrentProfile() == null) {
+                    Log.i(TAG, "profile is null");
+                    mProfileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                            // profile2 is the new profile
+                            Log.v("facebook - profile", profile2.getFirstName());
+                            mProfileTracker.stopTracking();
+                        }
+                    };
+                    mProfileTracker.startTracking();
+                }
 
                 Intent i = new Intent(LoginActivity.this, MainActivity.class);
                 fbManager.setToken(token);
                 AccessToken.setCurrentAccessToken(token);
                 fbManager.saveSession(getApplicationContext());
-                //addLoginUser();
                 startActivity(i);
                 finish();
             }
+
 
             @Override
             public void onCancel() {
