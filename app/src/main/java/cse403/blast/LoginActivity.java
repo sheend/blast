@@ -64,8 +64,8 @@ public class LoginActivity extends FragmentActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG, "onSuccess");
-                AccessToken token = loginResult.getAccessToken();
-                FacebookManager fbManager = FacebookManager.getInstance();
+                final AccessToken token = loginResult.getAccessToken();
+                final FacebookManager fbManager = FacebookManager.getInstance();
 
                 if(Profile.getCurrentProfile() == null) {
                     Log.i(TAG, "profile is null");
@@ -75,17 +75,24 @@ public class LoginActivity extends FragmentActivity {
                             // profile2 is the new profile
                             Log.v("facebook - profile", profile2.getFirstName());
                             mProfileTracker.stopTracking();
+
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            fbManager.setToken(token);
+                            AccessToken.setCurrentAccessToken(token);
+                            fbManager.saveSession(getApplicationContext());
+                            startActivity(i);
+                            finish();
                         }
                     };
                     mProfileTracker.startTracking();
+                } else {
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    fbManager.setToken(token);
+                    AccessToken.setCurrentAccessToken(token);
+                    fbManager.saveSession(getApplicationContext());
+                    startActivity(i);
+                    finish();
                 }
-
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                fbManager.setToken(token);
-                AccessToken.setCurrentAccessToken(token);
-                fbManager.saveSession(getApplicationContext());
-                startActivity(i);
-                finish();
             }
 
 
@@ -106,7 +113,9 @@ public class LoginActivity extends FragmentActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (callbackManager.onActivityResult(requestCode, resultCode, data)) {
+            return;
+        };
     }
 
     /*private void addLoginUser(final LoginResult loginResult) {
