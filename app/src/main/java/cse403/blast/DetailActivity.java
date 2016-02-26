@@ -12,7 +12,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -90,7 +93,23 @@ public class DetailActivity extends AppCompatActivity {
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText(event.getTitle());
 
-        // TODO: Only display the hour of the time (ie. @ 7pm)
+
+        Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                event = dataSnapshot.getValue(Event.class);
+            }
+
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+
+            // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
 
         time.setText("" + event.getEventTime());
