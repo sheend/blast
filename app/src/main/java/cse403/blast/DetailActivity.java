@@ -137,7 +137,7 @@ public class DetailActivity extends AppCompatActivity {
         locationLabel.setText(event.getLocation());
 
         // Set appropriate text and onclick's depending on user's status
-        if (currentUser.equals(event.getOwner())) { // user is owner, have option to edit
+        if (currentUser.getFacebookID().equals(event.getOwner())) { // user is owner, have option to edit
             button.setText(getString(R.string.detail_edit));
             // Go to creation page
             button.setOnClickListener(new View.OnClickListener() {
@@ -222,18 +222,20 @@ public class DetailActivity extends AppCompatActivity {
 
         // update event's attendees field
         Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
-        eventRef.runTransaction(new Transaction.Handler() {
-            @Override
-            public Transaction.Result doTransaction(MutableData currentData) {
-                currentData.setValue(event.getAttendees());
-                return Transaction.success(currentData);
-            }
+        eventRef.setValue(event.getAttendees());
 
-            @Override
-            public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
-                //This method will be called once with the results of the transaction
-            }
-        });
+//        eventRef.runTransaction(new Transaction.Handler() {
+//            @Override
+//            public Transaction.Result doTransaction(MutableData currentData) {
+//                currentData.setValue(event.getAttendees());
+//                return Transaction.success(currentData);
+//            }
+//
+//            @Override
+//            public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
+//                //This method will be called once with the results of the transaction
+//            }
+//        });
 
     }
 }
