@@ -113,7 +113,6 @@ public class User implements Serializable {
      * @param e event to attend
      * @return  true if successfully added this to attendees, false otherwise (user is owner)
      */
-    // TODO: how to handle two-way connection? Should User be updating event, or event updating user?
     public boolean attendEvent(Event e) {
         if (eventsCreated.contains(e)) { // user created this event they're trying to attend
             return false;
