@@ -28,6 +28,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -59,7 +60,6 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
-    private boolean IGNORE_LOGIN = false;
     private FloatingActionButton fab;
     private SharedPreferences preferenceSettings;
     private User currentUser;
@@ -74,12 +74,12 @@ public class MainActivity extends AppCompatActivity
         fbManager = FacebookManager.getInstance();
 
         //If no instance session exists, check local storage
-        if (!fbManager.isValidSession() && !IGNORE_LOGIN) {
+        if (!fbManager.isValidSession()) {
             fbManager.getSession(getApplicationContext());
         }
 
         // Redirecting to Login if necessary
-        if (!fbManager.isValidSession() && !IGNORE_LOGIN) {
+        if (!fbManager.isValidSession()) {
             Log.i(TAG, "NO USER");
             Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginPage);
@@ -336,6 +336,14 @@ public class MainActivity extends AppCompatActivity
                 fbManager.clearSession(getApplicationContext());
                 fbManager.clearToken();
                 LoginManager.getInstance().logOut();
+                Profile.getCurrentProfile().setCurrentProfile(null);
+
+                SharedPreferences settings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("userid", "");
+                editor.putString("name", "");
+                editor.putString("MyUser", "");
+                editor.commit();
 
                 //redirect back to login page
                 Intent i = new Intent(this, LoginActivity.class);
