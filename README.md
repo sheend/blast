@@ -2,7 +2,7 @@
 [Developer website](http://mkhuat.github.io/blast-dev/)
 
 #Feature-Complete Updates
-[SRS](https://drive.google.com/drive/u/0/folders/0B3PwQkCDyLnwMDhsN3J3eDFGeXM) and [SDS](https://drive.google.com/drive/u/0/folders/0B3PwQkCDyLnwMDhsN3J3eDFGeXM) updates. </br>
+[SRS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwNWpsT1R6UHRMUVE/view) and [SDS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwa2ZFdG41X0Q5djQ/view) updates. </br>
 
 As of the feature-complete release, a user is able to login with Facebook, view events happening within the upcoming 24 hours, attend and leave an event, create an event, and modify or delete an event they have created. </br>
 - Note: events that have "expired" will stop appearing in the main view. Additionally, users are allowed to create events that will happen further than 24 hours in the future, but these events will not be displayed in the main view until they are happening within 24 hours.</br>
