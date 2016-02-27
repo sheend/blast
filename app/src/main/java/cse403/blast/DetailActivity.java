@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -173,6 +174,7 @@ public class DetailActivity extends AppCompatActivity {
                     currentUser.leaveEvent(event);
                     setPreferences();
                     updateToFireBase();
+                    Toast.makeText(DetailActivity.this, "Left Event", Toast.LENGTH_SHORT).show();
                 }
             });
         } else { // user could potentially attend
@@ -201,7 +203,7 @@ public class DetailActivity extends AppCompatActivity {
                     Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
 
                     updateToFireBase();
-
+                    Toast.makeText(DetailActivity.this, "You are now attending: " + event.getTitle(), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -229,6 +231,7 @@ public class DetailActivity extends AppCompatActivity {
         // update event's attendees field
         Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
         eventRef.setValue(event.getAttendees());
+
 
 //        eventRef.runTransaction(new Transaction.Handler() {
 //            @Override

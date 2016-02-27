@@ -2,7 +2,6 @@ package cse403.blast;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -539,8 +538,6 @@ public class CreateEventActivity extends AppCompatActivity {
         // Add event to DB
         newEventRef.setValue(userEvent);
 
-
-
         // updates user's created events
         currentUser.createEvent(userEvent);
         Firebase userCreatedRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsCreated");
@@ -556,6 +553,17 @@ public class CreateEventActivity extends AppCompatActivity {
         userEvent.addAttendee(currentUser);
         Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
         userAttendingRef.setValue(userEvent.getAttendees());
+
+//        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
+//
+//        Snackbar.make(coordinatorLayout, "Event Created", Snackbar.LENGTH_SHORT)
+//                .setAction("Action", null).show();
+
+        if (createEventIntent.getBooleanExtra("edit", true)) {
+            Toast.makeText(CreateEventActivity.this, "Event Saved", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(CreateEventActivity.this, "Event Created", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void deleteEvent() {
