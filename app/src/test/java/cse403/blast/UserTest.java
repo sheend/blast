@@ -8,6 +8,7 @@ import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -22,9 +23,21 @@ public class UserTest {
     String testName = "Name";
 
     @Test(timeout = TIMEOUT)
+    public void testEmptyConstructor(){
+        User testUser = new User();
+        assertNotNull(testUser);
+        assertEquals("", testUser.getFacebookID());
+        assertEquals("", testUser.getName());
+        assertNotNull(testUser.getEventsCreated());
+        assertNotNull(testUser.getEventsAttending());
+    }
+
+    @Test(timeout = TIMEOUT)
     public void testParamConstructor(){
         User testUser = new User(testID, testName);
         assertNotNull(testUser);
+        assertEquals(testID, testUser.getFacebookID());
+        assertEquals(testName, testUser.getName());
         assertNotNull(testUser.getEventsCreated());
         assertNotNull(testUser.getEventsAttending());
     }
@@ -48,25 +61,38 @@ public class UserTest {
         assertTrue(testUser.equals(testUser2));
     }
 
+    @Test(timeout = TIMEOUT)
+    public void testUsersHashCodesDiff(){
+        User testUser = new User(testID, testName);
+        User testUser2 = new User("test", "test");
+        assertNotEquals(testUser.hashCode(), testUser2.hashCode());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testUserHashCodeEqual(){
+        User testUser = new User(testID, testName);
+        assertTrue(testUser.hashCode() == testUser.hashCode());
+    }
+
     /* Event create */
 
-//    @Test(timeout = TIMEOUT)
-//    public void testEventCreate(){
-//        User testUser = new User(testID, testName);
-//        Event e = new Event("event", "title", "desc", "loc", 1, new Date(1));
-//        assertTrue(testUser.createEvent(e));
-//        assertTrue(testUser.getEventsAttending().contains(e.getId()));
-//    }
+    @Test(timeout = TIMEOUT)
+    public void testEventCreate(){
+        User testUser = new User(testID, testName);
+        Event e = new Event("event", "title", "desc", "loc", 1, new Date(1));
+        assertTrue(testUser.getEventsAttending().contains(e.getId()));
+    }
 
     /* Event cancel */
 
-//    @Test(timeout = TIMEOUT)
-//    public void testEventOwnedCanCancel(){
-//        User testUser = new User(testID, testName);
-//        Event e = new Event("e", "t", "d", "l", 1, new Date(1));
-//        testUser.createEvent(e);
-//        assertTrue(testUser.cancelEvent(e));
-//    }
+    @Test(timeout = TIMEOUT)
+    public void testEventOwnedCanCancel(){
+        User testUser = new User(testID, testName);
+        Event e = new Event("e", "t", "d", "l", 1, new Date(1));
+        testUser.createEvent(e);
+        testUser.cancelEvent(e);
+        assertTrue(!testUser.getEventsCreated().contains(e));
+    }
 
 //    @Test(timeout = TIMEOUT)
 //    public void testEventNotOwnedCannotCancel(){
@@ -86,13 +112,13 @@ public class UserTest {
 
     /* Event attend */
 
-//    @Test(timeout = TIMEOUT)
-//    public void testAttendEventNotCreated(){
-//        User testUser = new User(testID, testName);
-//        Event e = new Event("event", "title", "desc", "loc", 1, new Date(1));
-//        assertTrue(testUser.attendEvent(e));
-//        assertTrue(testUser.getEventsAttending().contains(e.getId()));
-//    }
+    @Test(timeout = TIMEOUT)
+    public void testAttendEventNotCreated(){
+        User testUser = new User(testID, testName);
+        Event e = new Event("event", "title", "desc", "loc", 1, new Date(1));
+        testUser.attendEvent(e);
+        assertTrue(testUser.getEventsAttending().contains(e.getId()));
+    }
 
     @Test(timeout = TIMEOUT)
     public void testAttendEventCreated(){
