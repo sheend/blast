@@ -33,7 +33,7 @@
         android:layout_below="@+id/event_title">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:textColor="@color/lightText"
@@ -41,12 +41,13 @@
             android:layout_alignParentLeft="true"  />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-light"
             android:textColor="@color/lightText"
             android:id="@+id/time"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:gravity="right"/>
 
     </RelativeLayout>
 

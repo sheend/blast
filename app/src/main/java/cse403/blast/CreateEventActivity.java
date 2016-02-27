@@ -4,17 +4,28 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.view.ViewManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -25,11 +36,15 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cse403.blast.Data.Constants;
+import cse403.blast.Data.LocationHandler;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.DatePickerFragment;
@@ -200,6 +215,31 @@ public class CreateEventActivity extends AppCompatActivity {
             submitButton.setText(getString(R.string.create_blast_button));
         }
         Log.i(TAG, "Done creating page");
+
+
+    }
+
+
+    public Location getUserLocation() {
+        LocationManager lm = (LocationManager) (getSystemService(Context.LOCATION_SERVICE));
+
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        double lng = -122.3331;//location.getLongitude();
+        double lat = 47.6097;//location.getLatitude();
+
+        Location userLoc = new Location("userLocation");
+        userLoc.setLatitude(lat);
+        userLoc.setLongitude(lng);
+
+        return userLoc;
     }
 
     /*@Override
@@ -388,6 +428,35 @@ public class CreateEventActivity extends AppCompatActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (!hasFocus) {
                     verify(v);
+
+                    Toast.makeText(CreateEventActivity.this, "Please choose from the following list",
+                            Toast.LENGTH_LONG).show();
+                    // Location things
+                    Location userLocation = getUserLocation();
+
+                    LocationHandler instance = new LocationHandler();
+                    Map<String, Location> map = instance.getMatchingLoc(locText.getText().toString(), userLocation);
+
+                    final List<String> locationList = new ArrayList<String>(map.keySet());
+
+                    final ListView listView = (ListView) findViewById(R.id.location_list);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateEventActivity.this,
+                            android.R.layout.simple_list_item_1, locationList);
+                    listView.setAdapter(adapter);
+
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            String locationAtPos = (String) parent.getItemAtPosition(position);
+                            locText.setText(locationAtPos);
+
+                            locationList.clear();
+                            //listView.setVisibility(View.GONE);
+                            ((ViewManager)listView.getParent()).removeView(listView);
+                        }
+                    });
+
                 }
             }
         });

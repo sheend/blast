@@ -3,10 +3,15 @@ package cse403.blast;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
@@ -23,11 +28,14 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -39,6 +47,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import cse403.blast.Data.Constants;
@@ -46,6 +55,7 @@ import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.EventAdapter;
+import cse403.blast.Data.LocationHandler;
 
 
 /**
@@ -59,7 +69,6 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = "MainActivity";
     private ListView mainListView;
     private FacebookManager fbManager = null;
-    private boolean IGNORE_LOGIN = false;
     private FloatingActionButton fab;
     private SharedPreferences preferenceSettings;
     private User currentUser;
@@ -74,12 +83,12 @@ public class MainActivity extends AppCompatActivity
         fbManager = FacebookManager.getInstance();
 
         //If no instance session exists, check local storage
-        if (!fbManager.isValidSession() && !IGNORE_LOGIN) {
+        if (!fbManager.isValidSession()) {
             fbManager.getSession(getApplicationContext());
         }
 
         // Redirecting to Login if necessary
-        if (!fbManager.isValidSession() && !IGNORE_LOGIN) {
+        if (!fbManager.isValidSession()) {
             Log.i(TAG, "NO USER");
             Intent loginPage = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(loginPage);
@@ -201,12 +210,6 @@ public class MainActivity extends AppCompatActivity
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-
-        //NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        //navigationView.setNavigationItemSelectedListener(this);
-
-        //TextView profileName = (TextView) findViewById(R.id.profileName);
-        //profileName.setText(currentUser.getName());
         
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
@@ -336,6 +339,14 @@ public class MainActivity extends AppCompatActivity
                 fbManager.clearSession(getApplicationContext());
                 fbManager.clearToken();
                 LoginManager.getInstance().logOut();
+                Profile.getCurrentProfile().setCurrentProfile(null);
+
+                SharedPreferences settings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("userid", "");
+                editor.putString("name", "");
+                editor.putString("MyUser", "");
+                editor.commit();
 
                 //redirect back to login page
                 Intent i = new Intent(this, LoginActivity.class);
