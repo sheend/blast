@@ -88,7 +88,7 @@ public class User implements Serializable {
     // TODO: indicate to MainActivity to not display event anymore?
     // TODO: indicate to attendees that event has been cancelled?
     public boolean cancelEvent(Event e) {
-        boolean cancelled = eventsCreated.remove(e);
+        boolean cancelled = eventsCreated.remove(e.getId());
         return cancelled;
     }
 
