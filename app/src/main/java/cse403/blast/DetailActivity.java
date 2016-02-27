@@ -1,6 +1,5 @@
 package cse403.blast;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +15,9 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Model.Event;
@@ -109,17 +111,35 @@ public class DetailActivity extends AppCompatActivity {
         desc.setText(event.getDesc());
 
         // TODO: Display the list of attendees by their Facebook profile picture after
-        // TODO: integrating with Facebook
-//        TextView attendees = (TextView) findViewById(R.id.detail_attendees);
-//        Set<String> users = event.getAttendees();
-//        String list = "";
-//        for (String user: users) {
-//            if (event.getOwner().getFacebookID().equals(user)) {
-//                list += "(Creator) ";
-//            }
-//            list += user.getFacebookID()+ ", ";
-//        }
-//        attendees.setText(getString(R.string.detail_who) + list);
+        final TextView attendees = (TextView) findViewById(R.id.detail_attendees);
+        List<String> attendeeIDList = new ArrayList<>(event.getAttendees());
+
+        for (String attendeeID : attendeeIDList) {
+            Log.i(TAG, "attendee IDS:" + attendeeID);
+            if (attendeeID != null && !attendeeID.equals("")) {
+                // Query Firebase for the names of the attendees based on given user ID
+                final Firebase attendeeRef = new Firebase(Constants.FIREBASE_URL).child("users").child(attendeeID);
+                attendeeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        User attendeeObj = snapshot.getValue(User.class);
+
+                        if (attendeeObj != null) {
+                            if (!attendees.getText().toString().isEmpty()) {
+                                attendees.append(", ");
+                            }
+                            String attName = attendeeObj.getName();
+                            attendees.append(attName.substring(0, attName.indexOf(" ")));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+                    }
+                });
+            }
+        }
+
 
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location);
@@ -151,9 +171,7 @@ public class DetailActivity extends AppCompatActivity {
 
                     // remove event from user's attending
                     currentUser.leaveEvent(event);
-
                     setPreferences();
-
                     updateToFireBase();
                 }
             });
