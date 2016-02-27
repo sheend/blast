@@ -1,6 +1,5 @@
 package cse403.blast;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,12 +9,16 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Model.Event;
@@ -42,7 +45,8 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        //preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
 
         /* Tutorial */
         View tutorialDetail = findViewById(R.id.tutorial_detail);
@@ -99,7 +103,7 @@ public class DetailActivity extends AppCompatActivity {
         });
 
 
-            // TODO: Only display the hour of the time (ie. @ 7pm)
+        // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);
 
         time.setText("" + event.retrieveEventTimeString());
@@ -108,17 +112,35 @@ public class DetailActivity extends AppCompatActivity {
         desc.setText(event.getDesc());
 
         // TODO: Display the list of attendees by their Facebook profile picture after
-        // TODO: integrating with Facebook
-//        TextView attendees = (TextView) findViewById(R.id.detail_attendees);
-//        Set<String> users = event.getAttendees();
-//        String list = "";
-//        for (String user: users) {
-//            if (event.getOwner().getFacebookID().equals(user)) {
-//                list += "(Creator) ";
-//            }
-//            list += user.getFacebookID()+ ", ";
-//        }
-//        attendees.setText(getString(R.string.detail_who) + list);
+        final TextView attendees = (TextView) findViewById(R.id.detail_attendees);
+        List<String> attendeeIDList = new ArrayList<>(event.getAttendees());
+
+        for (String attendeeID : attendeeIDList) {
+            Log.i(TAG, "attendee IDS:" + attendeeID);
+            if (attendeeID != null && !attendeeID.equals("")) {
+                // Query Firebase for the names of the attendees based on given user ID
+                final Firebase attendeeRef = new Firebase(Constants.FIREBASE_URL).child("users").child(attendeeID);
+                attendeeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        User attendeeObj = snapshot.getValue(User.class);
+
+                        if (attendeeObj != null) {
+                            if (!attendees.getText().toString().isEmpty()) {
+                                attendees.append(", ");
+                            }
+                            String attName = attendeeObj.getName();
+                            attendees.append(attName.substring(0, attName.indexOf(" ")));
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(FirebaseError error) {
+                    }
+                });
+            }
+        }
+
 
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location);
@@ -146,13 +168,13 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
                     startActivity(mainIntent);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
                     // remove event from user's attending
                     currentUser.leaveEvent(event);
-
                     setPreferences();
-
                     updateToFireBase();
+                    Toast.makeText(DetailActivity.this, "Left Event", Toast.LENGTH_SHORT).show();
                 }
             });
         } else { // user could potentially attend
@@ -163,6 +185,7 @@ public class DetailActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
                     startActivity(mainIntent);
+                    overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 
                     Log.i(TAG, "PRE current user ID: " + currentUser.getFacebookID());
                     Log.i(TAG, "PRE current events attending: " + currentUser.getEventsAttending());
@@ -180,7 +203,7 @@ public class DetailActivity extends AppCompatActivity {
                     Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
 
                     updateToFireBase();
-
+                    Toast.makeText(DetailActivity.this, "You are now attending: " + event.getTitle(), Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -188,7 +211,7 @@ public class DetailActivity extends AppCompatActivity {
 
     public void setPreferences() {
         // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
-        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
         preferenceEditor = preferenceSettings.edit();
 
         // Store the current User object in SharedPreferences
@@ -209,6 +232,7 @@ public class DetailActivity extends AppCompatActivity {
         Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
         eventRef.setValue(event.getAttendees());
 
+
 //        eventRef.runTransaction(new Transaction.Handler() {
 //            @Override
 //            public Transaction.Result doTransaction(MutableData currentData) {
@@ -223,4 +247,10 @@ public class DetailActivity extends AppCompatActivity {
 //        });
 
     }
+//  TODO: back button doesn't transition well
+//    @Override
+//    public void onBackPressed() {
+//        super.onBackPressed();
+//        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
+//    }
 }

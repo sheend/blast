@@ -16,6 +16,8 @@ import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.firebase.client.DataSnapshot;
@@ -54,26 +56,45 @@ public class LoginActivity extends FragmentActivity {
 
         message = (TextView) findViewById(R.id.message);
         loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton.setReadPermissions("public_profile");
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+
+            private ProfileTracker mProfileTracker;
+
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG, "onSuccess");
-                AccessToken token = loginResult.getAccessToken();
-                FacebookManager fbManager = FacebookManager.getInstance();
+                final AccessToken token = loginResult.getAccessToken();
+                final FacebookManager fbManager = FacebookManager.getInstance();
 
-                // Asynchronously adds the logged in user to Firebase
-                addLoginUser(loginResult);
+                if(Profile.getCurrentProfile() == null) {
+                    Log.i(TAG, "profile is null");
+                    mProfileTracker = new ProfileTracker() {
+                        @Override
+                        protected void onCurrentProfileChanged(Profile profile, Profile profile2) {
+                            // profile2 is the new profile
+                            Log.v("facebook - profile", profile2.getFirstName());
+                            mProfileTracker.stopTracking();
 
-                // sets the current User
-               //  Log.i(TAG, "userInfo: " + userInfo.getFacebookID());
-
-                Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                fbManager.setToken(token);
-                AccessToken.setCurrentAccessToken(token);
-                fbManager.saveSession(getApplicationContext());
-                startActivity(i);
-                finish();
+                            Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                            fbManager.setToken(token);
+                            AccessToken.setCurrentAccessToken(token);
+                            fbManager.saveSession(getApplicationContext());
+                            startActivity(i);
+                            finish();
+                        }
+                    };
+                    mProfileTracker.startTracking();
+                } else {
+                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
+                    fbManager.setToken(token);
+                    AccessToken.setCurrentAccessToken(token);
+                    fbManager.saveSession(getApplicationContext());
+                    startActivity(i);
+                    finish();
+                }
             }
+
 
             @Override
             public void onCancel() {
@@ -92,10 +113,12 @@ public class LoginActivity extends FragmentActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (callbackManager.onActivityResult(requestCode, resultCode, data)) {
+            return;
+        };
     }
 
-    private void addLoginUser(final LoginResult loginResult) {
+    /*private void addLoginUser(final LoginResult loginResult) {
         final AccessToken accessToken = loginResult.getAccessToken();
         GraphRequestAsyncTask request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
@@ -143,8 +166,53 @@ public class LoginActivity extends FragmentActivity {
                     }
                 });
             }
-        }).executeAsync();
+        }).executeAsync();*/
 
+    private void addLoginUser() {
+        FacebookManager fbManager=  FacebookManager.getInstance();
+        final String name = fbManager.getUserName();
+        final String fid = fbManager.getUserID();
+
+        // Store the current userID in SharedPreferences
+        preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
+        preferenceEditor = preferenceSettings.edit();
+        preferenceEditor.putString("userid", fid);
+        preferenceEditor.putString("name", name);
+
+        // Store the current User object in SharedPreferences
+        Gson gson = new Gson();
+        String json = gson.toJson(userInfo);
+        Log.i("LoginActivity", "JSON: " + json);
+        preferenceEditor.putString("MyUser", json);
+
+        preferenceEditor.commit();
+
+        Log.i("addedNewUserTAG", "we got this user id: " + fid + " " + name);
+
+        final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.getValue() == null) {
+                    userInfo = new User(fid, name);
+
+                    // Add user to DB
+                    ref.setValue(userInfo);
+
+                    Log.i("addedNewUserTAG", "we added a new user");
+                } else {
+                    userInfo = dataSnapshot.getValue(User.class);
+                    Log.i("noUserAddedTAG", "user already exists in db");
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                Log.d(TAG, "error: " + firebaseError.getMessage());
+            }
+        });
     }
 
 }
