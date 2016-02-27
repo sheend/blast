@@ -1,6 +1,18 @@
 [Product website](http://blastcse.github.io/) </br>
 [Developer website](http://mkhuat.github.io/blast-dev/)
 
+#Feature-Complete Updates
+[SRS](https://drive.google.com/drive/u/0/folders/0B3PwQkCDyLnwMDhsN3J3eDFGeXM) and [SDS](https://drive.google.com/drive/u/0/folders/0B3PwQkCDyLnwMDhsN3J3eDFGeXM) updates. </br>
+
+As of the feature-complete release, a user is able to login with Facebook, view events happening within the upcoming 24 hours, attend and leave an event, create an event, and modify or delete an event they have created. </br>
+- Note: events that have "expired" will stop appearing in the main view. Additionally, users are allowed to create events that will happen further than 24 hours in the future, but these events will not be displayed in the main view until they are happening within 24 hours.</br>
+
+When a user is creating an event, the location field will give suggestions for real locations that match the typed string. This allows us to extract latitude and longitude coordinates. We also get the latitude and longitude of the user’s device, but currently this is hardcoded to Seattle for convenience. We have refined our UI and added tutorials for each different screen a user will see that appears the first time they login.
+ </br>
+- Because the app is still in development, users must use the test account `oliver_efugadr_queen@tfbnw.net` with password `blast123` to sign in. </br>
+- Because the app is still in development, to activate location services on their device users must go to console.developers.google.com and sign in using the account `blastcse@gmail.com` with password `blast123`. Then select "My Project," click on "Enable APIs and get credentials like keys," click "Credentials" on the left side of the screen, select "Test Key," and enter your local IP Addresss and click save. Note: access may take up to 5 minutes to be granted.</br>
+
+To run our test coverage tool, select all of our tests, right click, and choose "Run with Coverage." At the moment, we have 10% line coverage. This is much lower than we expected due to the fact that the coverage tool does not recognize part of our tests as testing the actual lines of code in our activities, which is where the bulk of our logic lives.
 
 #Beta Updates
 [SRS](https://drive.google.com/file/d/0B3PwQkCDyLnwbWJ4SnRZYzhYVzg/view) and [SDS](https://drive.google.com/file/d/0B3PwQkCDyLnwYTZEZTVPOUV4UWs/view) documents have been updated! </br>
