@@ -62,6 +62,11 @@
             android:textColor="@color/lightText"
             android:textColorHint="@color/lightText"
             android:hint="location"/>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/location_list">
+        </ListView>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="72dp"
