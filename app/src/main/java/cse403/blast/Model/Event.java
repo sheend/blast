@@ -1,5 +1,6 @@
 package cse403.blast.Model;
 
+import android.graphics.Color;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import cse403.blast.Data.Constants;
 import cse403.blast.Support.DateDifference;
 
 /**
@@ -29,18 +31,18 @@ public class Event implements Serializable, Comparable<Event> {
     eventTime != null && (eventTime - creationTime) < 43200000
     creationTime != null
     attendees.size() >= 1
+*/
 
-    public enum Category {
-        SOCIAL, FOOD, ACTIVE, ENTERTAINMENT, OTHER
-    }
-    */
+
 
     private String owner;
     private String title;
     private String desc;
     private String location;
+    private String latitude;
+    private String longitude;
     private int limit;
-    //private Category category;
+    private Constants.Category category;
     private Date eventTime;
     private Date creationTime;
     private Set<String> attendees;
@@ -54,13 +56,17 @@ public class Event implements Serializable, Comparable<Event> {
         this.title = "";
         this.desc = "";
         this.location = "";
+        this.latitude = "";
+        this.longitude = "";
         this.limit = 0;
         this.eventTime = new Date();
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<String>();
         this.firebaseID = "";
-        //this.category = Category.ACTIVE; //TODO: change this
+        this.category = Constants.Category.ACTIVE; //TODO: change this
     }
+
+
 
 
     /** Constructs an event using the given attributes
@@ -71,13 +77,16 @@ public class Event implements Serializable, Comparable<Event> {
      * @param limit limit of people for event
      * @param eventTime time event will occur
      */
-    public Event(String owner, String title, String desc, String location, int limit, Date eventTime) {
+    public Event(String owner, String title, String desc, String location,
+                 String latitude, String longitude, int limit, Date eventTime) {
         this.owner = owner;
         this.title = title;
         this.desc = desc;
         this.location = location;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.limit = limit;
-        //this.category = Category.ACTIVE; //TODO: Change this
+        this.category = Constants.Category.ACTIVE; //TODO: Change this
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<String>();
@@ -183,6 +192,22 @@ public class Event implements Serializable, Comparable<Event> {
     public String getLocation() { return location; }
 
     /**
+     * Return latitude of location
+     * @return   latitude of location
+     */
+    public String getLatitude() {
+        return latitude;
+    }
+
+    /**
+     * Return longitude of location
+     * @return   longitude of location
+     */
+    public String getLongitude() {
+        return longitude;
+    }
+
+    /**
      * Return limit of event
      * @return limit of event
      */
@@ -193,17 +218,18 @@ public class Event implements Serializable, Comparable<Event> {
     /**
      * Return category of event
      * @return category (enum) of event
+     */
 
-    public Category getCategory() {
-        return (category == null) ? Category.ACTIVE : category; //TODO: backup plan
+    public Constants.Category getCategory() {
+        return (category == null) ? Constants.Category.ACTIVE : category; //TODO: backup plan
     }
 
     /**
      * Return category of event
      * @return category (enum) of event
      * //TODO: Add colors to the categories/add pictures?
-     *
-    public int getCategoryColor() {
+     */
+    public int retrieveCategoryColor() {
         switch (getCategory()) {
             case ACTIVE:
                 return Color.rgb(255, 26, 0);
@@ -219,7 +245,7 @@ public class Event implements Serializable, Comparable<Event> {
                 return Color.rgb(128,128,128);
         }
     }
-    */
+
 
     /**
      * Return time event is occurring
