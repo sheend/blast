@@ -568,8 +568,8 @@ public class CreateEventActivity extends AppCompatActivity {
         String userEnteredLoc = locText.getText().toString();
 
         // TODO: replace dummy data with actual Lat/Long data
-        String userEnteredLat = "47.6097";
-        String userEnteredLong = "122.3331";
+        double userEnteredLat = 47.6097;
+        double userEnteredLong = 122.3331;
 
         // Get user-entered date
         Calendar calendar = Calendar.getInstance();
