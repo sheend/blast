@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.ContextCompat;
 import android.util.DisplayMetrics;
@@ -30,6 +32,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,6 +46,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -78,6 +82,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
         //Initialize Facebook SDK and set up Facebook Manager
         FacebookSdk.sdkInitialize(getApplicationContext());
         fbManager = FacebookManager.getInstance();
@@ -162,6 +169,15 @@ public class MainActivity extends AppCompatActivity
                         editor.putString("MyUser", json);
 
                         editor.commit();
+
+                        /* HIGHLY EXPERIMENTAL DELETE WHEN DONE */
+                        ImageView iv = (ImageView) findViewById(R.id.imageView);
+                        try {
+                            iv.setImageBitmap(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
+                            Log.i(TAG, "MOTHERFUCKIGN RAN");
+                        } catch (IOException e) {
+                            Log.i(TAG, "error: " + e.getMessage());
+                        }
                     }
 
                     @Override
@@ -178,6 +194,15 @@ public class MainActivity extends AppCompatActivity
             //populate attending list
             preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
             preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
+
+            /* HIGHLY EXPERIMENTAL DELETE WHEN DONE */
+            ImageView iv = (ImageView) findViewById(R.id.imageView);
+            try {
+                iv.setImageBitmap(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
+                Log.i(TAG, "MOTHERFUCKIGN RAN");
+            } catch (IOException e) {
+                Log.i(TAG, "error: " + e.getMessage());
+            }
 
         }
 
