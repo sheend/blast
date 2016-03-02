@@ -1,12 +1,15 @@
 package cse403.blast;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
+import cse403.blast.Support.DateDifference;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -45,6 +48,13 @@ public class EventTest {
         assertEquals(testTitle, testEvent.toString());
     }
 
+    @Test(timeout = TIMEOUT)
+    public void testCompareTo(){
+        Event testEvent1 = new Event("testUser1", testTitle, testDesc,testLocation, testLimit, testTime);
+        Event testEvent2 = new Event("testUser2", testTitle, testDesc,testLocation, testLimit, testTime);
+        assertEquals(0, testEvent1.compareTo(testEvent2));
+    }
+
     /* Getters */
 
     @Test(timeout = TIMEOUT)
@@ -81,6 +91,20 @@ public class EventTest {
     public void testTimeGetter(){
         Event testEvent = new Event("testUser", testTitle, testDesc,testLocation, testLimit, testTime);
         assertEquals(testTime, testEvent.getEventTime());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testRetrieveEventTimeString(){
+        Event testEvent = new Event("testUser", testTitle, testDesc,testLocation, testLimit, testTime);
+        SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
+        SimpleDateFormat day = new SimpleDateFormat("dd MMM");
+        assertEquals(time.format(testTime) + " on "+ day.format(testTime), testEvent.retrieveEventTimeString());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testRetrieveTimeDifference() {
+        Event testEvent = new Event("testUser", testTitle, testDesc, testLocation, testLimit, testTime);
+        assertEquals(DateDifference.getDifferenceString(new Date(), testTime), testEvent.retrieveTimeDifference());
     }
 
     /* Compare */
@@ -160,6 +184,15 @@ public class EventTest {
         Event testEvent = new Event("testUser", testTitle, testDesc,testLocation, testLimit, testTime);
         testEvent.changeLimit(10);
         assertEquals(10, testEvent.getLimit());
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testSetId(){
+        Event testEvent = new Event("testUser", testTitle, testDesc,testLocation, testLimit, testTime);
+        assertEquals("", testEvent.getId());
+        String id = "asdf123";
+        testEvent.setId(id);
+        assertEquals("asdf123", testEvent.getId());
     }
 
 }
