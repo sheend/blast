@@ -14,6 +14,7 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -48,6 +49,7 @@ import cse403.blast.Data.LocationHandler;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.DatePickerFragment;
+import cse403.blast.Support.MinMaxInputFilter;
 import cse403.blast.Support.TimePickerFragment;
 
 
@@ -281,6 +283,8 @@ public class CreateEventActivity extends AppCompatActivity {
         addTimeFocusListener();
         addLocationFocusListener();
         addLimitFocusListener();
+        // restrict limit to be between 1 and 9999
+        limitText.setFilters(new InputFilter[]{new MinMaxInputFilter(1, 9999)});
     }
 
     /**
