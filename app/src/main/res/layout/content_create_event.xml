@@ -39,14 +39,16 @@
             android:id="@+id/create_title"
             android:textColor="@color/lightText"
             android:textColorHint="@color/error_color"
-            android:hint="title"/>
+            android:hint="title"
+            android:maxLength="75"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:id="@+id/create_description"
             android:textColor="@color/lightText"
             android:textColorHint="@color/error_color"
-            android:hint="description"/>
+            android:hint="description"
+            android:maxLength="200"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -85,6 +87,7 @@
             android:textColor="@color/lightText"
             android:textColorHint="@color/error_color"
             android:hint="people limit"
+            android:maxLength="4"
             android:inputType="number"
             android:digits="1234567890"/>
         <Button

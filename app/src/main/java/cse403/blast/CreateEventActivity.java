@@ -293,8 +293,13 @@ public class CreateEventActivity extends AppCompatActivity {
         int id = v.getId();
         switch (id) {
             case R.id.create_submit_button :   // checks that user has filled in all fields
-                return (!isEmpty(titleText) && !isEmpty(descText) && !isEmpty(dateText) &&
-                        !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText));
+                if (!isEmpty(titleText) && !isEmpty(descText) && !isEmpty(dateText) &&
+                        !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText)) {
+                    return true;
+                } else {
+                    notifyUser("A field is empty");
+                    return false;
+                }
             case R.id.create_title :
                 if (isEmpty(titleText)) {
                     notifyUser("Title is empty");
