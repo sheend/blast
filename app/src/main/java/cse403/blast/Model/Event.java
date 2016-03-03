@@ -39,8 +39,8 @@ public class Event implements Serializable, Comparable<Event> {
     private String title;
     private String desc;
     private String location;
-    private String latitude;
-    private String longitude;
+    private double latitude;
+    private double longitude;
     private int limit;
     private Constants.Category category;
     private Date eventTime;
@@ -56,8 +56,8 @@ public class Event implements Serializable, Comparable<Event> {
         this.title = "";
         this.desc = "";
         this.location = "";
-        this.latitude = "";
-        this.longitude = "";
+        this.latitude = 0;
+        this.longitude = 0;
         this.limit = 0;
         this.eventTime = new Date();
         this.creationTime = new Date(); // initialize to current time
@@ -78,7 +78,7 @@ public class Event implements Serializable, Comparable<Event> {
      * @param eventTime time event will occur
      */
     public Event(String owner, String title, String desc, String location,
-                 String latitude, String longitude, int limit, Date eventTime) {
+                 double latitude, double longitude, int limit, Date eventTime) {
         this.owner = owner;
         this.title = title;
         this.desc = desc;
@@ -195,7 +195,7 @@ public class Event implements Serializable, Comparable<Event> {
      * Return latitude of location
      * @return   latitude of location
      */
-    public String getLatitude() {
+    public double getLatitude() {
         return latitude;
     }
 
@@ -203,7 +203,7 @@ public class Event implements Serializable, Comparable<Event> {
      * Return longitude of location
      * @return   longitude of location
      */
-    public String getLongitude() {
+    public double getLongitude() {
         return longitude;
     }
 
