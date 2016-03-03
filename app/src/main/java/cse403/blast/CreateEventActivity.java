@@ -79,6 +79,12 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private final String TAG = "CreateEventActivity";
 
+    /**
+     * Displays the user input fields required to create an event. This includes
+     * title, category, description, date/time, location, limit, and the button.
+     * A tutorial is displayed if the current user is a new user.
+     * @param savedInstanceState: saved stated of this Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +113,9 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        /* TUTORIAL */
+        /* TUTORIAL:
+         * displays the tutorial once if the current user is a new user
+         */
         View tutorialCreate = findViewById(R.id.tutorial_create);
         if (preferenceSettings.getBoolean("initialCreateLaunch", true)) {
             tutorialCreate.setVisibility(View.VISIBLE);
@@ -217,7 +225,10 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Gets the latitude and longitude of the current user
+     * @return the Location of the current user
+     */
     public Location getUserLocation() {
         LocationManager lm = (LocationManager) (getSystemService(Context.LOCATION_SERVICE));
 
@@ -355,7 +366,9 @@ public class CreateEventActivity extends AppCompatActivity {
         Toast.makeText(CreateEventActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
-    // adds click listener to submitButton to trigger verification and add event to database
+    /**
+     *  adds click listener to submitButton to trigger verification and add event to database
+     */
     private void addSubmitButtonClickListener() {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -365,13 +378,16 @@ public class CreateEventActivity extends AppCompatActivity {
                 if (verify(v)) {
                     Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
                     startActivity(mainActivityIntent);
+                    // calls the method that will add the event to the database
                     addEvent();
                 }
             }
         });
     }
 
-    // adds focus change listener to titleText to trigger verification
+    /**
+     * adds focus change listener to titleText to trigger verification
+     */
     private void addTitleFocusListener() {
         titleText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -383,7 +399,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to descText to trigger verification
+    /**
+     * adds focus change listener to descText to trigger verification
+     */
     private void addDescriptionFocusListener() {
         descText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -395,7 +413,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to dateText to trigger verification
+    /**
+     * adds focus change listener to dateText to trigger verification
+     */
     private void addDateFocusListener() {
         dateText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -407,7 +427,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to timeText to trigger verification
+    /**
+     * adds focus change listener to timeText to trigger verification
+     */
     private void addTimeFocusListener() {
         timeText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -419,7 +441,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to locText to trigger verification
+    /**
+     * adds focus change listener to locText to trigger verification
+     */
     private void addLocationFocusListener() {
         locText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -451,7 +475,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
                             locationList.clear();
                             //listView.setVisibility(View.GONE);
-                            ((ViewManager)listView.getParent()).removeView(listView);
+                            ((ViewManager) listView.getParent()).removeView(listView);
                         }
                     });
 
@@ -460,7 +484,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to limitText to trigger verification
+    /**
+     * adds focus change listener to limitText to trigger verification
+     */
     private void addLimitFocusListener() {
         limitText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -637,6 +663,9 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Gives the owner of the event the option to delete it
+     */
     public void deleteEvent() {
         final Event event = (Event) createEventIntent.getSerializableExtra("event");
 
@@ -648,6 +677,12 @@ public class CreateEventActivity extends AppCompatActivity {
             if (!attendee.equals(event.getOwner())) {
                 final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(attendee).child("eventsAttending");
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    /**
+                     * For each user attending the event, it queries firebase to find the user's "eventAttending"
+                     * list, and removes the event from the list.
+                     *
+                     * @param snapshot: Takes a snapshot of the current state of the database
+                     */
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         GenericTypeIndicator<Set<String>> t = new GenericTypeIndicator<Set<String>>() {};
@@ -658,6 +693,11 @@ public class CreateEventActivity extends AppCompatActivity {
                         }
                     }
 
+                    /**
+                     * Displays an informative message to the user
+                     *
+                     * @param error: error raised by Firebase
+                     */
                     @Override
                     public void onCancelled(FirebaseError error) {
                         Toast.makeText(CreateEventActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
@@ -671,6 +711,11 @@ public class CreateEventActivity extends AppCompatActivity {
         String owner = event.getOwner();
         final Firebase ownerRef = new Firebase(Constants.FIREBASE_URL).child("users").child(owner).child("eventsCreated");
         ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            /**
+             * Queries firebase to find the the owner's "eventsCreated" list, and removes
+             * the event from the list.
+             * @param snapshot: Takes a snapshot of the current state of the database
+             */
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 GenericTypeIndicator<Set<String>> t = new GenericTypeIndicator<Set<String>>() {};
@@ -679,6 +724,11 @@ public class CreateEventActivity extends AppCompatActivity {
                 ownerRef.setValue(eventsCreated);
             }
 
+            /**
+             * Displays an informative message to the user
+             *
+             * @param firebaseError: error raised by Firebase
+             */
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Toast.makeText(CreateEventActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
