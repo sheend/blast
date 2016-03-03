@@ -36,6 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     private SharedPreferences preferenceSettings;
     private SharedPreferences.Editor preferenceEditor;
     private Button button;
+    private TextView title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,63 +46,61 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
         preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
-
-        /* Tutorial */
-        View tutorialDetail = findViewById(R.id.tutorial_detail);
-        button = (Button) findViewById(R.id.detail_button);
-        if (preferenceSettings.getBoolean("initialDetailLaunch", true)) {
-            tutorialDetail.setVisibility(View.VISIBLE);
-            button.setEnabled(false);
-        } else {
-            tutorialDetail.setVisibility(View.GONE);
-        }
-
-        tutorialDetail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.setVisibility(View.GONE);
-                button.setEnabled(true);
-                preferenceSettings.edit().putBoolean("initialDetailLaunch", false).apply();
-            }
-        });
-
-        // Real detail starts from here
-
-        // Grab ID of current user from SharedPreferences file
-        currentUserID = preferenceSettings.getString("userid", "user");
-        Log.i("detailActivity", "theCurrentID is: " + currentUserID);
-
-        // Grab User object from SharedPreferences file
-        Gson gson = new Gson();
-        String json = preferenceSettings.getString("MyUser", "");
-        Log.i("DetailActivity", "JSON: " + json);
-        currentUser = gson.fromJson(json, User.class);
-
-        if (currentUser != null) Log.i("SUCCESS?", "YES T^T");
-        Log.i("user set??", "" + currentUser.getEventsAttending());
-
         Intent detailIntent = getIntent();
         event = (Event) detailIntent.getSerializableExtra("event");
-        TextView title = (TextView) findViewById(R.id.detail_title);
+        title = (TextView) findViewById(R.id.detail_title);
         title.setText(event.getTitle());
+        button = (Button) findViewById(R.id.detail_button);
 
 
-        Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                event = dataSnapshot.getValue(Event.class);
+        if (Constants.IS_TESTING) {
+            currentUser = new User("testId", "testUser");
+        } else {
+            // Tutorial
+            View tutorialDetail = findViewById(R.id.tutorial_detail);
+            if (preferenceSettings.getBoolean("initialDetailLaunch", true)) {
+                tutorialDetail.setVisibility(View.VISIBLE);
+                button.setEnabled(false);
+            } else {
+                tutorialDetail.setVisibility(View.GONE);
             }
 
+            tutorialDetail.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    v.setVisibility(View.GONE);
+                    button.setEnabled(true);
+                    preferenceSettings.edit().putBoolean("initialDetailLaunch", false).apply();
+                }
+            });
 
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
+            // Grab ID of current user from SharedPreferences file
+            currentUserID = preferenceSettings.getString("userid", "user");
+            Log.i("detailActivity", "theCurrentID is: " + currentUserID);
 
-            }
-        });
+            // Grab User object from SharedPreferences file
+            Gson gson = new Gson();
+            String json = preferenceSettings.getString("MyUser", "");
+            Log.i("DetailActivity", "JSON: " + json);
+            currentUser = gson.fromJson(json, User.class);
+            if (currentUser != null) Log.i("SUCCESS?", "YES T^T");
+            Log.i("user set??", "" + currentUser.getEventsAttending());
 
+            Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    event = dataSnapshot.getValue(Event.class);
+                }
+
+
+                @Override
+                public void onCancelled(FirebaseError firebaseError) {
+
+                }
+            });
+        }
 
         // TODO: Only display the hour of the time (ie. @ 7pm)
         TextView time = (TextView) findViewById(R.id.detail_time);

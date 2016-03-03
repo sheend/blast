@@ -27,4 +27,9 @@ public final class Constants {
     /**
      * Constants for bundles, extras and shared preferences keys
      */
+
+    /**
+     * Constants for testing and debugging
+     */
+    public static final boolean IS_TESTING = true;
 }
