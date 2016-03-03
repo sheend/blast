@@ -12,7 +12,7 @@ When a user is creating an event, the location field will give suggestions for r
 - Because the app is still in development, users must use the test account `oliver_efugadr_queen@tfbnw.net` with password `blast123` to sign in. </br>
 - Because the app is still in development, to activate location services on their device, users must go to the [Blast Developer Console](https://console.developers.google.com/apis/credentials/key/0?project=vivid-art-123423) in Incognito mode (right click on the link and open in incognito window). Sign in using the account `blastcse@gmail.com` with password `blast123`. At the bottom of the page, enter your local IP Addresss and click save. Note: access may take up to 5 minutes to be granted and direct link won't work if you switch Google accounts.</br>
 
-To run our test coverage tool, select all of our tests, right click, and choose "Run with Coverage." At the moment, we have 10% line coverage. This is much lower than we expected due to the fact that the coverage tool does not recognize part of our tests as testing the actual lines of code in our activities, which is where the bulk of our logic lives.
+Test coverage tool: scroll down to the Unit Testing section.
 
 #Beta Updates
 [SRS](https://drive.google.com/file/d/0B3PwQkCDyLnwbWJ4SnRZYzhYVzg/view) and [SDS](https://drive.google.com/file/d/0B3PwQkCDyLnwYTZEZTVPOUV4UWs/view) documents have been updated! </br>
@@ -70,6 +70,9 @@ To run a unit test in Android Studio:
 - Select `Unit Tests` as a Test Artifact
 - Navigate to a test file i.e. `ExampleUnitTest.java`
 - Right click on the class name and click 'Run ExampleUnitTest'
+
+To run our test coverage tool, select all of our tests, right click, and choose "Run with Coverage."
+- As of the Feature-Complete release, we have 10% line coverage. This is much lower than we expected due to the fact that the coverage tool does not recognize our activity tests, which contain the bulk of our code. This is because the coverage tool only considers JUnit tests, while our activity tests are Instrumentation tests.
 
 #Automated Testing
 We have set up Jenkins to build the project daily: [Jenkins dashboard](http://54.191.131.33:8080/)
