@@ -7,17 +7,12 @@ import android.support.test.runner.AndroidJUnit4;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
 import android.widget.EditText;
-
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.Date;
-
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
-
 import static android.support.test.espresso.Espresso.closeSoftKeyboard;
 import static android.support.test.espresso.Espresso.onData;
 import static android.support.test.espresso.Espresso.onView;
@@ -35,6 +30,11 @@ import static org.hamcrest.Matchers.not;
 
 /**
  * Created by graceqiu on 2/17/16.
+ *
+ * Tests CreateActivity class, where users can create or edit events. The Activity should
+ * change depending on what mode users are in: creation of a new event or modification of an already
+ * existing event. Creating/deleting an event should also update a user's left drawer,
+ * and user input should be verified by the activity.
  */
 @RunWith(AndroidJUnit4.class)
 public class CreateActivityTest {

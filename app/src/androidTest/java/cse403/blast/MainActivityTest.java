@@ -4,11 +4,9 @@ import android.support.test.espresso.action.ViewActions;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.view.View;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -18,6 +16,10 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 /**
  * Created by michellelee on 2/15/16.
+ *
+ * Tests MainActivity. Should launch the correct subsequent activities from
+ * the main page when certain buttons are clicked, and should display
+ * events with the correct filtering (time.)
  */
 
 @RunWith(AndroidJUnit4.class)
