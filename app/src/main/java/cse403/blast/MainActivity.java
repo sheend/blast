@@ -70,8 +70,9 @@ public class MainActivity extends AppCompatActivity
     private ListView mainListView;
     private FacebookManager fbManager = null;
     private FloatingActionButton fab;
-    private SharedPreferences preferenceSettings;
     private User currentUser;
+    private Gson gson;
+    // Left Drawer lists
     private List<Event> attendingEventList;
     private List<Event> createdEventList;
 
@@ -114,12 +115,12 @@ public class MainActivity extends AppCompatActivity
 
         // Try getting current user from shared preferences
         final SharedPreferences preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
-        Gson gson = new Gson();
+        gson = new Gson();
         String json = preferenceSettings.getString("MyUser", "");
         Log.i(TAG, "Set currentUser" + json);
         currentUser = gson.fromJson(json, User.class);
 
-        //No user found in local memory, try firebase
+        //No user found in local memory, try firebase (new user just logged in)
         if (currentUser == null) {
             if (fbManager.isValidSession()) {
                 final String fid = FacebookManager.getInstance().getUserID();
@@ -156,7 +157,7 @@ public class MainActivity extends AppCompatActivity
                         editor.putString("name", name);
 
                         // Store the current User object in SharedPreferences
-                        Gson gson = new Gson();
+                        gson = new Gson();
                         String json = gson.toJson(currentUser);
                         Log.i(TAG, "JSON: " + json);
                         editor.putString("MyUser", json);
@@ -166,6 +167,7 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
+                        // add Snackbar
                         Log.d(TAG, "error: " + firebaseError.getMessage());
                     }
                 });
@@ -216,7 +218,6 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Setting up the list view with everything
-                // TODO: Eventually we will have to use Data Manager to populate Events list
                 List<Event> events = new ArrayList<Event>();
 
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
@@ -226,14 +227,11 @@ public class MainActivity extends AppCompatActivity
                 Log.i("Log tag", "The data changed!");
 
                 setupListEvents(events);
-
-                //preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
-                //preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
-
             }
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
+                // TODO
             }
         });
 
@@ -243,7 +241,8 @@ public class MainActivity extends AppCompatActivity
     public void setupListEvents(List<Event> events) {
         mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
-        //sanitize and sort listevents
+        // Sanitize list events
+        // Remove events that are in the past or more than 24 hours in the future
         for (int i = 0; i < events.size(); i++) {
             String timeDif = events.get(i).retrieveTimeDifference();
             if (timeDif.startsWith(" -") || timeDif.contains(" d")) {
@@ -252,9 +251,9 @@ public class MainActivity extends AppCompatActivity
             }
         }
 
+        // Adding the adapter with all the events, sorting in real time with the adapter's sort
         EventAdapter adapter = new EventAdapter(this, events);
         mainListView.setAdapter(adapter);
-
         adapter.sort(new Comparator<Event>() {
             @Override
             public int compare(Event lhs, Event rhs) {
@@ -262,22 +261,14 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
                 Event eventAtPosition = (Event) parent.getItemAtPosition(position);
 
                 // Creating a detail activity
-                // TODO: remove toString() after Data Manager is set up
-                // TODO: Attendees - eventually get the list of attendees once Facebook integration is set up. but for now,
-                // TODO: it returns an empty list
                 Intent detailIntent = new Intent(MainActivity.this, DetailActivity.class);
-
                 detailIntent.putExtra("event", eventAtPosition);
-
-//                Set<User> exampleSet = new HashSet<User>();
                 detailIntent.putExtra("attendees", (Serializable) eventAtPosition.getAttendees());
                 startActivity(detailIntent);
                 overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
@@ -292,8 +283,6 @@ public class MainActivity extends AppCompatActivity
 
         List<String> eventIDList = new ArrayList<>(events); // good
         attendingEventList = new ArrayList<Event>(); // non null = good
-
-        //LongOperation task = new LongOperation().doInBackground(attendingEventList);
         new AttendingUpdates().execute(eventIDList);
 
     }
@@ -304,8 +293,6 @@ public class MainActivity extends AppCompatActivity
 
         List<String> eventIDList = new ArrayList<>(events); // good
         createdEventList = new ArrayList<Event>(); // non null = good
-
-        //LongOperation task = new LongOperation().doInBackground(attendingEventList);
         new CreatedUpdates().execute(eventIDList);
 
     }
@@ -362,12 +349,9 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
@@ -398,23 +382,11 @@ public class MainActivity extends AppCompatActivity
         listView.setLayoutParams(params);
     }
 
-    /*@Override
-    protected void onStop() {
-        if (fbManager.isValidSession()) {
-            fbManager.saveSession(getApplicationContext());
-        } else {
-            fbManager.clearSession(getApplicationContext());
-        }
-        super.onStop();
-    }*/
-
     private class AttendingUpdates extends AsyncTask<List<String>, Void, String> {
 
         @Override
         protected String doInBackground(List<String>... params) {
-
             for (String eventID : (List<String>) params[0]) {
-
                 // Query Firebase for the Event object based on given ID
                 final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(eventID);
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -423,25 +395,21 @@ public class MainActivity extends AppCompatActivity
                         Event eventToAdd = snapshot.getValue(Event.class);
                         if (eventToAdd != null)
                             attendingEventList.add(eventToAdd);
-                        //Log.i(TAG, "LEFT DRAWER EVENT LIST (updated): " + attendingEventList.toString() + " ");
                     }
 
                     @Override
                     public void onCancelled(FirebaseError error) {
+                        //TODO: Snackbar
                     }
                 });
-
             }
-
             return "Executed";
         }
 
         @Override
         protected void onPostExecute(String result) {
-
             Log.i(TAG, "LEFT DRAWER EVENT LIST: " + attendingEventList.toString());
             setupNavLists(R.id.attending_list);
-
         }
 
         private void setupNavLists(int elementId) {
@@ -481,9 +449,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected String doInBackground(List<String>... params) {
-
             for (String eventID : (List<String>) params[0]) {
-
                 // Query Firebase for the Event object based on given ID
                 final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(eventID);
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -492,25 +458,20 @@ public class MainActivity extends AppCompatActivity
                         Event eventToAdd = snapshot.getValue(Event.class);
                         if (eventToAdd != null)
                             createdEventList.add(eventToAdd);
-                        //Log.i(TAG, "LEFT DRAWER EVENT LIST (updated): " + attendingEventList.toString() + " ");
                     }
 
                     @Override
                     public void onCancelled(FirebaseError error) {
                     }
                 });
-
             }
-
             return "Executed";
         }
 
         @Override
         protected void onPostExecute(String result) {
-
             Log.i(TAG, "LEFT DRAWER EVENT LIST: " + createdEventList.toString());
             setupNavLists(R.id.created_list);
-
         }
 
         private void setupNavLists(int elementId) {
@@ -545,5 +506,4 @@ public class MainActivity extends AppCompatActivity
             setListViewHeightBasedOnChildren(sideNavListView);
         }
     }
-
 }
