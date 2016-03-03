@@ -26,6 +26,9 @@ import cse403.blast.Model.User;
 
 /**
  * The Detail Activity displays the information of the Event in more detail.
+ * It will display the title, time, location, description, and the names of
+ * the people who are currently attending the event. A user will have the option
+ * to attend the blast and a creator will have the option to edit or delete the event.
  */
 public class DetailActivity extends AppCompatActivity {
 
@@ -37,6 +40,13 @@ public class DetailActivity extends AppCompatActivity {
     private SharedPreferences.Editor preferenceEditor;
     private Button button;
 
+    /**
+     * When the activity starts, it will will display the title, time, location, description,
+     * and the names of the people who are currently attending the event. A user will have the option
+     * to attend the blast and a creator will have the option to edit or delete the event.
+     *
+     * @param savedInstanceState: saved stated of this Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +57,9 @@ public class DetailActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
 
-        /* Tutorial */
+        /* TUTORIAL:
+         * displays the tutorial once if the current user is a new user
+         */
         View tutorialDetail = findViewById(R.id.tutorial_detail);
         button = (Button) findViewById(R.id.detail_button);
         if (preferenceSettings.getBoolean("initialDetailLaunch", true)) {
@@ -89,11 +101,21 @@ public class DetailActivity extends AppCompatActivity {
 
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
         ref.addValueEventListener(new ValueEventListener() {
+            /**
+             * Queries the event object from the database based on the event ID.
+             *
+             * @param dataSnapshot: Takes a snapshot of the current state of the database
+             */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 event = dataSnapshot.getValue(Event.class);
             }
 
+            /**
+             * Displays an informative message to the user
+             *
+             * @param firebaseError: error raised by Firebase
+             */
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 Toast.makeText(DetailActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
@@ -117,9 +139,13 @@ public class DetailActivity extends AppCompatActivity {
         for (String attendeeID : attendeeIDList) {
             Log.i(TAG, "attendee IDS:" + attendeeID);
             if (attendeeID != null && !attendeeID.equals("")) {
-                // Query Firebase for the names of the attendees based on given user ID
                 final Firebase attendeeRef = new Firebase(Constants.FIREBASE_URL).child("users").child(attendeeID);
                 attendeeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    /**
+                     *Queries the database for the names of the attendees based on the given user ID
+                     *
+                     * @param snapshot: Takes a snapshot of the current state of the database
+                     */
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         User attendeeObj = snapshot.getValue(User.class);
@@ -132,7 +158,11 @@ public class DetailActivity extends AppCompatActivity {
                             attendees.append(attName.substring(0, attName.indexOf(" ")));
                         }
                     }
-
+                    /**
+                     * Displays an informative message to the user
+                     *
+                     * @param firebaseError: error raised by Firebase
+                     */
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
                         Toast.makeText(DetailActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
@@ -151,6 +181,11 @@ public class DetailActivity extends AppCompatActivity {
             button.setText(getString(R.string.detail_edit));
             // Go to creation page
             button.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * Directs to CreateEventActivity to allow the owner to edit the event
+                 *
+                 * @param v: the current View
+                 */
                 @Override
                 public void onClick(View v) {
                     Intent createIntent = new Intent(DetailActivity.this, CreateEventActivity.class);
@@ -164,6 +199,11 @@ public class DetailActivity extends AppCompatActivity {
             button.setText(getString(R.string.detail_leave));
             // Go back to main page
             button.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * Directs to the MainActivity if the user wants to leave the event
+                 *
+                 * @param v: the current View
+                 */
                 @Override
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
@@ -181,6 +221,11 @@ public class DetailActivity extends AppCompatActivity {
             button.setText(R.string.detail_join);
             // Go back to main page
             button.setOnClickListener(new View.OnClickListener() {
+                /**
+                 * Directs to the MainActivity once the user attends the event
+                 *
+                 * @param v: the current View
+                 */
                 @Override
                 public void onClick(View v) {
                     Intent mainIntent = new Intent(DetailActivity.this, MainActivity.class);
@@ -195,12 +240,15 @@ public class DetailActivity extends AppCompatActivity {
                     Log.i("HOW MANY ATTEND", " " + event.getAttendees().size());
                     Log.i("LIMIT OF THIS EVENT", " " + event.getLimit());
 
-
+                    /**
+                     * Prevents the user from attending the event if the number of attendees
+                     * has reached the limit.
+                     */
                     if (event.getAttendees().size() - 1 == event.getLimit()) {
                         Intent createIntent = new Intent(DetailActivity.this, MainActivity.class);
                         startActivity(createIntent);
                         Toast.makeText(DetailActivity.this, "This event is already full :(", Toast.LENGTH_SHORT).show();
-                    } else {
+                    } else {  // still has space in the event
 
                         // add event to user's attending
                         currentUser.attendEvent(event);
@@ -219,6 +267,9 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Stores the current User object in Shared Preferences
+     */
     public void setPreferences() {
         // update the GSON object in SHARED PREFS TO REFLECT CHANGES IN USER!!
         preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
@@ -232,6 +283,10 @@ public class DetailActivity extends AppCompatActivity {
         preferenceEditor.commit();
     }
 
+    /**
+     * Updates the current user's event attending list and updates the
+     * new list in the database
+     */
     public void updateToFireBase() {
         // updates user's attending
         Firebase userRef = new Firebase(Constants.FIREBASE_URL).child("users").child(currentUser.getFacebookID()).child("eventsAttending");
