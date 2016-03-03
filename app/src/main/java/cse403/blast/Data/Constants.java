@@ -24,6 +24,10 @@ public final class Constants {
 
     public static final String SHARED_KEY = "sharedkey";
 
+    public enum Category {
+        SOCIAL, FOOD, ACTIVE, ENTERTAINMENT, OTHER
+    }
+
     /**
      * Constants for bundles, extras and shared preferences keys
      */

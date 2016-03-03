@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,32 +13,42 @@
     tools:showIn="@layout/activity_create_event"
     android:id="@+id/create_event_layout">
 
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:background="@color/colorPrimaryDark"
+        android:id="@+id/create_image"/>
+
     <!-- Usual content -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp">
-
-        <ImageView
+        android:padding="16dp"
+        android:layout_below="@+id/create_image">
+        
+        <Spinner
+            android:id="@+id/category"
             android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:background="@color/colorPrimaryDark"
-            android:id="@+id/create_image"/>
+            android:layout_height="50dp"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:id="@+id/create_title"
             android:textColor="@color/lightText"
-            android:textColorHint="@color/lightText"
-            android:hint="title"/>
+            android:textColorHint="@color/error_color"
+            android:hint="title"
+            android:maxLength="75"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:id="@+id/create_description"
             android:textColor="@color/lightText"
-            android:textColorHint="@color/lightText"
-            android:hint="description"/>
+            android:textColorHint="@color/error_color"
+            android:hint="description"
+            android:maxLength="200"/>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -44,14 +57,14 @@
                 android:layout_height="72dp"
                 android:id="@+id/create_date"
                 android:textColor="@color/lightText"
-                android:textColorHint="@color/lightText"
+                android:textColorHint="@color/error_color"
                 android:hint="date"/>
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="72dp"
                 android:id="@+id/create_time"
                 android:textColor="@color/lightText"
-                android:textColorHint="@color/lightText"
+                android:textColorHint="@color/error_color"
                 android:hint="time"
                 android:layout_toRightOf="@+id/create_date"/>
         </RelativeLayout>
@@ -60,7 +73,7 @@
             android:layout_height="72dp"
             android:id="@+id/create_location"
             android:textColor="@color/lightText"
-            android:textColorHint="@color/lightText"
+            android:textColorHint="@color/error_color"
             android:hint="location"/>
         <ListView
             android:layout_width="match_parent"
@@ -72,8 +85,11 @@
             android:layout_height="72dp"
             android:id="@+id/create_limit"
             android:textColor="@color/lightText"
-            android:textColorHint="@color/lightText"
-            android:hint="limit"/>
+            android:textColorHint="@color/error_color"
+            android:hint="people limit"
+            android:maxLength="4"
+            android:inputType="number"
+            android:digits="1234567890"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="72dp"
@@ -96,7 +112,6 @@
 
 
     <!-- Tutorial -->
-
     <RelativeLayout
         android:id="@+id/tutorial_create"
         android:background="#c1000000"
@@ -111,3 +126,4 @@
     </RelativeLayout>
 
 </RelativeLayout>
+</ScrollView>

@@ -1,0 +1,25 @@
+Genymotion does  not provide Google Apps so in order to use our app on emulator, you will have the install Google Apps on your Genymotion. 
+
+Here are the steps:
+ **Step 1: ** Upgrade Genymotion and VirtualBox to the latest version
+ **Step 2: ** Make sure your computer has adb
+ **Step 3: ** Download two zip files:
+&nbsp&nbsp - [ARM Translation Installer v1.1](http://filetrip.net/dl?4SUOrdcMRv)
+&nbsp&nbsp - [Google Apps for Android version 5.0](https://www.androidfilehost.com/?fid=95784891001614559) or later
+ **Step 4: ** Install ARM Translation
+&nbsp&nbsp *4.1* Open Genymotion emulator and drag/drop the Genymotion-ARM-Translation_v1.1.zip file over the emulator on the home screen. 
+&nbsp&nbsp *4.2* A dialog will appear and show as file transfer in prgress. 
+&nbsp&nbsp *4.3* Wait for another dialog (shown below Image_4.3) appears and click OK. 
+&nbsp&nbsp *4.4* Wait for the third dialog shows as the file has been successfully transfered (shown below Image_4.4)
+&nbsp&nbsp *4.5* Reboot the virtual device through command line, with a"adb reboot"
+&nbsp&nbsp *4.6* Be patient and wait around 10-20 minutes until it's done rebooting (You can tell its done from the command line by prompting into a new line
+ **Step 5: ** Install gapps
+&nbsp&nbsp *5.1* Stay on the home screen on Genymotion. Drag and drop the gapps-lp-20141109-signed.zip file onto the screen. 
+&nbsp&nbsp *5.2* Repeat the same steps in 3.2-3.4
+&nbsp&nbsp *5.3* Be even more patient! This time you will have to wait for 30-40 minutes. 
+ **Step 6: ** Update all the Google Maps through Google Play Store
+&nbsp&nbsp *6.1a* After the virtual device is rebooted up, you will see a dialog saying that “Unfortunately, Google Play service has stopped.” as shown in picture below in Image_6.1a, click OK and go to step 6.2.
+&nbsp&nbsp *6.1b* If you don't see any dialog popping up saying that "Google Play Services has stopped", close your virtual machine and restart your genymotion device. Then you will see another dialog saying that you need to update your application.
+&nbsp&nbsp *6.2* Open your Google Play Store and update all your installed apps. Remember to update Google Play Services (Most important one!)
+
+*Now you are ready to BLAST!!*
