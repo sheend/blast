@@ -105,6 +105,21 @@ public class DetailActivityTest {
         onData(anything()).inAdapterView(withId(R.id.attending_list)).atPosition(0).check(matches(withText("strangerTitle")));
     }
 
+    @Test
+    public void editClickToEditableCreateEventActivityPage() {
+        Event e = new Event(testUser.getFacebookID(), "ownerTitle", "ownerDesc", "ownerLoc", 100, new Date(1));
+        launchActivity(e);
+        onView(withId(R.id.detail_button)).perform(ViewActions.click());
+        onView(withId(R.id.create_event_layout)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void joinClickToMainActivityPage() {
+        Event e = new Event("strangerTest", "strangerTitle", "strangerDesc", "strangerLoc", 100, new Date(1));
+        launchActivity(e);
+        onView(withId(R.id.detail_button)).perform(ViewActions.click());
+        onView(withId(R.id.main_blast_list_view)).check(matches(isDisplayed()));
+    }
     /**
      * Create intent and launch activity with given e
      * @param e event to include in intent when launching activity
