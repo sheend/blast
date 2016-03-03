@@ -146,6 +146,7 @@ public class DetailActivity extends AppCompatActivity {
         TextView locationLabel = (TextView) findViewById(R.id.detail_location);
         locationLabel.setText(event.getLocation());
 
+
         // Set appropriate text and onclick's depending on user's status
         if (currentUser.getFacebookID().equals(event.getOwner())) { // user is owner, have option to edit
             button.setText(getString(R.string.detail_edit));
@@ -191,19 +192,31 @@ public class DetailActivity extends AppCompatActivity {
                     Log.i(TAG, "PRE current events attending: " + currentUser.getEventsAttending());
                     Log.i(TAG, "PRE current events created: " + currentUser.getEventsCreated());
 
-                    // add event to user's attending
-                    currentUser.attendEvent(event);
-                    // add user to event's attendees
-                    //event.addAttendee(currentUser);
 
-                    setPreferences();
+                    Log.i("HOW MANY ATTEND", " " + event.getAttendees().size());
+                    Log.i("LIMIT OF THIS EVENT", " " + event.getLimit());
 
-                    Log.i(TAG, "POST current user ID: " + currentUser.getFacebookID());
-                    Log.i(TAG, "POST current events attending: " + currentUser.getEventsAttending());
-                    Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
 
-                    updateToFireBase();
-                    Toast.makeText(DetailActivity.this, "You are now attending: " + event.getTitle(), Toast.LENGTH_LONG).show();
+                    if (event.getAttendees().size() - 1 == event.getLimit()) {
+                        Intent createIntent = new Intent(DetailActivity.this, MainActivity.class);
+                        startActivity(createIntent);
+                        Toast.makeText(DetailActivity.this, "This event is already full :(", Toast.LENGTH_SHORT).show();
+                    } else {
+
+                        // add event to user's attending
+                        currentUser.attendEvent(event);
+                        // add user to event's attendees
+                        //event.addAttendee(currentUser);
+
+                        setPreferences();
+
+                        Log.i(TAG, "POST current user ID: " + currentUser.getFacebookID());
+                        Log.i(TAG, "POST current events attending: " + currentUser.getEventsAttending());
+                        Log.i(TAG, "POST current events created: " + currentUser.getEventsCreated());
+
+                        updateToFireBase();
+                        Toast.makeText(DetailActivity.this, "You are now attending: " + event.getTitle(), Toast.LENGTH_LONG).show();
+                    }
                 }
             });
         }
