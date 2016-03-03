@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity
 
     private static final String TAG = "MainActivity";
 
-
     /**
      * Populates the landing page with events within 24 hours and
      * populates the left drawer with the current user's events attending
@@ -93,11 +92,11 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Initialize Facebook SDK and set up Facebook Manager
+        // Initialize Facebook SDK and set up Facebook Manager
         FacebookSdk.sdkInitialize(getApplicationContext());
         fbManager = FacebookManager.getInstance();
 
-        //If no instance session exists, check local storage
+        // If no instance session exists, check local storage
         if (!fbManager.isValidSession()) {
             fbManager.getSession(getApplicationContext());
         }
@@ -143,6 +142,14 @@ public class MainActivity extends AppCompatActivity
 
                 // Add listener for the child with given Facebook ID
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    /**
+                     * Queries for the User with given FacebookID and initializes
+                     * the local User.
+                     *
+                     * @param dataSnapshot Object representing the current state of the database
+                     *                     at the given reference node
+                     */
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -234,6 +241,14 @@ public class MainActivity extends AppCompatActivity
         // Query firebase for all events and store in local events list
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events");
         ref.addValueEventListener(new ValueEventListener() {
+
+            /**
+             * Queries for all events in the database and initializes the local copy of
+             * the events list.
+             *
+             * @param dataSnapshot Object representing the current state of the database
+             *                     at the given reference node
+             */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Setting up the list view with everything
@@ -471,6 +486,14 @@ public class MainActivity extends AppCompatActivity
 
                 final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(eventID);
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    /**
+                     * Queries for the Events with given EventIDs and initializes
+                     * the local attending event list.
+                     *
+                     * @param snapshot Object representing the current state of the database
+                     *                     at the given reference node
+                     */
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         Event eventToAdd = snapshot.getValue(Event.class);
@@ -562,6 +585,13 @@ public class MainActivity extends AppCompatActivity
                 // Query Firebase for the Event object based on given ID
                 final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(eventID);
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    /**
+                     * Queries for the Events with given EventIDs and initializes
+                     * the local created event list.
+                     *
+                     * @param snapshot Object representing the current state of the database
+                     *                     at the given reference node
+                     */
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         Event eventToAdd = snapshot.getValue(Event.class);
