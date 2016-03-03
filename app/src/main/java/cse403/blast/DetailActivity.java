@@ -45,7 +45,6 @@ public class DetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
         preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
 
         /* Tutorial */
@@ -95,10 +94,10 @@ public class DetailActivity extends AppCompatActivity {
                 event = dataSnapshot.getValue(Event.class);
             }
 
-
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-
+                Toast.makeText(DetailActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
 
@@ -135,17 +134,17 @@ public class DetailActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError error) {
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Toast.makeText(DetailActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "error: " + firebaseError.getMessage());
                     }
                 });
             }
         }
 
-
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location);
         locationLabel.setText(event.getLocation());
-
 
         // Set appropriate text and onclick's depending on user's status
         if (currentUser.getFacebookID().equals(event.getOwner())) { // user is owner, have option to edit
@@ -205,8 +204,6 @@ public class DetailActivity extends AppCompatActivity {
 
                         // add event to user's attending
                         currentUser.attendEvent(event);
-                        // add user to event's attendees
-                        //event.addAttendee(currentUser);
 
                         setPreferences();
 
@@ -233,7 +230,6 @@ public class DetailActivity extends AppCompatActivity {
         Log.i(TAG, "JSON: " + json);
         preferenceEditor.putString("MyUser", json);
         preferenceEditor.commit();
-
     }
 
     public void updateToFireBase() {
@@ -244,26 +240,13 @@ public class DetailActivity extends AppCompatActivity {
         // update event's attendees field
         Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
         eventRef.setValue(event.getAttendees());
-
-
-//        eventRef.runTransaction(new Transaction.Handler() {
-//            @Override
-//            public Transaction.Result doTransaction(MutableData currentData) {
-//                currentData.setValue(event.getAttendees());
-//                return Transaction.success(currentData);
-//            }
-//
-//            @Override
-//            public void onComplete(FirebaseError firebaseError, boolean committed, DataSnapshot currentData) {
-//                //This method will be called once with the results of the transaction
-//            }
-//        });
-
     }
+
 //  TODO: back button doesn't transition well
 //    @Override
 //    public void onBackPressed() {
 //        super.onBackPressed();
 //        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
 //    }
+
 }

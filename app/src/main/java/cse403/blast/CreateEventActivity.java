@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -22,7 +21,6 @@ import android.view.View.OnFocusChangeListener;
 import android.view.ViewManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -35,7 +33,6 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -663,7 +660,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancelled(FirebaseError error) {
-
+                        Toast.makeText(CreateEventActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "error: " + error.getMessage());
                     }
                 });
             }
@@ -682,8 +680,9 @@ public class CreateEventActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(FirebaseError error) {
-
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(CreateEventActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
 

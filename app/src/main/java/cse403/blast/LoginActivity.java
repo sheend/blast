@@ -1,6 +1,5 @@
 package cse403.blast;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,9 +12,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphRequestAsyncTask;
-import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.ProfileTracker;
 import com.facebook.login.LoginResult;
@@ -25,8 +21,6 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
-
-import org.json.JSONObject;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
@@ -117,56 +111,6 @@ public class LoginActivity extends FragmentActivity {
             return;
         };
     }
-
-    /*private void addLoginUser(final LoginResult loginResult) {
-        final AccessToken accessToken = loginResult.getAccessToken();
-        GraphRequestAsyncTask request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
-            @Override
-            public void onCompleted(JSONObject user, GraphResponse graphResponse) {
-                final String fid = user.optString("id");
-                final String name = user.optString("name");
-                Log.i("addedNewUserTAG", "we got this user id: " + fid + " " + name);
-
-                final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
-
-                ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        if (dataSnapshot.getValue() == null) {
-                            userInfo = new User(fid, name);
-
-                            // Add user to DB
-                            ref.setValue(userInfo);
-
-                            Log.i("addedNewUserTAG", "we added a new user");
-                        } else {
-                            userInfo = dataSnapshot.getValue(User.class);
-                            Log.i("noUserAddedTAG", "user already exists in db");
-                        }
-
-                        // Store the current userID in SharedPreferences
-                        preferenceSettings = getSharedPreferences(Constants.SHARED_KEY, Context.MODE_PRIVATE);
-                        preferenceEditor = preferenceSettings.edit();
-                        preferenceEditor.putString("userid", fid);
-                        preferenceEditor.putString("name", name);
-
-                        // Store the current User object in SharedPreferences
-                        Gson gson = new Gson();
-                        String json = gson.toJson(userInfo);
-                        Log.i("LoginActivity", "JSON: " + json);
-                        preferenceEditor.putString("MyUser", json);
-
-                        preferenceEditor.commit();
-                    }
-
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                        Log.d(TAG, "error: " + firebaseError.getMessage());
-                    }
-                });
-            }
-        }).executeAsync();*/
 
     private void addLoginUser() {
         FacebookManager fbManager=  FacebookManager.getInstance();

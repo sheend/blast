@@ -1,38 +1,31 @@
 package cse403.blast;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.content.ContextCompat;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.MotionEvent;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.DisplayMetrics;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.Profile;
@@ -47,7 +40,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cse403.blast.Data.Constants;
@@ -55,7 +47,6 @@ import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.EventAdapter;
-import cse403.blast.Data.LocationHandler;
 
 
 /**
@@ -167,7 +158,7 @@ public class MainActivity extends AppCompatActivity
 
                     @Override
                     public void onCancelled(FirebaseError firebaseError) {
-                        // add Snackbar
+                        Toast.makeText(MainActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "error: " + firebaseError.getMessage());
                     }
                 });
@@ -231,7 +222,8 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-                // TODO
+                Toast.makeText(MainActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
 
@@ -398,8 +390,9 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError error) {
-                        //TODO: Snackbar
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Toast.makeText(MainActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "error: " + firebaseError.getMessage());
                     }
                 });
             }
@@ -461,7 +454,9 @@ public class MainActivity extends AppCompatActivity
                     }
 
                     @Override
-                    public void onCancelled(FirebaseError error) {
+                    public void onCancelled(FirebaseError firebaseError) {
+                        Toast.makeText(MainActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "error: " + firebaseError.getMessage());
                     }
                 });
             }
