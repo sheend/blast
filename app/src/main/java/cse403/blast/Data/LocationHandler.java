@@ -25,7 +25,7 @@ import org.json.JSONObject;
  * Created by aixin on 2/26/16.
  */
 public class LocationHandler {
-    private final String API_KEY = "AIzaSyC1Fh0M4ufNx0IPFgupHMsPoiKEbW7BFlo";
+    private final String API_KEY = "AIzaSyCfGcSst1xqsfr7P_mxPEvcIZylw7ZhX9Y";
     private final String QUERY_ORIG_CALL = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?";
     private final String PLACE_ID_ORIG_CALL = "https://maps.googleapis.com/maps/api/place/details/json?";
     private final String GEO_CODING_ORIG_CALL = "https://maps.googleapis.com/maps/api/geocode/json?";
