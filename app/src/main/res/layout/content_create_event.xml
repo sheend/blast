@@ -38,14 +38,14 @@
             android:layout_height="72dp"
             android:id="@+id/create_title"
             android:textColor="@color/lightText"
-            android:textColorHint="@color/lightText"
+            android:textColorHint="@color/error_color"
             android:hint="title"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:id="@+id/create_description"
             android:textColor="@color/lightText"
-            android:textColorHint="@color/lightText"
+            android:textColorHint="@color/error_color"
             android:hint="description"/>
         <RelativeLayout
             android:layout_width="match_parent"
@@ -55,14 +55,14 @@
                 android:layout_height="72dp"
                 android:id="@+id/create_date"
                 android:textColor="@color/lightText"
-                android:textColorHint="@color/lightText"
+                android:textColorHint="@color/error_color"
                 android:hint="date"/>
             <EditText
                 android:layout_width="wrap_content"
                 android:layout_height="72dp"
                 android:id="@+id/create_time"
                 android:textColor="@color/lightText"
-                android:textColorHint="@color/lightText"
+                android:textColorHint="@color/error_color"
                 android:hint="time"
                 android:layout_toRightOf="@+id/create_date"/>
         </RelativeLayout>
@@ -71,7 +71,7 @@
             android:layout_height="72dp"
             android:id="@+id/create_location"
             android:textColor="@color/lightText"
-            android:textColorHint="@color/lightText"
+            android:textColorHint="@color/error_color"
             android:hint="location"/>
         <ListView
             android:layout_width="match_parent"
@@ -83,8 +83,10 @@
             android:layout_height="72dp"
             android:id="@+id/create_limit"
             android:textColor="@color/lightText"
-            android:textColorHint="@color/lightText"
-            android:hint="limit"/>
+            android:textColorHint="@color/error_color"
+            android:hint="people limit"
+            android:inputType="number"
+            android:digits="1234567890"/>
         <Button
             android:layout_width="match_parent"
             android:layout_height="72dp"
