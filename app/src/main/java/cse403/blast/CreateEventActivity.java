@@ -35,6 +35,7 @@ import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -566,6 +567,10 @@ public class CreateEventActivity extends AppCompatActivity {
         int userEnteredLimit = Integer.parseInt(limitText.getText().toString());
         String userEnteredLoc = locText.getText().toString();
 
+        // TODO: replace dummy data with actual Lat/Long data
+        double userEnteredLat = 47.6097;
+        double userEnteredLong = 122.3331;
+
         // Get user-entered date
         Calendar calendar = Calendar.getInstance();
         calendar.set(userYear, userMonth, userDay, userHour, userMin);
@@ -587,7 +592,7 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
-                userEnteredLoc, userEnteredLimit, userEnteredDate);
+                userEnteredLoc, userEnteredLat, userEnteredLong, userEnteredLimit, userEnteredDate);
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
