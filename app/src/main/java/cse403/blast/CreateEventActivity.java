@@ -27,6 +27,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -60,6 +61,7 @@ import cse403.blast.Support.TimePickerFragment;
  * user's "Blasts You Created" section of the main page's drawer.
  */
 public class CreateEventActivity extends AppCompatActivity {
+    private Spinner category;
     private Button submitButton;
     private Button cancelButton;
     private EditText titleText;
@@ -90,6 +92,12 @@ public class CreateEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         createEventIntent = getIntent();
+
+        category = (Spinner) findViewById(R.id.category);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.categories_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category.setAdapter(adapter);
 
         submitButton = (Button) findViewById(R.id.create_submit_button);
         cancelButton = (Button) findViewById(R.id.create_cancel_button);
