@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -40,14 +41,23 @@ public class LoginActivity extends FragmentActivity {
     private SharedPreferences preferenceSettings;
     private SharedPreferences.Editor preferenceEditor;
 
-
+    /**
+     * Displays the login screen that prompts the user to sign in with Facebook.
+     * Redirects the user to the Main landing page of Blast upon successful login.
+     * Initializes local copies of the User's FacebookID in the app's SharedPreferences
+     * file.
+     *
+     * @param savedInstanceState The saved state of the current Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Initializes Facebook authentication services
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
         setContentView(R.layout.activity_login);
 
+        // Displays login button and sets callback for button clicks
         message = (TextView) findViewById(R.id.message);
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions("public_profile");
@@ -55,6 +65,12 @@ public class LoginActivity extends FragmentActivity {
 
             private ProfileTracker mProfileTracker;
 
+            /**
+             * On successful Facebook authentication, sets current access
+             * token and launches the Main Activity
+             *
+             * @param loginResult Object representing the result of a successful login
+             */
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.i(TAG, "onSuccess");
@@ -70,6 +86,7 @@ public class LoginActivity extends FragmentActivity {
                             Log.v("facebook - profile", profile2.getFirstName());
                             mProfileTracker.stopTracking();
 
+                            // Redirect to the Main landing page
                             Intent i = new Intent(LoginActivity.this, MainActivity.class);
                             fbManager.setToken(token);
                             AccessToken.setCurrentAccessToken(token);
@@ -80,6 +97,7 @@ public class LoginActivity extends FragmentActivity {
                     };
                     mProfileTracker.startTracking();
                 } else {
+                    // Redirect to the Main landing page
                     Intent i = new Intent(LoginActivity.this, MainActivity.class);
                     fbManager.setToken(token);
                     AccessToken.setCurrentAccessToken(token);
@@ -90,12 +108,20 @@ public class LoginActivity extends FragmentActivity {
             }
 
 
+            /**
+             * Displays an informative message to the user if login request was cancelled.
+             */
             @Override
             public void onCancel() {
                 Log.i(TAG, "onCancel");
                 message.setText("Facebook login cancelled");
             }
 
+            /**
+             * Displays an informative message to the user if unable to complete login request.
+             *
+             * @param e error raised by Facebook
+             */
             @Override
             public void onError(FacebookException e) {
                 Log.i(TAG, "onError");
@@ -104,6 +130,9 @@ public class LoginActivity extends FragmentActivity {
         });
     }
 
+    /**
+     * Deals with metadata associated with the Activity; uses default process.
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -112,6 +141,10 @@ public class LoginActivity extends FragmentActivity {
         };
     }
 
+    /**
+     * Adds currently logged in User to the database of Users and update
+     * the local copy of the User.
+     */
     private void addLoginUser() {
         FacebookManager fbManager=  FacebookManager.getInstance();
         final String name = fbManager.getUserName();
@@ -128,32 +161,42 @@ public class LoginActivity extends FragmentActivity {
         String json = gson.toJson(userInfo);
         Log.i("LoginActivity", "JSON: " + json);
         preferenceEditor.putString("MyUser", json);
-
         preferenceEditor.commit();
 
         Log.i("addedNewUserTAG", "we got this user id: " + fid + " " + name);
 
         final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(fid);
-
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            /**
+             * Queries for the User with given FacebookID. Adds to the database if
+             * the User does not already exist. Initializes local copy of User.
+             *
+             * @param dataSnapshot Object representing the current state of the database
+             *                     at the given reference node
+             */
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 if (dataSnapshot.getValue() == null) {
                     userInfo = new User(fid, name);
 
                     // Add user to DB
                     ref.setValue(userInfo);
-
-                    Log.i("addedNewUserTAG", "we added a new user");
+                    Log.i("addedNewUserTAG", "We added a new user");
                 } else {
                     userInfo = dataSnapshot.getValue(User.class);
-                    Log.i("noUserAddedTAG", "user already exists in db");
+                    Log.i("noUserAddedTAG", "User already exists in DB");
                 }
             }
 
+            /**
+             * Displays an informative message to the user if unable to complete request.
+             *
+             * @param firebaseError error raised by Firebase
+             */
             @Override
             public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(LoginActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
                 Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
