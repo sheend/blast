@@ -25,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TimePicker;
@@ -99,11 +100,12 @@ public class CreateEventActivity extends AppCompatActivity {
         createEventIntent = getIntent();
         setTitle("New Event");
 
-        category = (Spinner) findViewById(R.id.category);
+        category = (Spinner) findViewById(R.id.create_category);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.categories_array, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(R.layout.category_dropdown_item);
         category.setAdapter(adapter);
+        addCategoryListener();
 
         submitButton = (Button) findViewById(R.id.create_submit_button);
         cancelButton = (Button) findViewById(R.id.create_cancel_button);
@@ -519,6 +521,35 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     // DIALOG METHODS
+
+    /**
+     * Adds an on-change listener to the category dropdown
+     */
+    private void addCategoryListener() {
+        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                ImageView image = (ImageView) findViewById(R.id.create_image);
+                String selected = category.getSelectedItem().toString();
+                if (selected.equals("Social")) {
+                    image.setImageResource(R.drawable.social);
+                } else if (selected.equals("Active")) {
+                    image.setImageResource(R.drawable.active);
+                } else if (selected.equals("Food")) {
+                    image.setImageResource(R.drawable.food);
+                } else if (selected.equals("Entertainment")) {
+                    image.setImageResource(R.drawable.entertainment);
+                } else {
+                    image.setImageResource(R.drawable.other);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // there will never be nothing selected
+            }
+        });
+    }
 
     /**
      * Displays the date picker

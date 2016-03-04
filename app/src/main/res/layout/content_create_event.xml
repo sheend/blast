@@ -16,7 +16,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:background="@color/blastAccent"
+        android:background="@color/windowBackground"
         android:id="@+id/create_image"
         android:layout_marginTop="@dimen/abc_action_bar_default_height_material"/>
 
@@ -29,7 +29,7 @@
         android:layout_below="@+id/create_image">
         
         <Spinner
-            android:id="@+id/category"
+            android:id="@+id/create_category"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@android:drawable/btn_dropdown"
