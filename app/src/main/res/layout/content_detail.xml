@@ -146,10 +146,14 @@
             <ImageView
                 android:id="@+id/detail_location_image"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:layout_marginBottom="8dp"
-                />
+                android:layout_height="wrap_content"/>
 
+            <WebView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/map_webview">
+
+            </WebView>
 
             <Button
                 android:layout_margin="16dp"

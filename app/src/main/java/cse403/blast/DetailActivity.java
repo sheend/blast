@@ -2,25 +2,34 @@ package cse403.blast;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import cse403.blast.Data.Constants;
+import cse403.blast.Data.LocationHandler;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 
@@ -178,6 +187,22 @@ public class DetailActivity extends AppCompatActivity {
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location);
         locationLabel.setText(event.getLocation());
+
+        LocationHandler instance = new LocationHandler();
+        ImageView mapView = (ImageView) findViewById(R.id.detail_location_image);
+        WebView webView = (WebView) findViewById(R.id.map_webview);
+
+        try {
+            //TODO: Add proper address, handle case when image is not returned
+            mapView.setImageBitmap(instance.getStaticImage("4131 University Way NE, Seattle, WA 98105",
+                    event.getLatitude(), event.getLongitude()));
+            //webView.loadUrl("https://www.google.com/maps/embed/v1/place?q=4131+University+Way+NE,+Seattle,+WA+98105&key=AIzaSyCfGcSst1xqsfr7P_mxPEvcIZylw7ZhX9Y");
+
+
+        } catch (IOException e) {
+            Log.i(TAG, "Map image didn't show didn't show");
+        }
+
 
         // Set appropriate text and onclick's depending on user's status
         if (currentUser.getFacebookID().equals(event.getOwner())) { // user is owner, have option to edit
