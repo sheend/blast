@@ -8,6 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,12 +19,15 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import cse403.blast.Data.Constants;
+import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
+import cse403.blast.Support.RoundImage;
 
 /**
  * The Detail Activity displays the information of the Event in more detail.
@@ -33,6 +38,7 @@ import cse403.blast.Model.User;
 public class DetailActivity extends AppCompatActivity {
 
     private final String TAG = "DetailActivity";
+    private final int MAX_NUM_IMGS = 5;
     private Event event;
     private User currentUser;
     private String currentUserID;
@@ -136,14 +142,16 @@ public class DetailActivity extends AppCompatActivity {
         desc.setText(event.getDesc());
 
         // TODO: Display the list of attendees by their Facebook profile picture after
-        final TextView attendees = (TextView) findViewById(R.id.detail_attendees);
-        List<String> attendeeIDList = new ArrayList<>(event.getAttendees());
-
+        final TextView attendees = (TextView) findViewById(R.id.attendees_text);
+        final LinearLayout attendeeImages = (LinearLayout) findViewById(R.id.attendees_images);
+        final List<String> attendeeIDList = new ArrayList<>(event.getAttendees());
         for (String attendeeID : attendeeIDList) {
             Log.i(TAG, "attendee IDS:" + attendeeID);
             if (attendeeID != null && !attendeeID.equals("")) {
                 final Firebase attendeeRef = new Firebase(Constants.FIREBASE_URL).child("users").child(attendeeID);
                 attendeeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    int imageCount = 0;
+
                     /**
                      *Queries the database for the names of the attendees based on the given user ID
                      *
@@ -151,14 +159,26 @@ public class DetailActivity extends AppCompatActivity {
                      */
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
-                        User attendeeObj = snapshot.getValue(User.class);
-
-                        if (attendeeObj != null) {
-                            if (!attendees.getText().toString().isEmpty()) {
-                                attendees.append(", ");
+                        if (imageCount < MAX_NUM_IMGS) {
+                            User attendeeObj = snapshot.getValue(User.class);
+                            FacebookManager fbManager = FacebookManager.getInstance();
+                            ImageView iView = new ImageView(DetailActivity.this);
+                            try {
+                                RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(attendeeObj.getFacebookID()));
+                                iView.setImageDrawable(roundImage);
+                                attendeeImages.addView(iView);
+                            } catch (IOException e) {
+                                if (attendeeObj != null) {
+                                    if (!attendees.getText().toString().isEmpty()) {
+                                        attendees.append(", ");
+                                    }
+                                    String attName = attendeeObj.getName();
+                                    attendees.append(attName.substring(0, attName.indexOf(" ")));
+                                }
                             }
-                            String attName = attendeeObj.getName();
-                            attendees.append(attName.substring(0, attName.indexOf(" ")));
+                            imageCount++;
+                        } else {
+                            attendees.append("...and " + (attendeeIDList.size() - MAX_NUM_IMGS) + " others");
                         }
                     }
                     /**
