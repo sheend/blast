@@ -42,7 +42,7 @@ public class Event implements Serializable, Comparable<Event> {
     private double latitude;
     private double longitude;
     private int limit;
-    private Constants.Category category;
+    private String category;
     private Date eventTime;
     private Date creationTime;
     private Set<String> attendees;
@@ -63,7 +63,7 @@ public class Event implements Serializable, Comparable<Event> {
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<String>();
         this.firebaseID = "";
-        this.category = Constants.Category.ACTIVE; //TODO: change this
+        this.category = "";
     }
 
 
@@ -78,7 +78,7 @@ public class Event implements Serializable, Comparable<Event> {
      * @param eventTime time event will occur
      */
     public Event(String owner, String title, String desc, String location,
-                 double latitude, double longitude, int limit, Date eventTime) {
+                 double latitude, double longitude, int limit, Date eventTime, String cat) {
         this.owner = owner;
         this.title = title;
         this.desc = desc;
@@ -86,7 +86,7 @@ public class Event implements Serializable, Comparable<Event> {
         this.latitude = latitude;
         this.longitude = longitude;
         this.limit = limit;
-        this.category = Constants.Category.ACTIVE; //TODO: Change this
+        this.category = cat;
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<String>();
@@ -211,35 +211,30 @@ public class Event implements Serializable, Comparable<Event> {
      * Return limit of event
      * @return limit of event
      */
-    public int getLimit() {
-        return limit;
-    }
+    public int getLimit() { return limit; }
 
     /**
      * Return category of event
-     * @return category (enum) of event
+     * @return category of event
      */
-
-    public Constants.Category getCategory() {
-        return (category == null) ? Constants.Category.ACTIVE : category; //TODO: backup plan
-    }
+    public String getCategory() { return category; }
 
     /**
      * Return category of event
-     * @return category (enum) of event
+     * @return category of event
      * //TODO: Add colors to the categories/add pictures?
      */
     public int retrieveCategoryColor() {
         switch (getCategory()) {
-            case ACTIVE:
+            case "ACTIVE":
                 return Color.rgb(255, 26, 0);
-            case ENTERTAINMENT:
+            case "ENTERTAINMENT":
                 return Color.rgb(255,26,0);
-            case FOOD:
+            case "FOOD":
                 return Color.rgb(255, 26, 0);
-            case SOCIAL:
+            case "SOCIAL":
                 return Color.rgb(130,143,212); // light blue
-            case OTHER:
+            case "OTHER":
                 return Color.rgb(255,26,0);
             default:
                 return Color.rgb(128,128,128);

@@ -609,6 +609,7 @@ public class CreateEventActivity extends AppCompatActivity {
         String userEnteredDesc = descText.getText().toString();
         int userEnteredLimit = Integer.parseInt(limitText.getText().toString());
         String userEnteredLoc = locText.getText().toString();
+        String userEnteredCategory = category.getSelectedItem().toString().toUpperCase();
 
         // TODO: replace dummy data with actual Lat/Long data
         double userEnteredLat = 47.6097;
@@ -635,7 +636,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
-                userEnteredLoc, userEnteredLat, userEnteredLong, userEnteredLimit, userEnteredDate);
+                userEnteredLoc, userEnteredLat, userEnteredLong, userEnteredLimit, userEnteredDate,
+                userEnteredCategory);
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
