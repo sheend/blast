@@ -55,6 +55,7 @@ import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.EventAdapter;
+import cse403.blast.Support.RoundImage;
 
 
 /**
@@ -199,7 +200,8 @@ public class MainActivity extends AppCompatActivity
 
                         ImageView iv = (ImageView) findViewById(R.id.imageView);
                         try {
-                            iv.setImageBitmap(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
+                            RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
+                            iv.setImageDrawable(roundImage);
                             Log.i(TAG, " RAN");
                         } catch (IOException e) {
                             Log.i(TAG, "error: " + e.getMessage());
@@ -227,8 +229,10 @@ public class MainActivity extends AppCompatActivity
             preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
 
             ImageView iv = (ImageView) findViewById(R.id.imageView);
+
             try {
-                iv.setImageBitmap(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
+                RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
+                iv.setImageDrawable(roundImage);
                 Log.i(TAG, "RAN");
             } catch (IOException e) {
                 Log.i(TAG, "error: " + e.getMessage());
