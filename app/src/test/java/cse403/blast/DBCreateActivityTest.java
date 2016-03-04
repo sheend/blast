@@ -80,7 +80,7 @@ public class DBCreateActivityTest {
         //************* Add event to DB *************
         newEventRef.setValue(testEvent);
 
-        //***** Modify event from DB ******************
+        //***** Retrieve event from DB, modify, resend to DB ******************
         // Grab ID for recently added event
         String eventId = newEventRef.getKey();
         // Get the reference to the event node in Firebase
@@ -106,6 +106,21 @@ public class DBCreateActivityTest {
         eventsRef.setValue(eventToTest);
 
         //*********** test that each field matches expected value ************
+        // Get the reference to the event node in Firebase
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                try {
+                    eventToTest = snapshot.getValue(Event.class);
+                } catch (Exception e) {
+                    assertNotNull(eventToTest);
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+            }
+        });
         assertEquals(eventToTest.getTitle(), "testTitle");
         assertEquals(eventToTest.getOwner(), testUser);
         assertEquals(eventToTest.getDesc(), "new description");
