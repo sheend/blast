@@ -2,8 +2,6 @@ package cse403.blast;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,15 +17,12 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
@@ -45,7 +40,7 @@ import cse403.blast.Support.RoundImage;
 public class DetailActivity extends AppCompatActivity {
 
     private final String TAG = "DetailActivity";
-    private final int MAX_NUM_IMGS = 5;
+    private final int MAX_NUM_IMGS = 1;
     private Event event;
     private User currentUser;
     private String currentUserID;
@@ -165,56 +160,62 @@ public class DetailActivity extends AppCompatActivity {
         desc.setText(event.getDesc());
 
         // TODO: Display the list of attendees by their Facebook profile picture after
-        final TextView attendees = (TextView) findViewById(R.id.attendees_text);
+        //final TextView attendees = (TextView) findViewById(R.id.attendees_text);
         final LinearLayout attendeeImages = (LinearLayout) findViewById(R.id.attendees_images);
         final List<String> attendeeIDList = new ArrayList<>(event.getAttendees());
+        int imageCount = 0;
         for (String attendeeID : attendeeIDList) {
             Log.i(TAG, "attendee IDS:" + attendeeID);
             if (attendeeID != null && !attendeeID.equals("")) {
-                final Firebase attendeeRef = new Firebase(Constants.FIREBASE_URL).child("users").child(attendeeID);
-                attendeeRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    int imageCount = 0;
 
-                    /**
-                     *Queries the database for the names of the attendees based on the given user ID
-                     *
-                     * @param snapshot: Takes a snapshot of the current state of the database
-                     */
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        if (imageCount < MAX_NUM_IMGS) {
-                            User attendeeObj = snapshot.getValue(User.class);
-                            FacebookManager fbManager = FacebookManager.getInstance();
-                            ImageView iView = new ImageView(DetailActivity.this);
-                            try {
-                                RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(attendeeObj.getFacebookID()));
-                                iView.setImageDrawable(roundImage);
-                                attendeeImages.addView(iView);
-                            } catch (IOException e) {
-                                if (attendeeObj != null) {
+                if (imageCount < MAX_NUM_IMGS) {
+                    FacebookManager fbManager = FacebookManager.getInstance();
+                    ImageView iView = new ImageView(DetailActivity.this);
+                    try {
+                        RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(attendeeID));
+                        iView.setImageDrawable(roundImage);
+                        attendeeImages.addView(iView);
+                    } catch (IOException e) {
+                        final Firebase attendeeRef = new Firebase(Constants.FIREBASE_URL).child("users").child(attendeeID);
+                        attendeeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            /**
+                             *Queries the database for the names of the attendees based on the given user ID
+                             *
+                             * @param snapshot: Takes a snapshot of the current state of the database
+                             */
+                            @Override
+                            public void onDataChange(DataSnapshot snapshot) {
+                                User attendeeObj = snapshot.getValue(User.class);
+                                /*if (attendeeObj != null) {
                                     if (!attendees.getText().toString().isEmpty()) {
                                         attendees.append(", ");
                                     }
                                     String attName = attendeeObj.getName();
                                     attendees.append(attName.substring(0, attName.indexOf(" ")));
-                                }
+                                }*/
                             }
-                            imageCount++;
-                        } else {
-                            attendees.append("...and " + (attendeeIDList.size() - MAX_NUM_IMGS) + " others");
-                        }
+
+                            /**
+                             * Displays an informative message to the user
+                             *
+                             * @param firebaseError: error raised by Firebase
+                             */
+                            @Override
+                            public void onCancelled(FirebaseError firebaseError) {
+                                Toast.makeText(DetailActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "error: " + firebaseError.getMessage());
+                            }
+                        });
                     }
-                    /**
-                     * Displays an informative message to the user
-                     *
-                     * @param firebaseError: error raised by Firebase
-                     */
-                    @Override
-                    public void onCancelled(FirebaseError firebaseError) {
-                        Toast.makeText(DetailActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
-                        Log.d(TAG, "error: " + firebaseError.getMessage());
-                    }
-                });
+                    imageCount++;
+                } else {
+                    TextView otherAttendees = new TextView(DetailActivity.this);
+                    otherAttendees.setTextSize(20);
+                    otherAttendees.setTextColor(getResources().getColor(R.color.lightText));
+                    otherAttendees.append(" and " + (attendeeIDList.size() - MAX_NUM_IMGS - 1) + " others");
+                    attendeeImages.addView(otherAttendees);
+                    break;
+                }
             }
         }
 
@@ -236,7 +237,6 @@ public class DetailActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.i(TAG, "Map image didn't show didn't show");
         }
-
 
         // Set appropriate text and onclick's depending on user's status
         if (currentUser.getFacebookID().equals(event.getOwner())) { // user is owner, have option to edit

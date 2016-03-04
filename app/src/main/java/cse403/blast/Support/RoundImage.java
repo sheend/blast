@@ -33,7 +33,7 @@ public class RoundImage extends Drawable {
         mPaint.setShader(shader);
 
         mBitmapWidth = mBitmap.getWidth();
-        mBitmapHeight = mBitmap.getHeight();
+        mBitmapHeight = mBitmap.getWidth();
     }
 
     @Override

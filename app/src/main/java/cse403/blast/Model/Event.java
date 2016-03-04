@@ -1,7 +1,6 @@
 package cse403.blast.Model;
 
 import android.graphics.Color;
-import android.util.Log;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -10,7 +9,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import cse403.blast.Data.Constants;
 import cse403.blast.Support.DateDifference;
 
 /**
@@ -269,7 +267,13 @@ public class Event implements Serializable, Comparable<Event> {
         SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
         SimpleDateFormat day = new SimpleDateFormat("dd MMM");
 
-        return time.format(eventTime) + " on " + day.format(eventTime);
+        String myTime = time.format(eventTime);
+        if (myTime.startsWith("0")) myTime = myTime.substring(1);
+
+        String myDate = day.format(eventTime);
+        if (myDate.startsWith("0")) myDate = myDate.substring(1);
+
+        return myTime + " on " + myDate;
     }
 
     /**
