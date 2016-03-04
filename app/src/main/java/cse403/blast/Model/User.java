@@ -44,9 +44,6 @@ public class User implements Serializable {
         eventsAttending.add("");
     }
 
-
-
-
     /**
      * Determines whether two Users are equal, or are the same person.
      * @param o other user to compare to
@@ -72,11 +69,13 @@ public class User implements Serializable {
     /**
      * User creates event
      * @param e event to create
-     * @return  true if successfully added this to attendees, false otherwise (user is owner)
+     * @return  true if successfully added event to created, false otherwise
      */
     public boolean createEvent(Event e) {
-        boolean added = eventsCreated.add(e.getId());
-        return added;
+        if (eventsCreated.contains(e.getId())) {
+            return false;
+        }
+        return eventsCreated.add(e.getId());
     }
 
     /**
@@ -84,12 +83,11 @@ public class User implements Serializable {
      * @param e event user wants to cancel
      * @return  true if successfully removed (e was created by user), false otherwise (e was not created by user)
      */
-    // TODO: not sufficient to just remove an event from a user's list of created events...
-    // TODO: indicate to MainActivity to not display event anymore?
-    // TODO: indicate to attendees that event has been cancelled?
     public boolean cancelEvent(Event e) {
-        boolean cancelled = eventsCreated.remove(e.getId());
-        return cancelled;
+        if (!eventsCreated.contains(e.getId())) {
+            return false;
+        }
+        return eventsCreated.remove(e);
     }
 
     // Mutators
@@ -104,8 +102,7 @@ public class User implements Serializable {
             return false;
         }
         e.removeAttendee(this);
-        boolean removed = eventsAttending.remove(e.getId());
-        return removed;
+        return eventsAttending.remove(e.getId());
     }
 
     /**
@@ -114,12 +111,11 @@ public class User implements Serializable {
      * @return  true if successfully added this to attendees, false otherwise (user is owner)
      */
     public boolean attendEvent(Event e) {
-        if (eventsCreated.contains(e)) { // user created this event they're trying to attend
+        if (eventsCreated.contains(e.getId())) { // user created this event they're trying to attend
             return false;
         }
         e.addAttendee(this);
-        boolean added = eventsAttending.add(e.getId());
-        return added;
+        return eventsAttending.add(e.getId());
     }
 
     // Getters

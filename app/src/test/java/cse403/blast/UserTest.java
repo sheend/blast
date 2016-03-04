@@ -14,6 +14,21 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Created by graceqiu on 2/26/16.
+ *
+ * Tests the User class that holds information about users on this app.
+ * User behavior that needs to be tested include...
+ * (1) attending:
+ *      - users cannot attend their own event (they are automatically added
+ *      when they create the event)
+ *      - users cannot attend an event they are already attending
+ * (2) leaving:
+ *      - users cannot leave their own event
+ *      - users cannot leave an event they were not already attending
+ * (3) creating:
+ *      - user should be an attendee of created event
+ * (4) deleting events
+ *      - users cannot cancel an event they never created
+ *      - cancelled event that user created should disappear from user's created list
  */
 public class UserTest {
 
@@ -77,10 +92,20 @@ public class UserTest {
     /* Event create */
 
     @Test(timeout = TIMEOUT)
-    public void testEventCreate(){
+    public void testEventCreateNotAddEventToAttendingListOrAddOwnerAsAttendeeToEvent(){
         User testUser = new User(testID, testName);
-        Event e = new Event("event", "title", "desc", "loc", 1, new Date(1));
-        assertTrue(testUser.getEventsAttending().contains(e.getId()));
+        Event e = new Event(testID, "title", "desc", "l", 1, new Date(1));
+        testUser.createEvent(e);
+        //assertTrue(!testUser.getEventsAttending().contains(e.getId()));
+        assertTrue(!e.getAttendees().contains(testUser.getFacebookID()));
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void testEventCreatedAppearsInCreated(){
+        User testUser = new User(testID, testName);
+        Event e = new Event(testID, "title", "d", "loc", 1, new Date(1));
+        testUser.createEvent(e);
+        assertTrue(testUser.getEventsCreated().contains(e.getId()));
     }
 
     /* Event cancel */
@@ -94,12 +119,12 @@ public class UserTest {
         assertTrue(!testUser.getEventsCreated().contains(e));
     }
 
-//    @Test(timeout = TIMEOUT)
-//    public void testEventNotOwnedCannotCancel(){
-//        User testUser = new User(testID, testName);
-//        Event e = new Event("event", "title", "desc", "loc", 1, new Date(1));
-//        assertTrue(!testUser.cancelEvent(e));
-//    }
+    @Test(timeout = TIMEOUT)
+    public void testEventNotOwnedCannotCancel(){
+        User testUser = new User(testID, testName);
+        Event e = new Event("event", "title", "desc", "loc", 1, new Date(1));
+        assertTrue(!testUser.cancelEvent(e));
+    }
 
     @Test(timeout = TIMEOUT)
     public void testEventCancelledDisappearsFromCreated(){

@@ -18,6 +18,9 @@ import static org.junit.Assert.assertTrue;
 
 /**
 * Created by graceqiu on 2/26/16.
+ *
+ * Tests the Event class. Events should be comparable,
+ * can add/remove attendees, and have certain fields be modified.
 */
 public class EventTest {
 

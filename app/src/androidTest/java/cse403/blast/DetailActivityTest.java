@@ -21,7 +21,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.anything;
-// FOR GODDAMN DRAWER: import static android.support.test.espresso.contrib.DrawerActions.openDrawer;
+// TODO: import static android.support.test.espresso.contrib.DrawerActions.openDrawer;
 
 /**
  * Created by graceqiu on 2/17/16.
