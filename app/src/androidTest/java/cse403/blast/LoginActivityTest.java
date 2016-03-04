@@ -18,6 +18,6 @@ public class LoginActivityTest {
 
     @Test
     public void loginButtonIsDisplayed() {
-        
+
     }
 }
