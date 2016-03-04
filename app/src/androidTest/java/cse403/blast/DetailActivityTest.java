@@ -35,21 +35,21 @@ import static org.hamcrest.Matchers.anything;
 
 @RunWith(AndroidJUnit4.class)
 public class DetailActivityTest {
-    private User testUser = new User("testId", "testName");
+    private User testUser = new User("testId", "test name");
 
     @Rule
     public final ActivityTestRule<DetailActivity> rule = new ActivityTestRule<>(DetailActivity.class, true, false);
 
     @Test
     public void shouldLaunchDetailPage() {
-        Event e = new Event("launchTest", "launchTitle", "launchDesc", "launchLoc", 100, new Date(1));
+        Event e = new Event("launch test", "launchTitle", "launchDesc", "launchLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_layout)).check(matches(isDisplayed()));
     }
 
     @Test
     public void shouldDisplayCorrectInfo() {
-        Event e = new Event("displayTest", "displayTitle", "displayDesc", "displayLoc", 100, new Date(1));
+        Event e = new Event("display test", "displayTitle", "displayDesc", "displayLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_title)).check(matches(withText("displayTitle")));
         onView(withId(R.id.detail_desc)).check(matches(withText("displayDesc")));
@@ -59,7 +59,7 @@ public class DetailActivityTest {
 
     @Test
     public void shouldDisplayLeaveIfAttendee() {
-        Event e = new Event("attendeeTest", "attendeeTitle", "attendeeDesc", "attendeeLoc", 100, new Date(1));
+        Event e = new Event("attendee test", "attendeeTitle", "attendeeDesc", "attendeeLoc", 100, new Date(1));
         e.addAttendee(testUser);
         launchActivity(e);
         onView(withId(R.id.detail_button)).check(matches(withText(R.string.detail_leave)));
@@ -74,7 +74,7 @@ public class DetailActivityTest {
 
     @Test
     public void shouldDisplayJoinIfStranger() {
-        Event e = new Event("strangerTest", "strangerTitle", "strangerDesc", "strangerLoc", 100, new Date(1));
+        Event e = new Event("stranger test", "strangerTitle", "strangerDesc", "strangerLoc", 100, new Date(1));
         launchActivity(e);
         onView(withId(R.id.detail_button)).check(matches(withText(R.string.detail_join)));
     }

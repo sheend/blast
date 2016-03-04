@@ -114,32 +114,40 @@ public class DetailActivity extends AppCompatActivity {
         final TextView attendees = (TextView) findViewById(R.id.detail_attendees);
         List<String> attendeeIDList = new ArrayList<>(event.getAttendees());
 
-        for (String attendeeID : attendeeIDList) {
-            Log.i(TAG, "attendee IDS:" + attendeeID);
-            if (attendeeID != null && !attendeeID.equals("")) {
-                // Query Firebase for the names of the attendees based on given user ID
-                final Firebase attendeeRef = new Firebase(Constants.FIREBASE_URL).child("users").child(attendeeID);
-                attendeeRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        User attendeeObj = snapshot.getValue(User.class);
+        if (Constants.IS_TESTING) {
+            for (String attendeeID: attendeeIDList) {
+                if (!attendeeID.equals("")) {
+                    attendees.append(attendeeID);
+                    attendees.append(", ");
+                }
+            }
+        } else {
+            for (String attendeeID : attendeeIDList) {
+                Log.i(TAG, "attendee IDS:" + attendeeID);
+                if (attendeeID != null && !attendeeID.equals("")) {
+                    // Query Firebase for the names of the attendees based on given user ID
+                    final Firebase attendeeRef = new Firebase(Constants.FIREBASE_URL).child("users").child(attendeeID);
+                    attendeeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot snapshot) {
+                            User attendeeObj = snapshot.getValue(User.class);
 
-                        if (attendeeObj != null) {
-                            if (!attendees.getText().toString().isEmpty()) {
-                                attendees.append(", ");
+                            if (attendeeObj != null) {
+                                if (!attendees.getText().toString().isEmpty()) {
+                                    attendees.append(", ");
+                                }
+                                String attName = attendeeObj.getName();
+                                attendees.append(attName.substring(0, attName.indexOf(" ")));
                             }
-                            String attName = attendeeObj.getName();
-                            attendees.append(attName.substring(0, attName.indexOf(" ")));
                         }
-                    }
 
-                    @Override
-                    public void onCancelled(FirebaseError error) {
-                    }
-                });
+                        @Override
+                        public void onCancelled(FirebaseError error) {
+                        }
+                    });
+                }
             }
         }
-
 
         // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location);

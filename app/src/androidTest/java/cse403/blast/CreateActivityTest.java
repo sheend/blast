@@ -39,6 +39,7 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 public class CreateActivityTest {
     private User testUser = new User("testId", "testName");
+    private Event blankEvent = new Event();
 
     @Rule
     public final ActivityTestRule<CreateEventActivity> rule = new ActivityTestRule<>(CreateEventActivity.class);
@@ -50,7 +51,7 @@ public class CreateActivityTest {
 
     @Test
     public void disabledFieldsWhenEdit() {
-        launchActivity(false, null);
+        launchActivity(false, blankEvent);
         changeNonEditableField(R.id.create_title,
                 onView(withId(R.id.create_title)).toString());
         changeNonEditableField(R.id.create_location,
@@ -67,13 +68,13 @@ public class CreateActivityTest {
 
     @Test
     public void cancelButtonGoneIfNotEdit() {
-        launchActivity(false, null);
+        launchActivity(false, blankEvent);
         onView(withText(R.string.create_cancel_button)).check(doesNotExist());
     }
 
     @Test
     public void buttonDisplayIfNotEdit() {
-        launchActivity(false, null);
+        launchActivity(false, blankEvent);
         onView(withId(R.id.create_submit_button)).check(matches(withText(R.string.create_blast_button)));
     }
 
@@ -143,9 +144,7 @@ public class CreateActivityTest {
     private void launchActivity(boolean edit, Event e) {
         Intent createIntent = new Intent();
         createIntent.putExtra("edit", edit);
-        if (edit) {
-            createIntent.putExtra("event", e);
-        }
+        createIntent.putExtra("event", e);
         rule.launchActivity(createIntent);
     }
 

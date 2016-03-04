@@ -193,16 +193,18 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
-            // TODO: prepopulate fields
-
-            // Disable and enable certain parts
+            // Disable title and location
             titleText.setEnabled(false);
-            titleText.setText(event.getTitle());
-            descText.setText(event.getDesc());
-            dateText.setText(event.getEventTime().toString());
             locText.setEnabled(false);
-            locText.setText(event.getLocation());
-            limitText.setText("" + event.getLimit());
+            // Autopopulate title, desc, date, location, limit
+            if (!Constants.IS_TESTING) {
+                titleText.setText(event.getTitle());
+                descText.setText(event.getDesc());
+                dateText.setText(event.getEventTime().toString());
+                locText.setText(event.getLocation());
+                limitText.setText("" + event.getLimit());
+            }
+            // Set buttons
             cancelButton.setVisibility(View.VISIBLE);
             cancelButton.setText(getString(R.string.create_cancel_button));
             submitButton.setText(getString(R.string.create_save_button));
@@ -215,10 +217,7 @@ public class CreateEventActivity extends AppCompatActivity {
             submitButton.setText(getString(R.string.create_blast_button));
         }
         Log.i(TAG, "Done creating page");
-
-
     }
-
 
     public Location getUserLocation() {
         LocationManager lm = (LocationManager) (getSystemService(Context.LOCATION_SERVICE));
