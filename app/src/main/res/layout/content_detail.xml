@@ -134,8 +134,15 @@
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/lightText"
                     />
+                <LinearLayout
+                    android:id="@+id/attendees_images"
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:layout_toRightOf="@+id/four"
+                    android:orientation="horizontal">
+                </LinearLayout>
                 <TextView
-                    android:id="@+id/detail_attendees"
+                    android:id="@+id/attendees_text"
                     android:layout_width="match_parent"
                     android:layout_height="72dp"
                     android:textSize="20sp"
