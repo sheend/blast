@@ -2,8 +2,6 @@ package cse403.blast;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,15 +17,12 @@ import android.widget.Toast;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
@@ -242,7 +237,6 @@ public class DetailActivity extends AppCompatActivity {
         } catch (IOException e) {
             Log.i(TAG, "Map image didn't show didn't show");
         }
-
 
         // Set appropriate text and onclick's depending on user's status
         if (currentUser.getFacebookID().equals(event.getOwner())) { // user is owner, have option to edit
