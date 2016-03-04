@@ -67,7 +67,7 @@ Once a ticket has been completed, any team member can close the issue </br>
 Tests are located in `app/src/androidTest/java/cse403/blast`
 To run a unit test in Android Studio:
 - Click on Build Variants on the bottom left corner
-- Select `Unit Tests` as a Test Artifact
+- Select `Android Instrumentation Tests` or `Unit Tests` as the Test Artifact: we have both kinds of tests
 - Navigate to a test file i.e. `ExampleUnitTest.java`
 - Right click on the class name and click 'Run ExampleUnitTest'
 
