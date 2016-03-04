@@ -239,7 +239,6 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-
     public void setupListEvents(List<Event> events) {
         mainListView = (ListView) findViewById(R.id.main_blast_list_view);
 
