@@ -45,12 +45,13 @@ public class EventAdapter extends ArrayAdapter<Event> {
         time.setText(event.retrieveTimeDifference());
         // Return the completed view to render on screen
 
-        //ImageView eventImage = (ImageView) convertView.findViewById(R.id.event_category_image);
+        ImageView eventImage = (ImageView) convertView.findViewById(R.id.event_category_image);
         //TODO: For adding background images
-        //int id = getContext().getResources().getIdentifier("cse403.blast:drawable/" + "ic_menu_share", null, null);
+        //int id = getContext().getResources().getIdentifier("cse403.blast:drawable/" + "social.png", null, null);
         //eventImage.setImageResource(id);
+        eventImage.setImageResource(R.drawable.other);
 
-        //eventImage.setBackgroundColor(event.getCategoryColor());
+        //eventImage.setBackground(R.drawable.social);
 
         return convertView;
     }
