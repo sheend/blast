@@ -602,7 +602,9 @@ public class CreateEventActivity extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             EditText tackTime = (EditText) findViewById(R.id.create_time);
-            tackTime.setText("" + hourOfDay + ":" + minute);
+            String minPrefix = "";
+            if (minute < 10) minPrefix = "0";
+            tackTime.setText("" + hourOfDay + ":" + minPrefix + minute);
             userHour = hourOfDay;
             userMin = minute;
         }
