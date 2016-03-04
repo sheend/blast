@@ -4,14 +4,11 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
-
-import org.junit.After;
 import org.junit.Test;
 import java.util.Date;
 import cse403.blast.Data.Constants;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -19,7 +16,8 @@ import static org.junit.Assert.assertNull;
 /**
  * Created by graceqiu on 3/3/16.
  *
- * Tests that the database works for the interactions done in CreateEventActivity.
+ * Tests that the database works for the interactions done in CreateEventActivity,
+ * which are creating, deleting, and modifying events.
  * By testing the UI of CreateEventActivity and the database actions that are tied
  * to the UI, we ensure that CreateEventActivity behaves as correctly despite not
  * testing UI in the same tests for database.
@@ -29,18 +27,11 @@ public class DBCreateActivityTest {
     private Event eventToTest = new Event();
     private Firebase ref = new Firebase(Constants.FIREBASE_URL); // reference to root node
 
-    @After
-    public void cleanUpDB() {
-        Firebase eventRef = ref.child("events").child(eventToTest.getId());
-        eventRef.removeValue();
-    }
-
     @Test(timeout = TIMEOUT)
     public void testCreateEvent(){
         //************* Setup *************
         User testUser = new User("createTestId", "create name");
         Event testEvent = new Event(testUser.getFacebookID(), "testTitle", "testDesc", "testLoc", 100, new Date(0));
-        testUser.createEvent(testEvent);
         // Generate unique ID for event, creates reference to events node in JSON, then appends event
         Firebase eventRef = ref.child("events"); // will always add to the db
         Firebase newEventRef = eventRef.push(); // will always generate the unique id
@@ -73,6 +64,8 @@ public class DBCreateActivityTest {
         assertEquals(eventToTest.getLocation(), "testLoc");
         assertEquals(eventToTest.getLimit(), 100);
         assertEquals(eventToTest.getEventTime(), new Date(0));
+
+        cleanUpDB();
     }
 
     @Test(timeout = TIMEOUT)
@@ -80,7 +73,6 @@ public class DBCreateActivityTest {
         //************* Setup *************
         User testUser = new User("createTestId", "create name");
         Event testEvent = new Event(testUser.getFacebookID(), "testTitle", "testDesc", "testLoc", 100, new Date(0));
-        testUser.createEvent(testEvent);
         // Generate unique ID for event, creates reference to events node in JSON, then appends event
         Firebase eventRef = ref.child("events"); // will always add to the db
         Firebase newEventRef = eventRef.push(); // will always generate the unique id
@@ -120,6 +112,8 @@ public class DBCreateActivityTest {
         assertEquals(eventToTest.getLocation(), "testLoc");
         assertEquals(eventToTest.getLimit(), 10);
         assertEquals(eventToTest.getEventTime(), new Date(500));
+
+        cleanUpDB();
     }
 
     @Test(timeout = TIMEOUT)
@@ -127,7 +121,6 @@ public class DBCreateActivityTest {
         //************* Setup *************
         User testUser = new User("createTestId", "create name");
         Event testEvent = new Event(testUser.getFacebookID(), "testTitle", "testDesc", "testLoc", 100, new Date(0));
-        testUser.createEvent(testEvent);
         // Generate unique ID for event, creates reference to events node in JSON, then appends event
         Firebase eventRef = ref.child("events"); // will always add to the db
         Firebase newEventRef = eventRef.push(); // will always generate the unique id
@@ -157,5 +150,13 @@ public class DBCreateActivityTest {
             public void onCancelled(FirebaseError firebaseError) {
             }
         });
+    }
+
+    /**
+     * Cleans up the database after tests that create event
+     */
+    private void cleanUpDB() {
+        Firebase eventRef = ref.child("events").child(eventToTest.getId());
+        eventRef.removeValue();
     }
 }
