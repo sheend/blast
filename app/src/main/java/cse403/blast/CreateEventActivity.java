@@ -102,7 +102,7 @@ public class CreateEventActivity extends AppCompatActivity {
         category = (Spinner) findViewById(R.id.category);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.categories_array, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.category_dropdown_item);
         category.setAdapter(adapter);
 
         submitButton = (Button) findViewById(R.id.create_submit_button);
