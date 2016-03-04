@@ -98,7 +98,12 @@ public class CreateEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         createEventIntent = getIntent();
-        setTitle("New Event");
+        if (createEventIntent.getBooleanExtra("edit", false)) {
+            setTitle("Edit Event");
+        } else {
+            setTitle("New Event");
+        }
+
 
         category = (Spinner) findViewById(R.id.create_category);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,

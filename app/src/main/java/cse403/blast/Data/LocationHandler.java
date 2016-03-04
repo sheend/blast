@@ -27,7 +27,7 @@ import org.json.JSONObject;
  * Created by aixin on 2/26/16.
  */
 public class LocationHandler {
-    private final String API_KEY = "AIzaSyCfGcSst1xqsfr7P_mxPEvcIZylw7ZhX9Y";
+    private final String BROW_API_KEY = "AIzaSyD-zh_HtNygBs0ggcSwNYfk6ztkhdUmAAY";
     private final String QUERY_ORIG_CALL = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?";
     private final String PLACE_ID_ORIG_CALL = "https://maps.googleapis.com/maps/api/place/details/json?";
     private final String GEO_CODING_ORIG_CALL = "https://maps.googleapis.com/maps/api/geocode/json?";
@@ -43,7 +43,7 @@ public class LocationHandler {
 
             String city = URLEncoder.encode(getUserCity(loc), "UTF-8");
             input = URLEncoder.encode(input, "UTF-8");
-            String req = QUERY_ORIG_CALL + "key=" + API_KEY + "&input=" + input +"+near%20" + city;
+            String req = QUERY_ORIG_CALL + "key=" + BROW_API_KEY + "&input=" + input +"+near%20" + city;
 
             JSONObject json = getJSONFromReq(req);
             JSONArray results = json.getJSONArray("predictions");
@@ -99,7 +99,7 @@ public class LocationHandler {
 
     private String getUserCity(Location loc) throws IOException, JSONException {
         String req = GEO_CODING_ORIG_CALL + "latlng=" + loc.getLatitude() + "," + loc.getLongitude()
-                + "&key=" + API_KEY;
+                + "&key=" + BROW_API_KEY;
         JSONObject detail = getJSONFromReq(req);
         return getUserCityHelper(detail);
     }
@@ -117,7 +117,7 @@ public class LocationHandler {
     }
 
     private Location getLocation(String place_id) throws IOException, JSONException {
-        String req = PLACE_ID_ORIG_CALL + "key=" + API_KEY + "&placeid=" + place_id;
+        String req = PLACE_ID_ORIG_CALL + "key=" + BROW_API_KEY + "&placeid=" + place_id;
         JSONObject detail = getJSONFromReq(req);
         return getLocationHelper(detail);
     }
