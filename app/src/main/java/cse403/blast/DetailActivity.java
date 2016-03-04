@@ -66,7 +66,7 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        //toolbar.getBackground().setAlpha(0); //making the toolbar transparent
+        toolbar.getBackground().setAlpha(0); //making the toolbar transparent
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle("");
@@ -113,6 +113,22 @@ public class DetailActivity extends AppCompatActivity {
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText(event.getTitle());
         //setTitle(event.getTitle());
+
+        ImageView eventImage = (ImageView) findViewById(R.id.detail_category_image);
+
+        //TODO: remove duplication
+        String selected = event.getCategory().toUpperCase();
+        if (selected.equals("Social".toUpperCase())) {
+            eventImage.setImageResource(R.drawable.social);
+        } else if (selected.equals("Active".toUpperCase())) {
+            eventImage.setImageResource(R.drawable.active);
+        } else if (selected.equals("Food".toUpperCase())) {
+            eventImage.setImageResource(R.drawable.food);
+        } else if (selected.equals("Entertainment".toUpperCase())) {
+            eventImage.setImageResource(R.drawable.entertainment);
+        } else {
+            eventImage.setImageResource(R.drawable.other);
+        }
 
 
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
