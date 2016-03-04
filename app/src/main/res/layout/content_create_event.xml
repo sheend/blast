@@ -16,7 +16,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/blastAccent"
         android:id="@+id/create_image"
         android:layout_marginTop="@dimen/abc_action_bar_default_height_material"/>
 
@@ -33,7 +33,10 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@android:drawable/btn_dropdown"
-            android:spinnerMode="dropdown"/>
+            android:spinnerMode="dropdown"
+            android:backgroundTint="@color/colorPrimary"
+            android:popupBackground="@color/colorPrimary"
+            android:textColor="@color/lightText"/>
         <EditText
             android:layout_width="match_parent"
             android:layout_height="72dp"
