@@ -53,8 +53,10 @@ public class DetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //toolbar.getBackground().setAlpha(0); //making the toolbar transparent
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setTitle("");
         preferenceSettings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
 
         /* TUTORIAL:
@@ -97,6 +99,7 @@ public class DetailActivity extends AppCompatActivity {
         event = (Event) detailIntent.getSerializableExtra("event");
         TextView title = (TextView) findViewById(R.id.detail_title);
         title.setText(event.getTitle());
+        //setTitle(event.getTitle());
 
 
         Firebase ref = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());

@@ -97,6 +97,7 @@ public class CreateEventActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         createEventIntent = getIntent();
+        setTitle("New Event");
 
         category = (Spinner) findViewById(R.id.category);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
@@ -251,10 +252,10 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        // double lng = -122.3331;
-        // double lat = 47.6097;
-        double lng = location.getLongitude();
-        double lat = location.getLatitude();
+        double lng = -122.3331;
+        double lat = 47.6097;
+        //double lng = location.getLongitude();
+        //double lat = location.getLatitude();
 
         Location userLoc = new Location("userLocation");
         userLoc.setLatitude(lat);
