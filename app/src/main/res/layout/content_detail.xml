@@ -1,76 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="cse403.blast.DetailActivity"
-    tools:showIn="@layout/activity_detail"
     android:id="@+id/detail_layout"
     android:weightSum="1">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/first">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+            android:id="@+id/detail_category_image"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/detail_title"
+            android:layout_alignBottom="@+id/detail_category_image"
+            android:layout_alignParentStart="true"
+            android:textSize="30sp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@color/lightText"
+            android:layout_margin="20dp" />
+
+    </RelativeLayout>
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/second"
+        android:layout_below="@+id/first">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:id="@+id/detail_info">
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="72dp"
                     android:text="@string/detail_time"
+                    android:id="@+id/one"
                     android:layout_marginBottom="8dp"
                     android:textSize="20sp"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/lightText"
                     />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="72dp"
-                    android:text="@string/detail_what"
-                    android:layout_marginBottom="8dp"
-                    android:textSize="20sp"
-                    android:fontFamily="sans-serif-light"
-                    android:textColor="@color/lightText"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="72dp"
-                    android:text="@string/detail_where"
-                    android:layout_marginBottom="8dp"
-                    android:textSize="20sp"
-                    android:fontFamily="sans-serif-light"
-                    android:textColor="@color/lightText"
-                    />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="72dp"
-                    android:text="@string/detail_who"
-                    android:layout_marginBottom="8dp"
-                    android:textSize="20sp"
-                    android:fontFamily="sans-serif-light"
-                    android:textColor="@color/lightText"
-                    />
-            </LinearLayout>
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="56dp"
-                android:layout_gravity="right"
-                android:textColor="@color/lightText"
-                >
-
                 <TextView
                     android:id="@+id/detail_time"
                     android:layout_width="match_parent"
@@ -79,8 +63,24 @@
                     android:textSize="20sp"
                     android:fontFamily="sans-serif-light"
                     android:textColor="@color/lightText"
+                    android:layout_toRightOf="@+id/one"
                     />
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="72dp"
+                    android:text="@string/detail_what"
+                    android:id="@+id/two"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/lightText"
+                    />
                 <TextView
                     android:id="@+id/detail_desc"
                     android:layout_width="match_parent"
@@ -89,8 +89,24 @@
                     android:fontFamily="sans-serif-light"
                     android:textSize="20sp"
                     android:textColor="@color/lightText"
+                    android:layout_toRightOf="@+id/two"
                     />
 
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="100dp"
+                    android:layout_height="72dp"
+                    android:text="@string/detail_where"
+                    android:id="@+id/three"
+                    android:layout_marginBottom="8dp"
+                    android:textSize="20sp"
+                    android:fontFamily="sans-serif-light"
+                    android:textColor="@color/lightText"
+                    />
                 <TextView
                     android:id="@+id/detail_location"
                     android:layout_width="match_parent"
@@ -99,45 +115,80 @@
                     android:fontFamily="sans-serif-light"
                     android:textSize="20sp"
                     android:textColor="@color/lightText"
+                    android:layout_toRightOf="@+id/three"
                     />
+            </RelativeLayout>
 
-                <!--
-                <ImageView
-                    android:id="@+id/detail_location"
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_marginBottom="8dp"
-                    />
-                    -->
-
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
                 <TextView
-                    android:id="@+id/detail_attendees"
-                    android:layout_width="match_parent"
+                    android:layout_width="100dp"
                     android:layout_height="72dp"
+                    android:text="@string/detail_who"
+                    android:id="@+id/four"
+                    android:layout_marginBottom="8dp"
                     android:textSize="20sp"
-                    android:textColor="@color/lightText"
                     android:fontFamily="sans-serif-light"
+                    android:textColor="@color/lightText"
                     />
-            </LinearLayout>
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@+id/four"
+                    android:scrollbarStyle="insideOverlay"
+                    android:scrollbars="none">
+                    <LinearLayout
+                        android:id="@+id/attendees_images"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:orientation="horizontal">
+                        <!--android:layout_toRightOf="@+id/four"-->
+                    </LinearLayout>
+                    <!--<TextView
+                        android:id="@+id/attendees_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="72dp"
+                        android:textSize="20sp"
+                        android:textColor="@color/lightText"
+                        android:fontFamily="sans-serif-light"
+                        android:layout_toRightOf="@+id/attendees_images"
+                    />-->
+                </HorizontalScrollView>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/detail_location_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <WebView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/map_webview">
+
+            </WebView>
+
+            <Button
+                android:layout_margin="16dp"
+                android:layout_below="@+id/detail_info"
+                android:id="@+id/detail_button"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:gravity="center"
+                android:textSize="30sp"
+                android:textColor="@color/lightText"
+                android:fontFamily="sans-serif-light"
+                android:layout_gravity="center_horizontal"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/blastAccent" />
+
         </LinearLayout>
 
-        <Button
-            android:layout_margin="16dp"
-            android:layout_below="@+id/detail_info"
-            android:id="@+id/detail_button"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:gravity="center"
-            android:textSize="30sp"
-            android:textColor="@color/lightText"
-            android:fontFamily="sans-serif-light"
-            android:layout_gravity="center_horizontal"
-            android:textAllCaps="false"
-            android:backgroundTint="@color/blastAccent" />
+    </ScrollView>
 
 
     <!-- Tutorial -->
-
     <RelativeLayout
         android:id="@+id/tutorial_detail"
         android:background="#c1000000"
@@ -152,4 +203,3 @@
     </RelativeLayout>
 
 </RelativeLayout>
-

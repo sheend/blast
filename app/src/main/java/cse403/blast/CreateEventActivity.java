@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -15,21 +14,25 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.InputFilter;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.sym.NameN;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -37,6 +40,7 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -49,6 +53,7 @@ import cse403.blast.Data.LocationHandler;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.DatePickerFragment;
+import cse403.blast.Support.MinMaxInputFilter;
 import cse403.blast.Support.TimePickerFragment;
 
 
@@ -59,6 +64,11 @@ import cse403.blast.Support.TimePickerFragment;
  * user's "Blasts You Created" section of the main page's drawer.
  */
 public class CreateEventActivity extends AppCompatActivity {
+
+    private String formattedAddress = "";
+    private Location coordinates = null;
+
+    private Spinner category;
     private Button submitButton;
     private Button cancelButton;
     private EditText titleText;
@@ -81,14 +91,34 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private final String TAG = "CreateEventActivity";
 
+    /**
+     * Displays the user input fields required to create an event. This includes
+     * title, category, description, date/time, location, limit, and the button.
+     * A tutorial is displayed if the current user is a new user.
+     * @param savedInstanceState: saved stated of this Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_event);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.getBackground().setAlpha(0);
 
         createEventIntent = getIntent();
+        if (createEventIntent.getBooleanExtra("edit", false)) {
+            setTitle("Edit Event");
+        } else {
+            setTitle("New Event");
+        }
+
+
+        category = (Spinner) findViewById(R.id.create_category);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.categories_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(R.layout.category_dropdown_item);
+        category.setAdapter(adapter);
+        addCategoryListener();
 
         submitButton = (Button) findViewById(R.id.create_submit_button);
         cancelButton = (Button) findViewById(R.id.create_cancel_button);
@@ -109,7 +139,9 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
-        /* TUTORIAL */
+        /* TUTORIAL:
+         * displays the tutorial once if the current user is a new user
+         */
         View tutorialCreate = findViewById(R.id.tutorial_create);
         if (preferenceSettings.getBoolean("initialCreateLaunch", true)) {
             tutorialCreate.setVisibility(View.VISIBLE);
@@ -193,13 +225,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
-            // TODO: prepopulate fields
+            Log.i("EVENT TIME", "" + event.getEventTime().getTime());
 
             // Disable and enable certain parts
             titleText.setEnabled(false);
             titleText.setText(event.getTitle());
             descText.setText(event.getDesc());
-            dateText.setText(event.getEventTime().toString());
+            dateText.setText(event.retrieveEventDateString());
+            timeText.setText(event.retrieveEventTimeString());
             locText.setEnabled(false);
             locText.setText(event.getLocation());
             limitText.setText("" + event.getLimit());
@@ -219,7 +252,10 @@ public class CreateEventActivity extends AppCompatActivity {
 
     }
 
-
+    /**
+     * Gets the latitude and longitude of the current user
+     * @return the Location of the current user
+     */
     public Location getUserLocation() {
         LocationManager lm = (LocationManager) (getSystemService(Context.LOCATION_SERVICE));
 
@@ -232,8 +268,10 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double lng = -122.3331;//location.getLongitude();
-        double lat = 47.6097;//location.getLatitude();
+        double lng = -122.3331;
+        double lat = 47.6097;
+        //double lng = location.getLongitude();
+        //double lat = location.getLatitude();
 
         Location userLoc = new Location("userLocation");
         userLoc.setLatitude(lat);
@@ -241,17 +279,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
         return userLoc;
     }
-
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-        FacebookManager fbManager = FacebookManager.getInstance();
-        if (fbManager.isValidSession()) {
-            fbManager.saveSession(getApplicationContext());
-        } else {
-            fbManager.clearSession(getApplicationContext());
-        }
-    }*/
 
     // VALIDATION METHODS
 
@@ -264,6 +291,8 @@ public class CreateEventActivity extends AppCompatActivity {
         addTimeFocusListener();
         addLocationFocusListener();
         addLimitFocusListener();
+        // restrict limit to be between 1 and 9999
+        limitText.setFilters(new InputFilter[]{new MinMaxInputFilter(1, 9999)});
     }
 
     /**
@@ -276,8 +305,13 @@ public class CreateEventActivity extends AppCompatActivity {
         int id = v.getId();
         switch (id) {
             case R.id.create_submit_button :   // checks that user has filled in all fields
-                return (!isEmpty(titleText) && !isEmpty(descText) && !isEmpty(dateText) &&
-                        !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText));
+                if (!isEmpty(titleText) && !isEmpty(descText) && !isEmpty(dateText) &&
+                        !isEmpty(timeText) && !isEmpty(locText) && !isEmpty(limitText)) {
+                    return true;
+                } else {
+                    notifyUser("A field is empty");
+                    return false;
+                }
             case R.id.create_title :
                 if (isEmpty(titleText)) {
                     notifyUser("Title is empty");
@@ -334,6 +368,16 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
+    //Used to hide keyboard on touch elsewhere
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.
+                INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        return true;
+    }
+
+
     /**
      * Checks if the user field has been filled in
      *
@@ -357,7 +401,9 @@ public class CreateEventActivity extends AppCompatActivity {
         Toast.makeText(CreateEventActivity.this, message, Toast.LENGTH_SHORT).show();
     }
 
-    // adds click listener to submitButton to trigger verification and add event to database
+    /**
+     *  adds click listener to submitButton to trigger verification and add event to database
+     */
     private void addSubmitButtonClickListener() {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -367,13 +413,16 @@ public class CreateEventActivity extends AppCompatActivity {
                 if (verify(v)) {
                     Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
                     startActivity(mainActivityIntent);
+                    // calls the method that will add the event to the database
                     addEvent();
                 }
             }
         });
     }
 
-    // adds focus change listener to titleText to trigger verification
+    /**
+     * adds focus change listener to titleText to trigger verification
+     */
     private void addTitleFocusListener() {
         titleText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -385,7 +434,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to descText to trigger verification
+    /**
+     * adds focus change listener to descText to trigger verification
+     */
     private void addDescriptionFocusListener() {
         descText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -397,7 +448,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to dateText to trigger verification
+    /**
+     * adds focus change listener to dateText to trigger verification
+     */
     private void addDateFocusListener() {
         dateText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -409,7 +462,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to timeText to trigger verification
+    /**
+     * adds focus change listener to timeText to trigger verification
+     */
     private void addTimeFocusListener() {
         timeText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -421,7 +476,9 @@ public class CreateEventActivity extends AppCompatActivity {
         });
     }
 
-    // adds focus change listener to locText to trigger verification
+    /**
+     * adds focus change listener to locText to trigger verification
+     */
     private void addLocationFocusListener() {
         locText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -435,34 +492,50 @@ public class CreateEventActivity extends AppCompatActivity {
                     Location userLocation = getUserLocation();
 
                     LocationHandler instance = new LocationHandler();
-                    Map<String, Location> map = instance.getMatchingLoc(locText.getText().toString(), userLocation);
+                    final Map<LocationHandler.LocationResult, Location> map = instance.getMatchingLoc(locText.getText().toString(), userLocation);
 
-                    final List<String> locationList = new ArrayList<String>(map.keySet());
+                    List<LocationHandler.LocationResult> resultList =
+                            new ArrayList<LocationHandler.LocationResult>(map.keySet());
+
+//                    final List<String> locationList = new ArrayList<String>();
+//                    for (LocationHandler.LocationResult r : resultList) {
+//                        locationList.add(r.description);
+//                        Log.i(TAG, "formatted address: " + r.formattedAddress);
+//                    }
 
                     final ListView listView = (ListView) findViewById(R.id.location_list);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateEventActivity.this,
-                            android.R.layout.simple_list_item_1, locationList);
+                    ArrayAdapter<LocationHandler.LocationResult> adapter =
+                            new ArrayAdapter<LocationHandler.LocationResult>(CreateEventActivity.this,
+                            android.R.layout.simple_list_item_1, resultList);
                     listView.setAdapter(adapter);
 
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                            String locationAtPos = (String) parent.getItemAtPosition(position);
-                            locText.setText(locationAtPos);
+                            LocationHandler.LocationResult locationAtPos = (LocationHandler.LocationResult) parent.getItemAtPosition(position);
+                            locText.setText(locationAtPos.description);
+                            formattedAddress = locationAtPos.formattedAddress;
+                            coordinates = map.get(locationAtPos);
 
-                            locationList.clear();
+                            Log.i(TAG, "got em: " + formattedAddress + " coordinate : " + coordinates);
+
+                            //locationList.clear();
                             //listView.setVisibility(View.GONE);
-                            ((ViewManager)listView.getParent()).removeView(listView);
+                            ((ViewManager) listView.getParent()).removeView(listView);
                         }
                     });
+
+
 
                 }
             }
         });
     }
 
-    // adds focus change listener to limitText to trigger verification
+    /**
+     * adds focus change listener to limitText to trigger verification
+     */
     private void addLimitFocusListener() {
         limitText.setOnFocusChangeListener(new OnFocusChangeListener() {
 
@@ -475,6 +548,35 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     // DIALOG METHODS
+
+    /**
+     * Adds an on-change listener to the category dropdown
+     */
+    private void addCategoryListener() {
+        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                ImageView image = (ImageView) findViewById(R.id.create_image);
+                String selected = category.getSelectedItem().toString();
+                if (selected.equals("Social")) {
+                    image.setImageResource(R.drawable.social);
+                } else if (selected.equals("Active")) {
+                    image.setImageResource(R.drawable.active);
+                } else if (selected.equals("Food")) {
+                    image.setImageResource(R.drawable.food);
+                } else if (selected.equals("Entertainment")) {
+                    image.setImageResource(R.drawable.entertainment);
+                } else {
+                    image.setImageResource(R.drawable.other);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // there will never be nothing selected
+            }
+        });
+    }
 
     /**
      * Displays the date picker
@@ -496,7 +598,19 @@ public class CreateEventActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             EditText tackDate = (EditText) findViewById(R.id.create_date);
-            tackDate.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
+
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.MONTH, monthOfYear);
+            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            cal.set(Calendar.YEAR, year);
+
+            Date dateRepresentation = cal.getTime();
+
+            String dayOfWeek = dateFormat.format(dateRepresentation);
+            String month = monthFormat.format(dateRepresentation);
+            tackDate.setText(dayOfWeek + ", " + month + " " + dayOfMonth);
             Log.i("Tag", "set");
             // make the time picker display after choosing a date
             getTimePickerDialog().show(getSupportFragmentManager(), "timePicker");
@@ -527,7 +641,15 @@ public class CreateEventActivity extends AppCompatActivity {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
             EditText tackTime = (EditText) findViewById(R.id.create_time);
-            tackTime.setText("" + hourOfDay + ":" + minute);
+            String minPrefix = "";
+            String timeOfDay = "";
+            if (minute < 10) minPrefix = "0";
+            if (hourOfDay >= 12) {
+                timeOfDay = " PM";
+            } else {
+                timeOfDay = " AM";
+            }
+            tackTime.setText("" + (hourOfDay % 12) + ":" + minPrefix + minute + timeOfDay);
             userHour = hourOfDay;
             userMin = minute;
         }
@@ -565,6 +687,14 @@ public class CreateEventActivity extends AppCompatActivity {
         String userEnteredDesc = descText.getText().toString();
         int userEnteredLimit = Integer.parseInt(limitText.getText().toString());
         String userEnteredLoc = locText.getText().toString();
+        String userEnteredCategory = category.getSelectedItem().toString().toUpperCase();
+
+        double userEnteredLat = Double.NaN;
+        double userEnteredLong = Double.NaN;
+        if (coordinates != null) {
+            userEnteredLat = coordinates.getLatitude();
+            userEnteredLong = coordinates.getLongitude();
+        }
 
         // Get user-entered date
         Calendar calendar = Calendar.getInstance();
@@ -587,7 +717,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
-                userEnteredLoc, userEnteredLimit, userEnteredDate);
+                userEnteredLoc, formattedAddress, userEnteredLat, userEnteredLong, userEnteredLimit,
+                userEnteredDate, userEnteredCategory);
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
@@ -635,6 +766,9 @@ public class CreateEventActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Gives the owner of the event the option to delete it
+     */
     public void deleteEvent() {
         final Event event = (Event) createEventIntent.getSerializableExtra("event");
 
@@ -646,6 +780,12 @@ public class CreateEventActivity extends AppCompatActivity {
             if (!attendee.equals(event.getOwner())) {
                 final Firebase ref = new Firebase(Constants.FIREBASE_URL).child("users").child(attendee).child("eventsAttending");
                 ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    /**
+                     * For each user attending the event, it queries firebase to find the user's "eventAttending"
+                     * list, and removes the event from the list.
+                     *
+                     * @param snapshot: Takes a snapshot of the current state of the database
+                     */
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
                         GenericTypeIndicator<Set<String>> t = new GenericTypeIndicator<Set<String>>() {};
@@ -656,9 +796,15 @@ public class CreateEventActivity extends AppCompatActivity {
                         }
                     }
 
+                    /**
+                     * Displays an informative message to the user
+                     *
+                     * @param error: error raised by Firebase
+                     */
                     @Override
                     public void onCancelled(FirebaseError error) {
-
+                        Toast.makeText(CreateEventActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                        Log.d(TAG, "error: " + error.getMessage());
                     }
                 });
             }
@@ -668,6 +814,11 @@ public class CreateEventActivity extends AppCompatActivity {
         String owner = event.getOwner();
         final Firebase ownerRef = new Firebase(Constants.FIREBASE_URL).child("users").child(owner).child("eventsCreated");
         ownerRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            /**
+             * Queries firebase to find the the owner's "eventsCreated" list, and removes
+             * the event from the list.
+             * @param snapshot: Takes a snapshot of the current state of the database
+             */
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 GenericTypeIndicator<Set<String>> t = new GenericTypeIndicator<Set<String>>() {};
@@ -676,9 +827,15 @@ public class CreateEventActivity extends AppCompatActivity {
                 ownerRef.setValue(eventsCreated);
             }
 
+            /**
+             * Displays an informative message to the user
+             *
+             * @param firebaseError: error raised by Firebase
+             */
             @Override
-            public void onCancelled(FirebaseError error) {
-
+            public void onCancelled(FirebaseError firebaseError) {
+                Toast.makeText(CreateEventActivity.this, "Unable to connect.", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
 

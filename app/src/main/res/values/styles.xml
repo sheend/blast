@@ -11,7 +11,7 @@
         <item name="colorControlHighlight">@color/blastAccent</item>
         <item name="android:windowBackground">@color/windowBackground</item>
         <item name="android:textColorPrimary">@color/lightText</item>
-        <item name="android:fontFamily">sans-serif-light</item>
+        <!--<item name="android:fontFamily">sans-serif-light</item>-->
     </style>
 
     <style name="AppTheme.NoActionBar">

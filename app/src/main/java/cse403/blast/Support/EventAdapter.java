@@ -2,6 +2,7 @@ package cse403.blast.Support;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +46,24 @@ public class EventAdapter extends ArrayAdapter<Event> {
         time.setText(event.retrieveTimeDifference());
         // Return the completed view to render on screen
 
-        //ImageView eventImage = (ImageView) convertView.findViewById(R.id.event_category_image);
-        //TODO: For adding background images
-        //int id = getContext().getResources().getIdentifier("cse403.blast:drawable/" + "ic_menu_share", null, null);
+        ImageView eventImage = (ImageView) convertView.findViewById(R.id.event_category_image);
+        //TODO: remove duplication
+        //int id = getContext().getResources().getIdentifier("cse403.blast:drawable/" + "social.png", null, null);
         //eventImage.setImageResource(id);
+        String selected = event.getCategory().toUpperCase();
+        if (selected.equals("Social".toUpperCase())) {
+            eventImage.setImageResource(R.drawable.social);
+        } else if (selected.equals("Active".toUpperCase())) {
+            eventImage.setImageResource(R.drawable.active);
+        } else if (selected.equals("Food".toUpperCase())) {
+            eventImage.setImageResource(R.drawable.food);
+        } else if (selected.equals("Entertainment".toUpperCase())) {
+            eventImage.setImageResource(R.drawable.entertainment);
+        } else {
+            eventImage.setImageResource(R.drawable.other);
+        }
 
-        //eventImage.setBackgroundColor(event.getCategoryColor());
+        //eventImage.setBackground(R.drawable.social);
 
         return convertView;
     }

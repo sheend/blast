@@ -1,6 +1,6 @@
 package cse403.blast.Model;
 
-import android.util.Log;
+import android.graphics.Color;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -29,18 +29,19 @@ public class Event implements Serializable, Comparable<Event> {
     eventTime != null && (eventTime - creationTime) < 43200000
     creationTime != null
     attendees.size() >= 1
+*/
 
-    public enum Category {
-        SOCIAL, FOOD, ACTIVE, ENTERTAINMENT, OTHER
-    }
-    */
+
 
     private String owner;
     private String title;
     private String desc;
     private String location;
+    private String formattedAddress;
+    private double latitude;
+    private double longitude;
     private int limit;
-    //private Category category;
+    private String category;
     private Date eventTime;
     private Date creationTime;
     private Set<String> attendees;
@@ -54,13 +55,18 @@ public class Event implements Serializable, Comparable<Event> {
         this.title = "";
         this.desc = "";
         this.location = "";
+        this.formattedAddress = "";
+        this.latitude = 0;
+        this.longitude = 0;
         this.limit = 0;
         this.eventTime = new Date();
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<String>();
         this.firebaseID = "";
-        //this.category = Category.ACTIVE; //TODO: change this
+        this.category = "";
     }
+
+
 
 
     /** Constructs an event using the given attributes
@@ -71,13 +77,17 @@ public class Event implements Serializable, Comparable<Event> {
      * @param limit limit of people for event
      * @param eventTime time event will occur
      */
-    public Event(String owner, String title, String desc, String location, int limit, Date eventTime) {
+    public Event(String owner, String title, String desc, String location, String formattedAddress,
+                 double latitude, double longitude, int limit, Date eventTime, String cat) {
         this.owner = owner;
         this.title = title;
         this.desc = desc;
         this.location = location;
+        this.formattedAddress = formattedAddress;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.limit = limit;
-        //this.category = Category.ACTIVE; //TODO: Change this
+        this.category = cat;
         this.eventTime = eventTime;
         this.creationTime = new Date(); // initialize to current time
         this.attendees = new HashSet<String>();
@@ -183,43 +193,61 @@ public class Event implements Serializable, Comparable<Event> {
     public String getLocation() { return location; }
 
     /**
+     * Return address of event
+     * @return  address of event
+     */
+    public String getFormattedAddress() { return formattedAddress; }
+
+    /**
+     * Return latitude of location
+     * @return   latitude of location
+     */
+    public double getLatitude() {
+        return latitude;
+    }
+
+    /**
+     * Return longitude of location
+     * @return   longitude of location
+     */
+    public double getLongitude() {
+        return longitude;
+    }
+
+    /**
      * Return limit of event
      * @return limit of event
      */
-    public int getLimit() {
-        return limit;
-    }
+    public int getLimit() { return limit; }
 
     /**
      * Return category of event
-     * @return category (enum) of event
-
-    public Category getCategory() {
-        return (category == null) ? Category.ACTIVE : category; //TODO: backup plan
-    }
+     * @return category of event
+     */
+    public String getCategory() { return category; }
 
     /**
      * Return category of event
-     * @return category (enum) of event
+     * @return category of event
      * //TODO: Add colors to the categories/add pictures?
-     *
-    public int getCategoryColor() {
+     */
+    public int retrieveCategoryColor() {
         switch (getCategory()) {
-            case ACTIVE:
+            case "ACTIVE":
                 return Color.rgb(255, 26, 0);
-            case ENTERTAINMENT:
+            case "ENTERTAINMENT":
                 return Color.rgb(255,26,0);
-            case FOOD:
+            case "FOOD":
                 return Color.rgb(255, 26, 0);
-            case SOCIAL:
+            case "SOCIAL":
                 return Color.rgb(130,143,212); // light blue
-            case OTHER:
+            case "OTHER":
                 return Color.rgb(255,26,0);
             default:
                 return Color.rgb(128,128,128);
         }
     }
-    */
+
 
     /**
      * Return time event is occurring
@@ -235,11 +263,32 @@ public class Event implements Serializable, Comparable<Event> {
      * For use when the time is to be displayed for the event details
      * @return
      */
+    public String retrieveEventDateString() {
+        SimpleDateFormat month = new SimpleDateFormat("MMM");
+        SimpleDateFormat day = new SimpleDateFormat("dd");
+        SimpleDateFormat dayOfWeek = new SimpleDateFormat("EEEE");
+
+        String myMonth = month.format(eventTime);
+        String myDayOfWeek = dayOfWeek.format(eventTime);
+
+        String myDay = day.format(eventTime);
+        if (myDay.startsWith("0")) myDay = myDay.substring(1);
+
+        return myDayOfWeek + ", " + myMonth + " " + myDay;
+    }
+
+    /**
+     * Return toString for the date
+     * For use when the time is to be displayed for the event details
+     * @return
+     */
     public String retrieveEventTimeString() {
         SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
-        SimpleDateFormat day = new SimpleDateFormat("dd MMM");
 
-        return time.format(eventTime) + " on " + day.format(eventTime);
+        String myTime = time.format(eventTime);
+        if (myTime.startsWith("0")) myTime = myTime.substring(1);
+
+        return myTime;
     }
 
     /**

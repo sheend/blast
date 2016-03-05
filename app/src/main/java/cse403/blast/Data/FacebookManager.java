@@ -252,7 +252,7 @@ public class FacebookManager {
     public Bitmap getFacebookProfilePicture(String fbID) throws IOException {
         URL imageURL = null;
         try {
-            imageURL = new URL(GRAPH_URL +fbID + "/picture?type=large&access_token=" + token.toString());
+            imageURL = new URL(GRAPH_URL +fbID + "/picture?type=large");
         } catch (MalformedURLException e) {
             Log.i("FB Manager", fbID  + ": malformed url");
             return null;
