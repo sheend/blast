@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -45,7 +46,7 @@ import cse403.blast.Support.RoundImage;
 public class DetailActivity extends AppCompatActivity {
 
     private final String TAG = "DetailActivity";
-    private final int MAX_NUM_IMGS = 1;
+    private final int MAX_NUM_IMGS = 4;
     private Event event;
     private User currentUser;
     private String currentUserID;
@@ -178,6 +179,10 @@ public class DetailActivity extends AppCompatActivity {
                     ImageView iView = new ImageView(DetailActivity.this);
                     try {
                         RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(attendeeID));
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                        float d = getApplicationContext().getResources().getDisplayMetrics().density;
+                        lp.setMargins(0, 0, (int) (10 * d), 0);
+                        iView.setLayoutParams(lp);
                         iView.setImageDrawable(roundImage);
                         attendeeImages.addView(iView);
                     } catch (IOException e) {
@@ -215,9 +220,16 @@ public class DetailActivity extends AppCompatActivity {
                     imageCount++;
                 } else {
                     TextView otherAttendees = new TextView(DetailActivity.this);
-                    otherAttendees.setTextSize(20);
+                    otherAttendees.setTextSize(22);
                     otherAttendees.setTextColor(getResources().getColor(R.color.lightText));
-                    otherAttendees.append(" and " + (attendeeIDList.size() - MAX_NUM_IMGS - 1) + " others");
+                    int numOthers = attendeeIDList.size() - MAX_NUM_IMGS - 1;
+                    otherAttendees.append(" & " + numOthers + " other");
+                    if (numOthers > 1) {
+                        otherAttendees.append("s ");
+                    } else {
+                        otherAttendees.append(" ");
+                    }
+                    //otherAttendees.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     attendeeImages.addView(otherAttendees);
                     break;
                 }
