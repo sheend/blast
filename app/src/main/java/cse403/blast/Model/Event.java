@@ -263,17 +263,32 @@ public class Event implements Serializable, Comparable<Event> {
      * For use when the time is to be displayed for the event details
      * @return
      */
+    public String retrieveEventDateString() {
+        SimpleDateFormat month = new SimpleDateFormat("MMM");
+        SimpleDateFormat day = new SimpleDateFormat("dd");
+        SimpleDateFormat dayOfWeek = new SimpleDateFormat("EEEE");
+
+        String myMonth = month.format(eventTime);
+        String myDayOfWeek = dayOfWeek.format(eventTime);
+
+        String myDay = day.format(eventTime);
+        if (myDay.startsWith("0")) myDay = myDay.substring(1);
+
+        return myDayOfWeek + ", " + myMonth + " " + myDay;
+    }
+
+    /**
+     * Return toString for the date
+     * For use when the time is to be displayed for the event details
+     * @return
+     */
     public String retrieveEventTimeString() {
         SimpleDateFormat time = new SimpleDateFormat("KK:mm a");
-        SimpleDateFormat day = new SimpleDateFormat("dd MMM");
 
         String myTime = time.format(eventTime);
         if (myTime.startsWith("0")) myTime = myTime.substring(1);
 
-        String myDate = day.format(eventTime);
-        if (myDate.startsWith("0")) myDate = myDate.substring(1);
-
-        return myTime + " on " + myDate;
+        return myTime;
     }
 
     /**

@@ -38,6 +38,7 @@ import com.firebase.client.GenericTypeIndicator;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -217,13 +218,14 @@ public class CreateEventActivity extends AppCompatActivity {
 
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
-            // TODO: prepopulate fields
+            Log.i("EVENT TIME", "" + event.getEventTime().getTime());
 
             // Disable and enable certain parts
             titleText.setEnabled(false);
             titleText.setText(event.getTitle());
             descText.setText(event.getDesc());
-            dateText.setText(event.getEventTime().toString());
+            dateText.setText(event.retrieveEventDateString());
+            timeText.setText(event.retrieveEventTimeString());
             locText.setEnabled(false);
             locText.setText(event.getLocation());
             limitText.setText("" + event.getLimit());
@@ -576,7 +578,19 @@ public class CreateEventActivity extends AppCompatActivity {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
             EditText tackDate = (EditText) findViewById(R.id.create_date);
-            tackDate.setText((monthOfYear + 1) + "/" + dayOfMonth + "/" + year);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE");
+            SimpleDateFormat monthFormat = new SimpleDateFormat("MMM");
+
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.MONTH, monthOfYear);
+            cal.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            cal.set(Calendar.YEAR, year);
+
+            Date dateRepresentation = cal.getTime();
+
+            String dayOfWeek = dateFormat.format(dateRepresentation);
+            String month = monthFormat.format(dateRepresentation);
+            tackDate.setText(dayOfWeek + ", " + month + " " + dayOfMonth);
             Log.i("Tag", "set");
             // make the time picker display after choosing a date
             getTimePickerDialog().show(getSupportFragmentManager(), "timePicker");
@@ -678,7 +692,7 @@ public class CreateEventActivity extends AppCompatActivity {
         currentUser = gson.fromJson(json, User.class);
 
 
-        String formattedAddress = "address";
+        String formattedAddress = "";
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, formattedAddress, userEnteredLat, userEnteredLong, userEnteredLimit, userEnteredDate,
