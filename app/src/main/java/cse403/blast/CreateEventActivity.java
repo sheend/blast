@@ -227,7 +227,10 @@ public class CreateEventActivity extends AppCompatActivity {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
             Log.i("EVENT TIME", "" + event.getEventTime().getTime());
 
-            // Disable and enable certain parts
+            // Disable and enable certain fields, prefill event information
+            String eventCat = event.getCategory().toLowerCase();
+            eventCat = eventCat.substring(0, 1).toUpperCase() + eventCat.substring(1);
+            category.setSelection(((ArrayAdapter)category.getAdapter()).getPosition(eventCat));
             titleText.setEnabled(false);
             titleText.setText(event.getTitle());
             descText.setText(event.getDesc());
