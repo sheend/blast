@@ -32,7 +32,6 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.sym.NameN;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -44,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -682,6 +682,9 @@ public class CreateEventActivity extends AppCompatActivity {
         // Get the reference to the root node in Firebase
         Firebase ref = new Firebase(Constants.FIREBASE_URL);
 
+        // Get current event if it is passed in by the intent
+        Event ev = (Event) createEventIntent.getSerializableExtra("event");
+
         // Get user-entered data: title, description, limit, location
         String userEnteredTitle = titleText.getText().toString();
         String userEnteredDesc = descText.getText().toString();
@@ -697,37 +700,38 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         // Get user-entered date
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(userYear, userMonth, userDay, userHour, userMin);
+        Date userEnteredDate = calendar.getTime();
+
+        // If we're in edit mode, we might have to adjust the userEnteredDate
         if (createEventIntent.getBooleanExtra("edit", true)) {
-
-            Event ev = (Event) createEventIntent.getSerializableExtra("event");
-
             //Refill location
             formattedAddress = ev.getFormattedAddress();
             userEnteredLat = ev.getLatitude();
             userEnteredLong = ev.getLongitude();
 
-            // Currently in edit mode
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(ev.getEventTime());
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(ev.getEventTime());
-
-            if (userYear == 0) {
-                // the date was not edited
-                userYear = calendar.get(Calendar.YEAR); 
-                userMonth = calendar.get(Calendar.MONTH);
-                userDay = calendar.get(Calendar.DAY_OF_MONTH);
-            }
-            if (userHour == 0) {
-                // the time was not edited
-                userHour = calendar.get(Calendar.HOUR);
-                userMin = calendar.get(Calendar.MINUTE);
+            if (userYear == 0 && userHour == 0) {
+                userEnteredDate = ev.getEventTime();
+            } else {
+                if (userYear == 0) {
+                    // the date was not edited
+                    userYear = cal.get(Calendar.YEAR);
+                    userMonth = cal.get(Calendar.MONTH);
+                    userDay = cal.get(Calendar.DAY_OF_MONTH);
+                }
+                if (userHour == 0) {
+                    // the time was not edited
+                    userHour = cal.get(Calendar.HOUR_OF_DAY);
+                    userMin = cal.get(Calendar.MINUTE);
+                }
+                cal.set(userYear, userMonth, userDay, userHour, userMin);
+                userEnteredDate = cal.getTime();
             }
         }
-
-        // Get user-entered date
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(userYear, userMonth, userDay, userHour, userMin);
-        Date userEnteredDate = calendar.getTime();
 
         // Log string for entered date
         Log.i("TestMyDate", userEnteredDate.toString());
@@ -742,7 +746,6 @@ public class CreateEventActivity extends AppCompatActivity {
         Log.i("DetailActivity", "JSON: " + json);
         currentUser = gson.fromJson(json, User.class);
 
-
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, formattedAddress, userEnteredLat, userEnteredLong, userEnteredLimit,
@@ -751,11 +754,14 @@ public class CreateEventActivity extends AppCompatActivity {
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
 
+        Set<String> origAttendees = new HashSet<>();
+        if (ev != null)
+            origAttendees = ev.getAttendees(); // Original list of attendees
+
         // Get reference to ID of event (create an ID if one does not exist);
         Firebase newEventRef;
         if (createEventIntent.getBooleanExtra("edit", true)) {
-            Event event = (Event) createEventIntent.getSerializableExtra("event");
-            newEventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
+            newEventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(ev.getId());
         } else {
             newEventRef = eventRef.push();
         }
@@ -777,11 +783,16 @@ public class CreateEventActivity extends AppCompatActivity {
         preferenceEditor.commit();
 
 
-        // update attendee list for the event that the user just created
-        userEvent.addAttendee(currentUser);
-        Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
-        userAttendingRef.setValue(userEvent.getAttendees());
-
+        if (createEventIntent.getBooleanExtra("edit", true)) {
+            // if editing, make sure that the attendee list is the same as before
+            Firebase eventAttendeesRef = new Firebase(Constants.FIREBASE_URL).child("events").child(ev.getId()).child("attendees");
+            eventAttendeesRef.setValue(origAttendees);
+        } else {
+            // update attendee list for the event that the user just created
+            userEvent.addAttendee(currentUser);
+            Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
+            userAttendingRef.setValue(userEvent.getAttendees());
+        }
 //        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
 //
 //        Snackbar.make(coordinatorLayout, "Event Created", Snackbar.LENGTH_SHORT)
