@@ -715,7 +715,6 @@ public class CreateEventActivity extends AppCompatActivity {
         currentUser = gson.fromJson(json, User.class);
 
 
-        String formattedAddress = "";
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, formattedAddress, userEnteredLat, userEnteredLong, userEnteredLimit,
