@@ -240,11 +240,9 @@ public class DetailActivity extends AppCompatActivity {
         WebView webView = (WebView) findViewById(R.id.map_webview);
 
         try {
-            //TODO: Add proper address, handle case when image is not returned
-            mapView.setImageBitmap(instance.getStaticImage("4131 University Way NE, Seattle, WA 98105",
+            if (!event.getFormattedAddress().equals(""))
+                mapView.setImageBitmap(instance.getStaticImage(event.getFormattedAddress(),
                     event.getLatitude(), event.getLongitude()));
-            //webView.loadUrl("https://www.google.com/maps/embed/v1/place?q=4131+University+Way+NE,+Seattle,+WA+98105&key=AIzaSyCfGcSst1xqsfr7P_mxPEvcIZylw7ZhX9Y");
-
 
         } catch (IOException e) {
             Log.i(TAG, "Map image didn't show didn't show");
