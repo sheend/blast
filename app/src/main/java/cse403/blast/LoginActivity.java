@@ -141,6 +141,15 @@ public class LoginActivity extends FragmentActivity {
         };
     }
 
+    //prevents glitch of getting back into main activity after log out
+    //essentially refreshes
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(LoginActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
+    }
+
     /**
      * Adds currently logged in User to the database of Users and update
      * the local copy of the User.

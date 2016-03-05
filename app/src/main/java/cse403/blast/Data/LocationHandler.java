@@ -33,8 +33,8 @@ public class LocationHandler {
     private final String GEO_CODING_ORIG_CALL = "https://maps.googleapis.com/maps/api/geocode/json?";
     private final String STATIC_IMAGE_ORIG_CALL = "https://maps.googleapis.com/maps/api/staticmap?";
 
-    public Map<String, Location> getMatchingLoc(String input, Location loc) {
-        Map<String, Location> ret = new HashMap<String, Location>();
+    public Map<LocationResult, Location> getMatchingLoc(String input, Location loc) {
+        Map<LocationResult, Location> ret = new HashMap<LocationResult, Location>();
 
         try {
 
@@ -51,8 +51,8 @@ public class LocationHandler {
             for (int i = 0; i < results.length(); i++) {
                 JSONObject r = (JSONObject) results.get(i);
                 String description = r.getString("description");
-                Location l = getLocation(r.getString("place_id"));
-                ret.put(description, l);
+                HelperResult helperResult = getLocation(r.getString("place_id"));
+                ret.put(new LocationResult(description, helperResult.addr), helperResult.loc);
             }
 
         } catch (Exception e) {
@@ -116,25 +116,29 @@ public class LocationHandler {
         return obj.getString("long_name");
     }
 
-    private Location getLocation(String place_id) throws IOException, JSONException {
+    private HelperResult getLocation(String place_id) throws IOException, JSONException {
         String req = PLACE_ID_ORIG_CALL + "key=" + BROW_API_KEY + "&placeid=" + place_id;
         JSONObject detail = getJSONFromReq(req);
         return getLocationHelper(detail);
     }
 
-    private Location getLocationHelper(JSONObject obj) throws JSONException {
+    private HelperResult getLocationHelper(JSONObject obj) throws JSONException {
         obj = (JSONObject) obj.get("result");
+        String address = obj.getString("formatted_address");
+
         obj = (JSONObject) obj.get("geometry");
         obj = (JSONObject) obj.get("location");
         double lat = obj.getDouble("lat");
         double lng = obj.getDouble("lng");
 
+
         Location loc = new Location("eventLocation");
         loc.setLatitude(lat);
         loc.setLongitude(lng);
 
-        return loc;
+        return new HelperResult(loc, address);
     }
+
 
     private JSONObject getJSONFromReq(String req) throws IOException, JSONException {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -159,5 +163,30 @@ public class LocationHandler {
 
     private boolean isNearby(Location eventLoc, int mileDist, Location userLoc) {
         return ((double) userLoc.distanceTo(eventLoc) / 1609.34 <= mileDist);
+    }
+
+    private class HelperResult {
+        Location loc;
+        String addr;
+
+        public HelperResult(Location l, String a) {
+            loc = l;
+            addr = a;
+        }
+    }
+
+    public class LocationResult {
+        public String description;
+        public String formattedAddress;
+
+        public LocationResult(String d, String f) {
+            description = d;
+            formattedAddress = f;
+        }
+
+        @Override
+        public String toString() {
+            return description;
+        }
     }
 }
