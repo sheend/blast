@@ -697,6 +697,26 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         // Get user-entered date
+        if (createEventIntent.getBooleanExtra("edit", true)) {
+            // we're currently in edit mode
+            Event ev = (Event) createEventIntent.getSerializableExtra("event");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(ev.getEventTime());
+
+            if (userYear == 0) {
+                // the date was not edited
+                userYear = calendar.get(Calendar.YEAR); // Day of the month :)
+                userMonth = calendar.get(Calendar.MONTH);
+                userDay = calendar.get(Calendar.DAY_OF_MONTH);
+            }
+            if (userHour == 0) {
+                // the time was not edited
+                userHour = calendar.get(Calendar.HOUR);
+                userMin = calendar.get(Calendar.MINUTE);
+            }
+        }
+
+        // Get user-entered date
         Calendar calendar = Calendar.getInstance();
         calendar.set(userYear, userMonth, userDay, userHour, userMin);
         Date userEnteredDate = calendar.getTime();
