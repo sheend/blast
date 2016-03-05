@@ -19,6 +19,12 @@ import cse403.blast.Data.Constants;
 
 /**
  * Created by graceqiu on 3/3/16.
+ *
+ * Tests that the database works for the interactions done in DetailActivity,
+ * which are getting, joining, and leaving an event.
+ * By testing the UI of DetailActivity and the database actions that are tied
+ * to the UI, we ensure that MainActivity behaves as correctly despite not
+ * testing UI in the same tests for database.
  */
 public class DBDetailActivityTest {
     private static final int TIMEOUT = 2000; // 2000ms

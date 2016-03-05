@@ -18,6 +18,12 @@ import static org.junit.Assert.assertNull;
 
 /**
  * Created by graceqiu on 3/3/16.
+ *
+ * Tests that the database works for the interactions done in MainActivity,
+ * which are getting a user.
+ * By testing the UI of MainActivity and the database actions that are tied
+ * to the UI, we ensure that MainActivity behaves as correctly despite not
+ * testing UI in the same tests for database.
  */
 public class DBMainActivityTest {
     private static final int TIMEOUT = 2000; // 2000ms
