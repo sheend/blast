@@ -489,8 +489,6 @@ public class CreateEventActivity extends AppCompatActivity {
                 if (!hasFocus) {
                     verify(v);
 
-                    Toast.makeText(CreateEventActivity.this, "Please choose from the following list",
-                            Toast.LENGTH_LONG).show();
                     // Location things
                     Location userLocation = getUserLocation();
 
@@ -499,12 +497,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
                     List<LocationHandler.LocationResult> resultList =
                             new ArrayList<LocationHandler.LocationResult>(map.keySet());
-
-//                    final List<String> locationList = new ArrayList<String>();
-//                    for (LocationHandler.LocationResult r : resultList) {
-//                        locationList.add(r.description);
-//                        Log.i(TAG, "formatted address: " + r.formattedAddress);
-//                    }
 
                     final ListView listView = (ListView) findViewById(R.id.location_list);
                     ArrayAdapter<LocationHandler.LocationResult> adapter =
