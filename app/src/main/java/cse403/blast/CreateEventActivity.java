@@ -20,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -271,17 +272,6 @@ public class CreateEventActivity extends AppCompatActivity {
         return userLoc;
     }
 
-    /*@Override
-    protected void onStop() {
-        super.onStop();
-        FacebookManager fbManager = FacebookManager.getInstance();
-        if (fbManager.isValidSession()) {
-            fbManager.saveSession(getApplicationContext());
-        } else {
-            fbManager.clearSession(getApplicationContext());
-        }
-    }*/
-
     // VALIDATION METHODS
 
     // sets up the listeners for all the fields
@@ -369,6 +359,16 @@ public class CreateEventActivity extends AppCompatActivity {
                 return false;
         }
     }
+
+    //Used to hide keyboard on touch elsewhere
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.
+                INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        return true;
+    }
+
 
     /**
      * Checks if the user field has been filled in
