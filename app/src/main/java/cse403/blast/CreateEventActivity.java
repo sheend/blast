@@ -698,8 +698,16 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // Get user-entered date
         if (createEventIntent.getBooleanExtra("edit", true)) {
-            // Currently in edit mode
+
             Event ev = (Event) createEventIntent.getSerializableExtra("event");
+
+            //Refill location
+            formattedAddress = ev.getFormattedAddress();
+            userEnteredLat = ev.getLatitude();
+            userEnteredLong = ev.getLongitude();
+
+            // Currently in edit mode
+
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(ev.getEventTime());
 
