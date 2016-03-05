@@ -1,6 +1,42 @@
 [Product website](http://blastcse.github.io/) </br>
 [Developer website](http://mkhuat.github.io/blast-dev/)
 
+#Release Candidate Updates
+[SRS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwZk8yU3hPYVdqems/view) and [SDS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwWnFEQVVxWkJQNTg/view) updates. </br>
+
+All of our functionality is complete. Upon logging in with Facebook, a first-time user will be greeted with tutorials on each screen. From the main screen, they can see all events happening around them that are occurring within the next 24 hours, with events happening soon appearing first. Events now contain a category, which supplies a preset picture to bring more life to the main screen. From the main screen, users can manage the events they are attending or have created via the left drawer. Clicking on an event in the main screen (or the left drawer) takes the user to the detail page. This screen lists all the relevant information about the event, including Facebook profile pictures of current attendees and a map showing the pinned location of the event. A user has the option to join or leave an event (if they had already joined) from this screen. If the user created the event, they will have the option to modify the event, upon which they can change information or delete the event. Going back to the main screen, a user can create an event by tapping on the plus icon. Input fields are robust in preventing invalid or too-long of input. The location field provides suggestions of places so that we can extract a real address, but the user is allowed to enter their own location if they desire (we will not show a map in the detail view in this situation). Thus, a user can do everything that we envisioned they would be able to in our app. The flow is simple and intuitive. </br>
+- Note: events that have "expired" will stop appearing in the main view. Additionally, users are allowed to create events that will happen further than 24 hours in the future, but these events will not be displayed in the main view until they are happening within 24 hours.
+- Because the app is still in development, users must use the test account `oliver_efugadr_queen@tfbnw.net` with password `blast123` to sign in. </br>
+
+The previous dependency on an IP address for location services has been removed. However, users now need to have Google Apps installed on their device. For the Genymotion emulator, these are the instructions to install Google Apps:</br>
+##Installing Google Apps on Genymotion
+ 1. Upgrade Genymotion and VirtualBox to the latest version</br>
+ 2. Make sure your computer has `adb`</br>
+ 3. Download two zip files: [ARM Translation Installer v1.1](http://filetrip.net/dl?4SUOrdcMRv) and [Google Apps for Android version 5.0](https://www.androidfilehost.com/?fid=95784891001614559) or later</br>
+ 4. Install ARM Translation
+- Open Genymotion emulator and drag/drop the Genymotion-ARM-Translation_v1.1.zip file over the emulator on the home screen
+- A dialog will appear and show as file transfer in prgress
+- Wait for another dialog to appear and click OK
+- Wait for the third dialog that shows as the file has been successfully transfered
+- Reboot the virtual device through command line, with `adb reboot`
+- Be patient and wait around 10-20 minutes until it's done rebooting (you can tell it's done from the command line by prompting into a new line)</br>
+
+ 5. Install gapps</br>
+- Stay on the home screen on Genymotion. Drag and drop the gapps-lp-20141109-signed.zip file onto the screen
+- Repeat the same substeps from step 4 regarding dialogs and rebooting
+- Be even more patient! This time you will have to wait for 30-40 minutes</br>
+
+ 6. Update all the Google Maps through Google Play Store</br>
+- After the virtual device is rebooted up, you will see a dialog saying that “Unfortunately, Google Play service has stopped.” Click OK and continue on
+- If you don't see any dialog popping up saying that "Google Play Services has stopped," close your virtual machine and restart your genymotion device. Then you will see another dialog saying that you need to update your application
+- Open your Google Play Store and update all your installed apps. Remember to update Google Play Services (Most important step!)</br>
+
+ 7. You're done!</br>
+
+
+
+
+
 #Feature-Complete Updates
 [SRS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwNWpsT1R6UHRMUVE/view) and [SDS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwa2ZFdG41X0Q5djQ/view) updates. </br>
 
