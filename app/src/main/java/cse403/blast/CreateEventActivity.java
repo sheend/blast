@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.fasterxml.jackson.core.sym.NameN;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -61,6 +62,10 @@ import cse403.blast.Support.TimePickerFragment;
  * user's "Blasts You Created" section of the main page's drawer.
  */
 public class CreateEventActivity extends AppCompatActivity {
+
+    private String formattedAddress = "";
+    private Location coordinates = null;
+
     private Spinner category;
     private Button submitButton;
     private Button cancelButton;
@@ -484,27 +489,41 @@ public class CreateEventActivity extends AppCompatActivity {
                     Location userLocation = getUserLocation();
 
                     LocationHandler instance = new LocationHandler();
-                    Map<String, Location> map = instance.getMatchingLoc(locText.getText().toString(), userLocation);
+                    final Map<LocationHandler.LocationResult, Location> map = instance.getMatchingLoc(locText.getText().toString(), userLocation);
 
-                    final List<String> locationList = new ArrayList<String>(map.keySet());
+                    List<LocationHandler.LocationResult> resultList =
+                            new ArrayList<LocationHandler.LocationResult>(map.keySet());
+
+//                    final List<String> locationList = new ArrayList<String>();
+//                    for (LocationHandler.LocationResult r : resultList) {
+//                        locationList.add(r.description);
+//                        Log.i(TAG, "formatted address: " + r.formattedAddress);
+//                    }
 
                     final ListView listView = (ListView) findViewById(R.id.location_list);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(CreateEventActivity.this,
-                            android.R.layout.simple_list_item_1, locationList);
+                    ArrayAdapter<LocationHandler.LocationResult> adapter =
+                            new ArrayAdapter<LocationHandler.LocationResult>(CreateEventActivity.this,
+                            android.R.layout.simple_list_item_1, resultList);
                     listView.setAdapter(adapter);
 
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                            String locationAtPos = (String) parent.getItemAtPosition(position);
-                            locText.setText(locationAtPos);
+                            LocationHandler.LocationResult locationAtPos = (LocationHandler.LocationResult) parent.getItemAtPosition(position);
+                            locText.setText(locationAtPos.description);
+                            formattedAddress = locationAtPos.formattedAddress;
+                            coordinates = map.get(locationAtPos);
 
-                            locationList.clear();
+                            Log.i(TAG, "got em: " + formattedAddress + " coordinate : " + coordinates);
+
+                            //locationList.clear();
                             //listView.setVisibility(View.GONE);
                             ((ViewManager) listView.getParent()).removeView(listView);
                         }
                     });
+
+
 
                 }
             }
@@ -655,9 +674,12 @@ public class CreateEventActivity extends AppCompatActivity {
         String userEnteredLoc = locText.getText().toString();
         String userEnteredCategory = category.getSelectedItem().toString().toUpperCase();
 
-        // TODO: replace dummy data with actual Lat/Long data
-        double userEnteredLat = 47.6097;
-        double userEnteredLong = 122.3331;
+        double userEnteredLat = Double.NaN;
+        double userEnteredLong = Double.NaN;
+        if (coordinates != null) {
+            userEnteredLat = coordinates.getLatitude();
+            userEnteredLong = coordinates.getLongitude();
+        }
 
         // Get user-entered date
         Calendar calendar = Calendar.getInstance();
@@ -678,11 +700,10 @@ public class CreateEventActivity extends AppCompatActivity {
         currentUser = gson.fromJson(json, User.class);
 
 
-        String formattedAddress = "address";
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
-                userEnteredLoc, formattedAddress, userEnteredLat, userEnteredLong, userEnteredLimit, userEnteredDate,
-                userEnteredCategory);
+                userEnteredLoc, formattedAddress, userEnteredLat, userEnteredLong, userEnteredLimit,
+                userEnteredDate, userEnteredCategory);
 
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
