@@ -173,19 +173,13 @@ public class MainActivity extends AppCompatActivity
                             Log.i(TAG, "User already exists in db");
                         }
 
-                        // Set current user's name in the left drawer
-                        TextView profileName = (TextView) findViewById(R.id.profileName);
-                        profileName.setText(currentUser.getName());
-
-                        // Populate attending list
-                        preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
-                        preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
-
                         // Store user to shared preferences
                         SharedPreferences settings = getApplicationContext().getSharedPreferences("blastPrefs", 0);
                         SharedPreferences.Editor editor = settings.edit();
                         editor.putString("userid", fid);
                         editor.putString("name", name);
+
+                        populateLeftDrawer();
 
                         // Store the current User object in SharedPreferences
                         gson = new Gson();
@@ -194,14 +188,6 @@ public class MainActivity extends AppCompatActivity
                         editor.putString("MyUser", json);
                         editor.commit();
 
-                        ImageView iv = (ImageView) findViewById(R.id.imageView);
-                        try {
-                            RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
-                            iv.setImageDrawable(roundImage);
-                            Log.i(TAG, " RAN");
-                        } catch (IOException e) {
-                            Log.i(TAG, "error: " + e.getMessage());
-                        }
                     }
 
                     /**
@@ -216,23 +202,7 @@ public class MainActivity extends AppCompatActivity
                 });
             }
         } else {
-            //set user name in left drawer
-            TextView profileName = (TextView) findViewById(R.id.profileName);
-            profileName.setText(currentUser.getName());
-
-            //populate attending list
-            preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
-            preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
-
-            ImageView iv = (ImageView) findViewById(R.id.imageView);
-
-            try {
-                RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
-                iv.setImageDrawable(roundImage);
-                Log.i(TAG, "RAN");
-            } catch (IOException e) {
-                Log.i(TAG, "error: " + e.getMessage());
-            }
+            populateLeftDrawer();
         }
 
         // Display tutorial
@@ -301,6 +271,28 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    /**
+     * Populates left drawer for old and new users, events and profile picture
+     */
+    public void populateLeftDrawer() {
+        //set user name in left drawer
+        TextView profileName = (TextView) findViewById(R.id.profileName);
+        profileName.setText(currentUser.getName());
+
+        //populate attending list
+        preSetupAttendingList(R.id.attending_list, currentUser.getEventsAttending());
+        preSetupCreatedList(R.id.created_list, currentUser.getEventsCreated());
+
+        ImageView iv = (ImageView) findViewById(R.id.imageView);
+        try {
+            RoundImage roundImage = new RoundImage(fbManager.getFacebookProfilePicture(fbManager.getUserID()));
+            iv.setImageDrawable(roundImage);
+            Log.i(TAG, " RAN");
+        } catch (IOException e) {
+            Log.i(TAG, "error: " + e.getMessage());
+        }
     }
 
     /**

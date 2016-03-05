@@ -103,6 +103,7 @@ public class CreateEventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_create_event);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.getBackground().setAlpha(0);
 
         createEventIntent = getIntent();
         if (createEventIntent.getBooleanExtra("edit", false)) {
