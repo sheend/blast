@@ -11,7 +11,7 @@ All of our functionality is complete. Upon logging in with Facebook, a first-tim
 The previous dependency on an IP address for location services has been removed. However, users now need to have Google Apps installed on their device. For the Genymotion emulator, these are the instructions to install Google Apps:</br>
 ##Installing Google Apps on Genymotion
  1. Upgrade Genymotion and VirtualBox to the latest version</br>
- 2. Make sure your computer has `adb`</br>
+ 2. Make sure your computer has the `adb` command</br>
  3. Download two zip files: [ARM Translation Installer v1.1](http://filetrip.net/dl?4SUOrdcMRv) and [Google Apps for Android version 5.0](https://www.androidfilehost.com/?fid=95784891001614559) or later</br>
  4. Install ARM Translation
 - Open Genymotion emulator and drag/drop the Genymotion-ARM-Translation_v1.1.zip file over the emulator on the home screen
@@ -32,10 +32,6 @@ The previous dependency on an IP address for location services has been removed.
 - Open your Google Play Store and update all your installed apps. Remember to update Google Play Services (Most important step!)</br>
 
  7. You're done!</br>
-
-
-
-
 
 #Feature-Complete Updates
 [SRS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwNWpsT1R6UHRMUVE/view) and [SDS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwa2ZFdG41X0Q5djQ/view) updates. </br>
@@ -100,7 +96,8 @@ Compiled list of bugs, along with open tickets to work on: [Github Issue Tracker
 Once a ticket has been completed, any team member can close the issue </br>
 
 #Unit Testing
-Tests are located in `app/src/androidTest/java/cse403/blast`
+To isolate our tests, the most recent tests now exist solely in the Test branch. Switch to that branch.</br>
+Tests are located in `app/src/androidTest/java/cse403/blast`</br>
 To run a unit test in Android Studio:
 - Click on Build Variants on the bottom left corner
 - Select `Android Instrumentation Tests` or `Unit Tests` as the Test Artifact: we have both kinds of tests
