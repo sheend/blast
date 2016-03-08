@@ -81,17 +81,7 @@ public class LocationHandler {
                 "&size=600x300" +
                 "&maptype=roadmap" +
                 "&markers=size:mid%7Ccolor:0xff4c10%7Clabel:Blast%7C" + formattedAddress;
-                //"&marker=color:red%7Clabel:A%7C"
-                //+ latitude +"," + longitude;// +"&key=" + API_KEY;
 
-        /*"https://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap
-        &markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318
-                &markers=color:red%7Clabel:C%7C40.718217,-73.998284
-                &key=YOUR_API_KEY"*/
-        //req = "https://maps.googleapis.com/maps/api/staticmap?center=Seattle&zoom=13&scale=2&size=600x300&maptype=roadmap&marker=color:red%7Clabel:A%747.654256,-122.317852&key=AIzaSyCfGcSst1xqsfr7P_mxPEvcIZylw7ZhX9Y";
-
-
-//        req = "http://maps.googleapis.com/maps/api/staticmap?center=Atlantic+City&zoom=13&scale=2&size=600x300&maptype=roadmap&format=png&visual_refresh=true";
         Log.i("Loc", req);
 
         return BitmapFactory.decodeStream(new java.net.URL(req).openStream());
