@@ -273,13 +273,14 @@ public class CreateEventActivity extends AppCompatActivity {
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         double lng = -122.3079;
         double lat = 47.6539;
-        //double lng = location.getLongitude();
-        //double lat = location.getLatitude();
+        if (lm != null) {
+            lng = location.getLongitude();
+            lat = location.getLatitude();
+        }
 
         Location userLoc = new Location("userLocation");
         userLoc.setLatitude(lat);
         userLoc.setLongitude(lng);
-
         return userLoc;
     }
 

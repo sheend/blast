@@ -229,7 +229,6 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
 
-        // TODO: Display location using text, but hopefully with a map
         TextView locationLabel = (TextView) findViewById(R.id.detail_location);
         locationLabel.setText(event.getLocation());
 
@@ -238,9 +237,10 @@ public class DetailActivity extends AppCompatActivity {
         WebView webView = (WebView) findViewById(R.id.map_webview);
 
         try {
-            if (!event.getFormattedAddress().equals(""))
+            if (!event.getFormattedAddress().equals("")) {
                 mapView.setImageBitmap(instance.getStaticImage(event.getFormattedAddress(),
-                    event.getLatitude(), event.getLongitude()));
+                        event.getLatitude(), event.getLongitude()));
+            }
 
         } catch (IOException e) {
             Log.i(TAG, "Map image didn't show didn't show");

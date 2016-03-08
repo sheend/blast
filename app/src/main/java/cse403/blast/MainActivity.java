@@ -577,13 +577,15 @@ public class MainActivity extends AppCompatActivity
         //default location is drumheller fountain, putting in cse felt to specific
         double lng = -122.3079;
         double lat = 47.6539;
-        //double lng = location.getLongitude();
-        //double lat = location.getLatitude();
+
+        if (lm != null) {
+            lng = location.getLongitude();
+            lat = location.getLatitude();
+        }
 
         Location userLoc = new Location("userLocation");
         userLoc.setLatitude(lat);
         userLoc.setLongitude(lng);
-
         return userLoc;
     }
 
