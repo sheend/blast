@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -15,6 +16,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -219,6 +223,8 @@ public class CreateEventActivity extends AppCompatActivity {
 
         // adds validation listeners
         addFieldValidationListeners();
+
+        setFieldHints();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -543,6 +549,36 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     // DIALOG METHODS
+
+    /**
+     * Appends a red star to the hint text of all mandatory fields
+     */
+    private void setFieldHints() {
+        setFieldHint(titleText);
+        setFieldHint(descText);
+        setFieldHint(locText);
+        setFieldHint(limitText);
+        setFieldHint(dateText);
+        setFieldHint(timeText);
+    }
+
+    /**
+     * Appends a red star to the hint text of the given field
+     *
+     * @param field The field to append to
+     */
+    private void setFieldHint(EditText field) {
+        String hint = field.getHint().toString();
+        String extra = " *";
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(hint);
+        int start = builder.length();
+        builder.append(extra);
+        int end = builder.length();
+        builder.setSpan(new ForegroundColorSpan(Color.RED), start, end,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        field.setHint(builder);
+    }
 
     /**
      * Adds an on-change listener to the category dropdown
