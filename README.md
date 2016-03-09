@@ -1,6 +1,19 @@
 [Product website](http://blastcse.github.io/) </br>
 [Developer website](http://mkhuat.github.io/blast-dev/)
 
+#Final Release
+[SRS Postmortem](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwT05zZndVNHJEd28/view) document.</br>
+[SRS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwd1N3cUdFLUhSemM/view) and [SDS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnweGVhTm1COGN4c28/view) updates.</br>
+Final [Class Diagram](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwUmtrY3R2REFyREE/view).</br>
+
+The only noticeable change from the Release Candidate is a small addition to the toolbar of the main screen. Now at the top, a user will see a toggle that looks like a Google Maps pin. Clicking this switches the events displayed to be sorted by distance, with events closest to the user’s current location appearing first. The toggle icon will then change to a clock, allowing the user to go back to sorting by time, with events happening soon appearing first. Sorting by time is still what the app defaults to upon opening. Otherwise, refer to the information and instructions in the Release Candidate Updates section.</br>
+
+Notes:</br>
+- We developed Blast for the Nexus 6. Thus, we guarantee functionality on older phones, but we do not guarantee the same look and feel, as screen size differences may throw off aspects of the UI.
+- The app is no longer in development mode, but users can still use the test account `oliver_efugadr_queen@tfbnw.net` with password `blast123` to sign in if they wish.
+- Users need Google Apps installed on their device for location services. See the Installing Google Apps on Genymotion subsection if using the Genymotion emulator to run our app.
+- For thorough testing, extra flags and test variables were added. To avoid cluttering our master branch and release code, our most current tests are located in the Test branch. See more instructions under the Unit Testing section.
+
 #Release Candidate Updates
 [SRS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwZk8yU3hPYVdqems/view) and [SDS](https://drive.google.com/a/uw.edu/file/d/0B3PwQkCDyLnwLXBwNW54REpmRVk/view) updates. </br>
 
@@ -101,7 +114,7 @@ Tests are located in `app/src/androidTest/java/cse403/blast`</br>
 To run a unit test in Android Studio:
 - Click on Build Variants on the bottom left corner
 - Select `Android Instrumentation Tests` or `Unit Tests` as the Test Artifact: we have both kinds of tests
-- Navigate to a test file i.e. `ExampleUnitTest.java`
+- Navigate to a test file i.e. `EventTest.java`
 - Right click on the class name and click 'Run ExampleUnitTest'
 
 To run our test coverage tool, select all of our tests, right click, and choose "Run with Coverage."
