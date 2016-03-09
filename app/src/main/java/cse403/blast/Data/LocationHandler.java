@@ -73,7 +73,6 @@ public class LocationHandler {
     public Bitmap getStaticImage(String formattedAddress, double latitude, double longitude)
             throws IOException {
 
-        //center = center.replace(" ", "+");
         formattedAddress = formattedAddress.replace(" ", "+");
         String req = STATIC_IMAGE_ORIG_CALL +
                 "center=" + formattedAddress +

@@ -27,36 +27,24 @@ public class DatabaseManager {
     }
     
     // Add a new user
-    public void addUser(int fid) {
-
-    }
+    public void addUser(int fid) {}
 
     // Add a new event, make sure to add event
     // to the user table as well
-    public void addEvent() {
-
-    }
+    public void addEvent() {}
 
     // Remove an existing event (make sure to delete events
     // from user table as well)
-    public void removeEvent() {
-
-    }
+    public void removeEvent() {}
 
     // Edit an existing event
-    public void editEvent() {
-
-    }
+    public void editEvent() {}
 
     // Update user table
-    public void hostEvent(int uid, int eid) {
-
-    }
+    public void hostEvent(int uid, int eid) {}
 
     // Update both user and event tables
-    public void attendEvent(int uid, int eid) {
-
-    }
+    public void attendEvent(int uid, int eid) {}
 
 
 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
@@ -112,7 +111,6 @@ public class DetailActivity extends AppCompatActivity {
 
         ImageView eventImage = (ImageView) findViewById(R.id.detail_category_image);
 
-        //TODO: remove duplication
         String selected = event.getCategory().toUpperCase();
         if (selected.equals("Social".toUpperCase())) {
             eventImage.setImageResource(R.drawable.social);
@@ -158,7 +156,6 @@ public class DetailActivity extends AppCompatActivity {
         TextView desc = (TextView) findViewById(R.id.detail_desc);
         desc.setText(event.getDesc());
 
-        // TODO: Display the list of attendees by their Facebook profile picture after
         //final TextView attendees = (TextView) findViewById(R.id.attendees_text);
         final LinearLayout attendeeImages = (LinearLayout) findViewById(R.id.attendees_images);
         final List<String> attendeeIDList = new ArrayList<>(event.getAttendees());
@@ -189,13 +186,6 @@ public class DetailActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot snapshot) {
                                 User attendeeObj = snapshot.getValue(User.class);
-                                /*if (attendeeObj != null) {
-                                    if (!attendees.getText().toString().isEmpty()) {
-                                        attendees.append(", ");
-                                    }
-                                    String attName = attendeeObj.getName();
-                                    attendees.append(attName.substring(0, attName.indexOf(" ")));
-                                }*/
                             }
 
                             /**
@@ -222,7 +212,6 @@ public class DetailActivity extends AppCompatActivity {
                     } else {
                         otherAttendees.append(" ");
                     }
-                    //otherAttendees.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
                     attendeeImages.addView(otherAttendees);
                     break;
                 }
@@ -366,12 +355,4 @@ public class DetailActivity extends AppCompatActivity {
         Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId()).child("attendees");
         eventRef.setValue(event.getAttendees());
     }
-
-//  TODO: back button doesn't transition well
-//    @Override
-//    public void onBackPressed() {
-//        super.onBackPressed();
-//        overridePendingTransition(android.R.anim.slide_in_left, android.R.anim.slide_out_right);
-//    }
-
 }

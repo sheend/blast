@@ -1,14 +1,12 @@
 package cse403.blast.Model;
 
 import android.graphics.Color;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import cse403.blast.Support.DateDifference;
 
 /**
@@ -29,9 +27,7 @@ public class Event implements Serializable, Comparable<Event> {
     eventTime != null && (eventTime - creationTime) < 43200000
     creationTime != null
     attendees.size() >= 1
-*/
-
-
+    */
 
     private String owner;
     private String title;
@@ -66,9 +62,6 @@ public class Event implements Serializable, Comparable<Event> {
         this.category = "";
     }
 
-
-
-
     /** Constructs an event using the given attributes
      *
      * @param owner owner of event
@@ -93,9 +86,6 @@ public class Event implements Serializable, Comparable<Event> {
         this.attendees = new HashSet<String>();
         attendees.add("");
         this.firebaseID = "";
-        // TODO: add the event to owner's list through client code
-        // TODO: cannot call method from constructor because of firebase parsing
-        // owner.addCreatedEvent(this); // add this event to owner's list of created events
     }
 
     /**
@@ -229,7 +219,6 @@ public class Event implements Serializable, Comparable<Event> {
     /**
      * Return category of event
      * @return category of event
-     * //TODO: Add colors to the categories/add pictures?
      */
     public int retrieveCategoryColor() {
         switch (getCategory()) {
@@ -247,7 +236,6 @@ public class Event implements Serializable, Comparable<Event> {
                 return Color.rgb(128,128,128);
         }
     }
-
 
     /**
      * Return time event is occurring

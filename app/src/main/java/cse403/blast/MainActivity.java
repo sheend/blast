@@ -61,7 +61,6 @@ import cse403.blast.Model.User;
 import cse403.blast.Support.EventAdapter;
 import cse403.blast.Support.RoundImage;
 
-
 /**
  * The Main landing page of the app, displaying the list of "Blasts" (or events) near you.
  * In the Main Activity, the user has the option to view each event in more detail, access
@@ -107,7 +106,6 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO: Remove if not eventually neccessary
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -198,7 +196,6 @@ public class MainActivity extends AppCompatActivity
                         Log.i(TAG, "JSON: " + json);
                         editor.putString("MyUser", json);
                         editor.commit();
-
                     }
 
                     /**
@@ -281,7 +278,6 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
-
     }
 
     /**
@@ -561,7 +557,6 @@ public class MainActivity extends AppCompatActivity
      * @return the Location of the current user
      */
     public Location getUserLocation() {
-        //TODO: remove redundancy (also in Createeventactivity)
         LocationManager lm = (LocationManager) (getSystemService(Context.LOCATION_SERVICE));
 
         if ( Build.VERSION.SDK_INT >= 23 &&

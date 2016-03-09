@@ -56,7 +56,6 @@ import cse403.blast.Support.DatePickerFragment;
 import cse403.blast.Support.MinMaxInputFilter;
 import cse403.blast.Support.TimePickerFragment;
 
-
 /**
  * CreateEventActivity allows a user to create a new Event. After inputting valid data for each
  * of the Event fields, the user clicks "Blast It!" to publish the Event and make it visible to
@@ -67,7 +66,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private String formattedAddress = "";
     private Location coordinates = null;
-
     private Spinner category;
     private Button submitButton;
     private Button cancelButton;
@@ -412,7 +410,6 @@ public class CreateEventActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO display something helpful if verify fails
                 // succeeds if the user has filled in all fields
                 if (verify(v)) {
                     Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
@@ -516,8 +513,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
                             Log.i(TAG, "got em: " + formattedAddress + " coordinate : " + coordinates);
 
-                            //locationList.clear();
-                            //listView.setVisibility(View.GONE);
                             ((ViewManager) listView.getParent()).removeView(listView);
                         }
                     });
@@ -579,7 +574,6 @@ public class CreateEventActivity extends AppCompatActivity {
      *
      * @param v The View to display to
      */
-    // TODO: Limit the dates that a user can choose from on the calendar
     private void showDatePickerDialog(View v) {
         DatePickerFragment newFragment = DatePickerFragment.newInstance(
                 new Date(Calendar.getInstance().getTimeInMillis()), dateSetListener);
@@ -589,7 +583,6 @@ public class CreateEventActivity extends AppCompatActivity {
     /**
      * Date picker on set listener
      */
-    // TODO: Use Calendar set to create a reliable, format independent date
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -632,7 +625,6 @@ public class CreateEventActivity extends AppCompatActivity {
      *
      * @return TimePickerDialog.OnTimeSetListener
      */
-    // TODO: Format time to not be in military
     private TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -789,10 +781,6 @@ public class CreateEventActivity extends AppCompatActivity {
             Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
             userAttendingRef.setValue(userEvent.getAttendees());
         }
-//        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
-//
-//        Snackbar.make(coordinatorLayout, "Event Created", Snackbar.LENGTH_SHORT)
-//                .setAction("Action", null).show();
 
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Toast.makeText(CreateEventActivity.this, "Event Saved", Toast.LENGTH_SHORT).show();
@@ -873,7 +861,6 @@ public class CreateEventActivity extends AppCompatActivity {
                 Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
-
 
         // remove from db
         Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
