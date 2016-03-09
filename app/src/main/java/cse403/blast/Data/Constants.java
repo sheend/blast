@@ -1,7 +1,5 @@
 package cse403.blast.Data;
 
-
-
 /**
  * Created by Melissa on 2/8/2016.
  */
@@ -11,11 +9,9 @@ public final class Constants {
      * where active lists are stored (ie "activeLists")
      */
 
-
     /**
      * Constants for Firebase object properties
      */
-
 
     /**
      * Constants for Firebase URL
