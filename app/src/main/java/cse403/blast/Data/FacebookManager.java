@@ -80,7 +80,6 @@ public class FacebookManager {
     }
 
     /**
-     * TODO: Actually validate session
      * Checks the current associated access token to validate the session
      * @return true if the current user info is correct and the session is valid, else false
      */
@@ -278,6 +277,4 @@ public class FacebookManager {
         }
         return name;
     }
-
-
 }

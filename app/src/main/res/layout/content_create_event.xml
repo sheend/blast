@@ -45,7 +45,7 @@
                 android:layout_height="60dp"
                 android:id="@+id/create_title"
                 android:textColor="@color/lightText"
-                android:textColorHint="@color/error_color"
+                android:textColorHint="@color/lightText"
                 android:hint="title"
                 android:maxLength="75"/>
             <EditText
@@ -53,7 +53,7 @@
                 android:layout_height="60dp"
                 android:id="@+id/create_description"
                 android:textColor="@color/lightText"
-                android:textColorHint="@color/error_color"
+                android:textColorHint="@color/lightText"
                 android:hint="description"
                 android:maxLength="200"/>
             <RelativeLayout
@@ -64,14 +64,14 @@
                     android:layout_height="60dp"
                     android:id="@+id/create_date"
                     android:textColor="@color/lightText"
-                    android:textColorHint="@color/error_color"
+                    android:textColorHint="@color/lightText"
                     android:hint="date"/>
                 <EditText
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:id="@+id/create_time"
                     android:textColor="@color/lightText"
-                    android:textColorHint="@color/error_color"
+                    android:textColorHint="@color/lightText"
                     android:hint="time"
                     android:layout_toRightOf="@+id/create_date"/>
             </RelativeLayout>
@@ -80,7 +80,7 @@
                 android:layout_height="60dp"
                 android:id="@+id/create_location"
                 android:textColor="@color/lightText"
-                android:textColorHint="@color/error_color"
+                android:textColorHint="@color/lightText"
                 android:hint="location"/>
             <ListView
                 android:layout_width="match_parent"
@@ -92,7 +92,7 @@
                 android:layout_height="60dp"
                 android:id="@+id/create_limit"
                 android:textColor="@color/lightText"
-                android:textColorHint="@color/error_color"
+                android:textColorHint="@color/lightText"
                 android:hint="people limit"
                 android:maxLength="4"
                 android:inputType="number"
@@ -116,21 +116,20 @@
                 android:textAllCaps="false"
                 android:id="@+id/create_cancel_button" />
         </LinearLayout>
+    </RelativeLayout>
 
-        <!-- Tutorial -->
-        <RelativeLayout
-            android:id="@+id/tutorial_create"
-            android:background="#c1000000"
+    </ScrollView>
+    <!-- Tutorial -->
+    <RelativeLayout
+        android:id="@+id/tutorial_create"
+        android:background="#c1000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:src="@drawable/create_overlay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:src="@drawable/create_overlay"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </RelativeLayout>
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
-    </ScrollView>
 </RelativeLayout>

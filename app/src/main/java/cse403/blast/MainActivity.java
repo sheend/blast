@@ -1,13 +1,20 @@
 package cse403.blast;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -48,11 +55,11 @@ import java.util.Set;
 
 import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
+import cse403.blast.Data.LocationHandler;
 import cse403.blast.Model.Event;
 import cse403.blast.Model.User;
 import cse403.blast.Support.EventAdapter;
 import cse403.blast.Support.RoundImage;
-
 
 /**
  * The Main landing page of the app, displaying the list of "Blasts" (or events) near you.
@@ -81,7 +88,9 @@ public class MainActivity extends AppCompatActivity
     private FloatingActionButton fab;
     private Gson gson;
     private ListView mainListView;
+    private EventAdapter adapter;
     private User currentUser;
+    private boolean sortByTime;
 
     private static final String TAG = "MainActivity";
 
@@ -97,7 +106,6 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO: Remove if not eventually neccessary
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -141,6 +149,7 @@ public class MainActivity extends AppCompatActivity
         String json = preferenceSettings.getString("MyUser", "");
         Log.i(TAG, "Set currentUser" + json);
         currentUser = gson.fromJson(json, User.class);
+        sortByTime = true;
 
         // No user found in local memory, try firebase (new user just logged in)
         if (currentUser == null) {
@@ -187,7 +196,6 @@ public class MainActivity extends AppCompatActivity
                         Log.i(TAG, "JSON: " + json);
                         editor.putString("MyUser", json);
                         editor.commit();
-
                     }
 
                     /**
@@ -270,7 +278,6 @@ public class MainActivity extends AppCompatActivity
                 Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
-
     }
 
     /**
@@ -315,14 +322,14 @@ public class MainActivity extends AppCompatActivity
 
         // Adding the adapter with all the events, sorting in
         // real time with the adapter's sort
-        EventAdapter adapter = new EventAdapter(this, events);
+        adapter = new EventAdapter(this, events);
         mainListView.setAdapter(adapter);
-        adapter.sort(new Comparator<Event>() {
-            @Override
-            public int compare(Event lhs, Event rhs) {
-                return lhs.compareTo(rhs);
-            }
-        });
+
+        if (sortByTime) {
+            setSortByTime(adapter);
+        } else {
+            setSortByDistance(adapter);
+        }
 
         // Redirects user to the Detail Activity after clicking on an event
         mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -349,6 +356,53 @@ public class MainActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * sets the main activity list adapter to sort by time proximity
+     */
+    private void setSortByTime(EventAdapter adapter) {
+        Log.i(TAG, "Sorting by time");
+        adapter.sort(new Comparator<Event>() {
+            @Override
+            public int compare(Event lhs, Event rhs) {
+                return lhs.compareTo(rhs);
+            }
+        });
+    }
+
+    /**
+     * sets the main activity list adapter to sort by distance proximity
+     */
+    private void setSortByDistance(EventAdapter adapter) {
+        Log.i(TAG, "Sorting by distance");
+        LocationHandler instance = new LocationHandler();
+        final Location user = getUserLocation(); //if location services not enabled, defaults seattle
+
+        adapter.sort(new Comparator<Event>() {
+            @Override
+            public int compare(Event lhs, Event rhs) {
+                // separate events without proper chosen location
+                if (lhs.getLatitude() == Double.NaN && rhs.getLatitude() == Double.NaN) {
+                    return 0;
+                } else if (lhs.getLatitude() == Double.NaN) {
+                    return 1;
+                } else if (rhs.getLatitude() == Double.NaN) {
+                    return -1;
+                }
+
+                float[] result1 = new float[3];
+                android.location.Location.distanceBetween(user.getLatitude(), user.getLongitude(),
+                        lhs.getLatitude(), lhs.getLongitude(), result1);
+                Float distance1 = result1[0];
+
+                float[] result2 = new float[3];
+                android.location.Location.distanceBetween(user.getLatitude(), user.getLongitude(),
+                        rhs.getLatitude(), rhs.getLongitude(), result2);
+                Float distance2 = result2[0];
+
+                return distance1.compareTo(distance2);
+            }
+        });
+    }
 
     /**
      * Initializes the user's Events Attending list for display in the left drawer.
@@ -436,7 +490,20 @@ public class MainActivity extends AppCompatActivity
                 startActivity(i);
                 finish();
                 return true;
-            case R.id.action_settings:
+            case R.id.action_sort:
+                if (sortByTime) {
+                    setSortByDistance(adapter);
+                    Toast.makeText(this, "Sorting events by distance", Toast.LENGTH_SHORT).show();
+                    // change icon to clock
+                    item.setIcon(R.drawable.ic_sort_time);
+                    sortByTime = false;
+                } else {
+                    setSortByTime(adapter);
+                    Toast.makeText(this, "Sorting events by time", Toast.LENGTH_SHORT).show();
+                    // change icon to map
+                    item.setIcon(R.drawable.ic_sort_distance);
+                    sortByTime = true;
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -483,6 +550,38 @@ public class MainActivity extends AppCompatActivity
         params.height = (int)(0.4 * listSpace); // Almost half remaining space divided by 2 sections
 
         listView.setLayoutParams(params);
+    }
+
+    /**
+     * Gets the latitude and longitude of the current user
+     * @return the Location of the current user
+     */
+    public Location getUserLocation() {
+        LocationManager lm = (LocationManager) (getSystemService(Context.LOCATION_SERVICE));
+
+        if ( Build.VERSION.SDK_INT >= 23 &&
+                ContextCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this,
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return null;
+        }
+
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+        //default location is drumheller fountain, putting in cse felt to specific
+        double lng = -122.3079;
+        double lat = 47.6539;
+
+        if (lm != null) {
+            lng = location.getLongitude();
+            lat = location.getLatitude();
+        }
+
+        Location userLoc = new Location("userLocation");
+        userLoc.setLatitude(lat);
+        userLoc.setLongitude(lng);
+        return userLoc;
     }
 
     /**
@@ -684,3 +783,5 @@ public class MainActivity extends AppCompatActivity
         }
     }
 }
+
+

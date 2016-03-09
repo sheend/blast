@@ -27,7 +27,6 @@ import cse403.blast.Data.Constants;
 import cse403.blast.Data.FacebookManager;
 import cse403.blast.Model.User;
 
-
 /**
  * A login screen that redirects user to our third party authentication service (Facebook)
  */
@@ -106,7 +105,6 @@ public class LoginActivity extends FragmentActivity {
                     finish();
                 }
             }
-
 
             /**
              * Displays an informative message to the user if login request was cancelled.
@@ -210,5 +208,4 @@ public class LoginActivity extends FragmentActivity {
             }
         });
     }
-
 }

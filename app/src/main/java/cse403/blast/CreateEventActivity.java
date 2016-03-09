@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Build;
@@ -15,6 +16,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.InputFilter;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,7 +36,6 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.fasterxml.jackson.core.sym.NameN;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -44,6 +47,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -56,7 +60,6 @@ import cse403.blast.Support.DatePickerFragment;
 import cse403.blast.Support.MinMaxInputFilter;
 import cse403.blast.Support.TimePickerFragment;
 
-
 /**
  * CreateEventActivity allows a user to create a new Event. After inputting valid data for each
  * of the Event fields, the user clicks "Blast It!" to publish the Event and make it visible to
@@ -67,7 +70,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
     private String formattedAddress = "";
     private Location coordinates = null;
-
     private Spinner category;
     private Button submitButton;
     private Button cancelButton;
@@ -220,6 +222,8 @@ public class CreateEventActivity extends AppCompatActivity {
         // adds validation listeners
         addFieldValidationListeners();
 
+        setFieldHints();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
@@ -227,7 +231,10 @@ public class CreateEventActivity extends AppCompatActivity {
             Event event = (Event) createEventIntent.getSerializableExtra("event");
             Log.i("EVENT TIME", "" + event.getEventTime().getTime());
 
-            // Disable and enable certain parts
+            // Disable and enable certain fields, prefill event information
+            String eventCat = event.getCategory().toLowerCase();
+            eventCat = eventCat.substring(0, 1).toUpperCase() + eventCat.substring(1);
+            category.setSelection(((ArrayAdapter)category.getAdapter()).getPosition(eventCat));
             titleText.setEnabled(false);
             titleText.setText(event.getTitle());
             descText.setText(event.getDesc());
@@ -268,15 +275,16 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        double lng = -122.3331;
-        double lat = 47.6097;
-        //double lng = location.getLongitude();
-        //double lat = location.getLatitude();
+        double lng = -122.3079;
+        double lat = 47.6539;
+        if (location != null) {
+            lng = location.getLongitude();
+            lat = location.getLatitude();
+        }
 
         Location userLoc = new Location("userLocation");
         userLoc.setLatitude(lat);
         userLoc.setLongitude(lng);
-
         return userLoc;
     }
 
@@ -408,7 +416,6 @@ public class CreateEventActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO display something helpful if verify fails
                 // succeeds if the user has filled in all fields
                 if (verify(v)) {
                     Intent mainActivityIntent = new Intent(CreateEventActivity.this, MainActivity.class);
@@ -486,8 +493,6 @@ public class CreateEventActivity extends AppCompatActivity {
                 if (!hasFocus) {
                     verify(v);
 
-                    Toast.makeText(CreateEventActivity.this, "Please choose from the following list",
-                            Toast.LENGTH_LONG).show();
                     // Location things
                     Location userLocation = getUserLocation();
 
@@ -496,12 +501,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
                     List<LocationHandler.LocationResult> resultList =
                             new ArrayList<LocationHandler.LocationResult>(map.keySet());
-
-//                    final List<String> locationList = new ArrayList<String>();
-//                    for (LocationHandler.LocationResult r : resultList) {
-//                        locationList.add(r.description);
-//                        Log.i(TAG, "formatted address: " + r.formattedAddress);
-//                    }
 
                     final ListView listView = (ListView) findViewById(R.id.location_list);
                     ArrayAdapter<LocationHandler.LocationResult> adapter =
@@ -520,8 +519,6 @@ public class CreateEventActivity extends AppCompatActivity {
 
                             Log.i(TAG, "got em: " + formattedAddress + " coordinate : " + coordinates);
 
-                            //locationList.clear();
-                            //listView.setVisibility(View.GONE);
                             ((ViewManager) listView.getParent()).removeView(listView);
                         }
                     });
@@ -548,6 +545,36 @@ public class CreateEventActivity extends AppCompatActivity {
     }
 
     // DIALOG METHODS
+
+    /**
+     * Appends a red star to the hint text of all mandatory fields
+     */
+    private void setFieldHints() {
+        setFieldHint(titleText);
+        setFieldHint(descText);
+        setFieldHint(locText);
+        setFieldHint(limitText);
+        setFieldHint(dateText);
+        setFieldHint(timeText);
+    }
+
+    /**
+     * Appends a red star to the hint text of the given field
+     *
+     * @param field The field to append to
+     */
+    private void setFieldHint(EditText field) {
+        String hint = field.getHint().toString();
+        String extra = " *";
+        SpannableStringBuilder builder = new SpannableStringBuilder();
+        builder.append(hint);
+        int start = builder.length();
+        builder.append(extra);
+        int end = builder.length();
+        builder.setSpan(new ForegroundColorSpan(Color.RED), start, end,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        field.setHint(builder);
+    }
 
     /**
      * Adds an on-change listener to the category dropdown
@@ -583,7 +610,6 @@ public class CreateEventActivity extends AppCompatActivity {
      *
      * @param v The View to display to
      */
-    // TODO: Limit the dates that a user can choose from on the calendar
     private void showDatePickerDialog(View v) {
         DatePickerFragment newFragment = DatePickerFragment.newInstance(
                 new Date(Calendar.getInstance().getTimeInMillis()), dateSetListener);
@@ -593,7 +619,6 @@ public class CreateEventActivity extends AppCompatActivity {
     /**
      * Date picker on set listener
      */
-    // TODO: Use Calendar set to create a reliable, format independent date
     private DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
         @Override
         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -636,7 +661,6 @@ public class CreateEventActivity extends AppCompatActivity {
      *
      * @return TimePickerDialog.OnTimeSetListener
      */
-    // TODO: Format time to not be in military
     private TimePickerDialog.OnTimeSetListener timeSetListener = new TimePickerDialog.OnTimeSetListener() {
         @Override
         public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
@@ -682,6 +706,9 @@ public class CreateEventActivity extends AppCompatActivity {
         // Get the reference to the root node in Firebase
         Firebase ref = new Firebase(Constants.FIREBASE_URL);
 
+        // Get current event if it is passed in by the intent
+        Event ev = (Event) createEventIntent.getSerializableExtra("event");
+
         // Get user-entered data: title, description, limit, location
         String userEnteredTitle = titleText.getText().toString();
         String userEnteredDesc = descText.getText().toString();
@@ -697,37 +724,38 @@ public class CreateEventActivity extends AppCompatActivity {
         }
 
         // Get user-entered date
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(userYear, userMonth, userDay, userHour, userMin);
+        Date userEnteredDate = calendar.getTime();
+
+        // If we're in edit mode, we might have to adjust the userEnteredDate
         if (createEventIntent.getBooleanExtra("edit", true)) {
-
-            Event ev = (Event) createEventIntent.getSerializableExtra("event");
-
             //Refill location
             formattedAddress = ev.getFormattedAddress();
             userEnteredLat = ev.getLatitude();
             userEnteredLong = ev.getLongitude();
 
-            // Currently in edit mode
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(ev.getEventTime());
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(ev.getEventTime());
-
-            if (userYear == 0) {
-                // the date was not edited
-                userYear = calendar.get(Calendar.YEAR); 
-                userMonth = calendar.get(Calendar.MONTH);
-                userDay = calendar.get(Calendar.DAY_OF_MONTH);
-            }
-            if (userHour == 0) {
-                // the time was not edited
-                userHour = calendar.get(Calendar.HOUR);
-                userMin = calendar.get(Calendar.MINUTE);
+            if (userYear == 0 && userHour == 0) {
+                userEnteredDate = ev.getEventTime();
+            } else {
+                if (userYear == 0) {
+                    // the date was not edited
+                    userYear = cal.get(Calendar.YEAR);
+                    userMonth = cal.get(Calendar.MONTH);
+                    userDay = cal.get(Calendar.DAY_OF_MONTH);
+                }
+                if (userHour == 0) {
+                    // the time was not edited
+                    userHour = cal.get(Calendar.HOUR_OF_DAY);
+                    userMin = cal.get(Calendar.MINUTE);
+                }
+                cal.set(userYear, userMonth, userDay, userHour, userMin);
+                userEnteredDate = cal.getTime();
             }
         }
-
-        // Get user-entered date
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(userYear, userMonth, userDay, userHour, userMin);
-        Date userEnteredDate = calendar.getTime();
 
         // Log string for entered date
         Log.i("TestMyDate", userEnteredDate.toString());
@@ -742,7 +770,6 @@ public class CreateEventActivity extends AppCompatActivity {
         Log.i("DetailActivity", "JSON: " + json);
         currentUser = gson.fromJson(json, User.class);
 
-
         // Create event object using user-submitted data
         Event userEvent = new Event(currentUser.getFacebookID(), userEnteredTitle, userEnteredDesc,
                 userEnteredLoc, formattedAddress, userEnteredLat, userEnteredLong, userEnteredLimit,
@@ -751,11 +778,14 @@ public class CreateEventActivity extends AppCompatActivity {
         // Generate unique ID for event
         Firebase eventRef = ref.child("events");
 
+        Set<String> origAttendees = new HashSet<>();
+        if (ev != null)
+            origAttendees = ev.getAttendees(); // Original list of attendees
+
         // Get reference to ID of event (create an ID if one does not exist);
         Firebase newEventRef;
         if (createEventIntent.getBooleanExtra("edit", true)) {
-            Event event = (Event) createEventIntent.getSerializableExtra("event");
-            newEventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
+            newEventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(ev.getId());
         } else {
             newEventRef = eventRef.push();
         }
@@ -777,15 +807,16 @@ public class CreateEventActivity extends AppCompatActivity {
         preferenceEditor.commit();
 
 
-        // update attendee list for the event that the user just created
-        userEvent.addAttendee(currentUser);
-        Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
-        userAttendingRef.setValue(userEvent.getAttendees());
-
-//        CoordinatorLayout coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorLayout);
-//
-//        Snackbar.make(coordinatorLayout, "Event Created", Snackbar.LENGTH_SHORT)
-//                .setAction("Action", null).show();
+        if (createEventIntent.getBooleanExtra("edit", true)) {
+            // if editing, make sure that the attendee list is the same as before
+            Firebase eventAttendeesRef = new Firebase(Constants.FIREBASE_URL).child("events").child(ev.getId()).child("attendees");
+            eventAttendeesRef.setValue(origAttendees);
+        } else {
+            // update attendee list for the event that the user just created
+            userEvent.addAttendee(currentUser);
+            Firebase userAttendingRef = new Firebase(Constants.FIREBASE_URL).child("events").child(userEvent.getId()).child("attendees");
+            userAttendingRef.setValue(userEvent.getAttendees());
+        }
 
         if (createEventIntent.getBooleanExtra("edit", true)) {
             Toast.makeText(CreateEventActivity.this, "Event Saved", Toast.LENGTH_SHORT).show();
@@ -866,7 +897,6 @@ public class CreateEventActivity extends AppCompatActivity {
                 Log.d(TAG, "error: " + firebaseError.getMessage());
             }
         });
-
 
         // remove from db
         Firebase eventRef = new Firebase(Constants.FIREBASE_URL).child("events").child(event.getId());
