@@ -116,21 +116,20 @@
                 android:textAllCaps="false"
                 android:id="@+id/create_cancel_button" />
         </LinearLayout>
+    </RelativeLayout>
 
-        <!-- Tutorial -->
-        <RelativeLayout
-            android:id="@+id/tutorial_create"
-            android:background="#c1000000"
+    </ScrollView>
+    <!-- Tutorial -->
+    <RelativeLayout
+        android:id="@+id/tutorial_create"
+        android:background="#c1000000"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:src="@drawable/create_overlay"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:src="@drawable/create_overlay"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </RelativeLayout>
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
-    </ScrollView>
 </RelativeLayout>

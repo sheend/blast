@@ -44,9 +44,6 @@ public class User implements Serializable {
         eventsAttending.add("");
     }
 
-
-
-
     /**
      * Determines whether two Users are equal, or are the same person.
      * @param o other user to compare to
@@ -84,9 +81,6 @@ public class User implements Serializable {
      * @param e event user wants to cancel
      * @return  true if successfully removed (e was created by user), false otherwise (e was not created by user)
      */
-    // TODO: not sufficient to just remove an event from a user's list of created events...
-    // TODO: indicate to MainActivity to not display event anymore?
-    // TODO: indicate to attendees that event has been cancelled?
     public boolean cancelEvent(Event e) {
         boolean cancelled = eventsCreated.remove(e.getId());
         return cancelled;
