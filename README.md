@@ -121,7 +121,7 @@ To run our test coverage tool, select all of our tests, right click, and choose 
 - As of the Feature-Complete release, we have 10% line coverage. This is much lower than we expected due to the fact that the coverage tool does not recognize our activity tests, which contain the bulk of our code. This is because the coverage tool only considers JUnit tests, while our activity tests are Instrumentation tests.
 
 #Automated Testing
-We have set up Jenkins to build the project daily: [Jenkins dashboard](http://54.191.131.33:8080/)
+We have set up Jenkins to build the project daily: [Jenkins dashboard](http://54.191.110.63:8080/)
 - It's automated to run every day at 12:00am and email the blast group if a build fails
 - To see build history, click the build history tab on the left side bar
 - To execute a build, go to the `Blast_App` job and click build now on the left side bar
